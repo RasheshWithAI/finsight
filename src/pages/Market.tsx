@@ -197,7 +197,12 @@ const Market = () => {
                   <p className="text-finance-text-secondary mb-4">
                     Add stocks to your watchlist to keep track of them here
                   </p>
-                  <Button onClick={() => document.querySelector('[data-value="all"]')?.click()}>
+                  <Button onClick={() => {
+                    const allTabTrigger = document.querySelector('[data-value="all"]');
+                    if (allTabTrigger) {
+                      (allTabTrigger as HTMLElement).click();
+                    }
+                  }}>
                     Browse Stocks
                   </Button>
                 </CardContent>
