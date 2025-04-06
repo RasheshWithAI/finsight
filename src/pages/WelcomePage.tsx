@@ -39,22 +39,25 @@ const WelcomePage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-finance-background to-gray-50">
-      <div className="mb-8 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-aura-white to-aura-light-gray">
+      <div className="mb-8 text-center animate-fade-in">
         <div className="flex justify-center mb-4">
-          <CircleDollarSign className="h-16 w-16 text-finance-primary" />
+          <div className="relative">
+            <CircleDollarSign className="h-20 w-20 text-aura-teal animate-pulse-subtle" />
+            <span className="absolute inset-0 rounded-full bg-primary-gradient opacity-20 animate-pulse-glow"></span>
+          </div>
         </div>
-        <h1 className="text-3xl font-bold text-finance-primary mb-2">FinanceGrowth</h1>
-        <p className="text-finance-text-secondary text-lg">Track, Manage, Grow Your Money</p>
+        <h1 className="text-4xl font-bold mb-2 aura-gradient-text">Aura Finance</h1>
+        <p className="text-aura-medium-gray text-lg">Track, Manage, Grow Your Money</p>
       </div>
 
-      <Card className="w-full max-w-md p-6 shadow-md">
+      <Card className="w-full max-w-md p-6 shadow-lg bg-white/80 backdrop-blur-sm border border-white animate-scale-in rounded-2xl">
         <div className="flex justify-center mb-8">
-          <div className="flex bg-gray-100 rounded-lg">
+          <div className="flex bg-aura-light-gray rounded-lg overflow-hidden">
             <button
               onClick={() => setIsLogin(true)}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                isLogin ? "bg-finance-primary text-white" : "text-finance-text-secondary"
+              className={`px-4 py-2.5 flex items-center gap-2 transition-all duration-300 ${
+                isLogin ? "bg-primary-gradient text-white shadow" : "text-aura-medium-gray"
               }`}
             >
               <LogIn size={18} />
@@ -62,8 +65,8 @@ const WelcomePage = () => {
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                !isLogin ? "bg-finance-primary text-white" : "text-finance-text-secondary"
+              className={`px-4 py-2.5 flex items-center gap-2 transition-all duration-300 ${
+                !isLogin ? "bg-primary-gradient text-white shadow" : "text-aura-medium-gray"
               }`}
             >
               <UserPlus size={18} />
@@ -72,56 +75,61 @@ const WelcomePage = () => {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-6">
           {!isLogin && (
-            <div className="mb-4">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                className="mt-1"
-              />
+            <div className="animate-slide-in-up">
+              <Label htmlFor="name" className="text-aura-charcoal font-medium">Name</Label>
+              <div className="relative mt-1">
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  className="aura-input"
+                />
+                <div className="absolute bottom-0 left-0 h-0.5 bg-primary-gradient transform scale-x-0 group-focus-within:scale-x-100 transition-transform origin-left duration-300"></div>
+              </div>
             </div>
           )}
 
-          <div className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <div className="relative mt-1">
-              <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <div className={isLogin ? "" : "animate-slide-in-up animate-stagger-1"}>
+            <Label htmlFor="email" className="text-aura-charcoal font-medium">Email</Label>
+            <div className="relative mt-1 group">
+              <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-aura-medium-gray group-focus-within:text-aura-teal transition-colors" />
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your.email@example.com"
-                className="pl-9"
+                className="aura-input pl-9"
                 required
               />
+              <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary-gradient group-focus-within:w-full transition-all duration-300"></div>
             </div>
           </div>
 
-          <div className="mb-6">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <div className={isLogin ? "" : "animate-slide-in-up animate-stagger-2"}>
+            <Label htmlFor="password" className="text-aura-charcoal font-medium">Password</Label>
+            <div className="relative mt-1 group">
+              <Lock className="absolute left-2.5 top-2.5 h-4 w-4 text-aura-medium-gray group-focus-within:text-aura-teal transition-colors" />
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="pl-9"
+                className="aura-input pl-9"
                 required
               />
+              <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary-gradient group-focus-within:w-full transition-all duration-300"></div>
             </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-finance-primary hover:bg-finance-secondary flex items-center justify-center gap-2"
+            className="w-full h-12 bg-accent-gradient hover:bg-accent-gradient/90 shadow hover:shadow-lg flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] rounded-xl"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
@@ -129,14 +137,14 @@ const WelcomePage = () => {
             ) : (
               <>
                 {isLogin ? "Log In" : "Create Account"}
-                <ChevronRight size={18} />
+                <ChevronRight size={18} className="animate-pulse-subtle" />
               </>
             )}
           </Button>
           
           {isLogin && (
             <div className="mt-4 text-center">
-              <a href="#" className="text-finance-secondary text-sm hover:underline">
+              <a href="#" className="text-aura-teal text-sm hover:underline transition-colors hover:text-aura-sea-green">
                 Forgot your password?
               </a>
             </div>
@@ -146,7 +154,7 @@ const WelcomePage = () => {
         <div className="mt-8 text-center">
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-finance-text-secondary text-sm hover:text-finance-primary"
+            className="text-aura-medium-gray text-sm hover:text-aura-teal transition-colors"
           >
             {isLogin
               ? "Don't have an account? Sign up"
@@ -155,7 +163,7 @@ const WelcomePage = () => {
         </div>
       </Card>
 
-      <p className="mt-8 text-xs text-finance-text-tertiary text-center max-w-md">
+      <p className="mt-8 text-xs text-aura-soft-gray text-center max-w-md">
         By continuing, you agree to our Terms of Service and Privacy Policy.
         This demo app is for illustration purposes only.
       </p>

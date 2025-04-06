@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, LineChart, WalletCards, Lightbulb, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,28 +20,52 @@ const AppLayout = ({ children }: AppLayoutProps) => {
     { name: "Profile", path: "/profile", icon: User }
   ];
 
+  // Add subtle haptic feedback for navigation
+  const handleNavClick = () => {
+    if ("vibrate" in navigator) {
+      navigator.vibrate(20); // subtle 20ms vibration
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-finance-background flex flex-col">
-      <main className="flex-1 overflow-auto pb-16">{children}</main>
+    <div className="min-h-screen bg-aura-white flex flex-col">
+      <main className="flex-1 overflow-auto pb-16 animate-fade-in">{children}</main>
       
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
-        <div className="flex justify-around">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex flex-col items-center py-2 px-4",
-                currentPath === item.path
-                  ? "text-finance-primary"
-                  : "text-gray-500 hover:text-finance-secondary"
-              )}
-            >
-              <item.icon className="h-6 w-6" />
-              <span className="text-xs mt-1">{item.name}</span>
-            </Link>
-          ))}
+      <nav className="fixed bottom-0 left-0 right-0 z-10 glass-effect shadow-lg border-t border-white/20">
+        <div className="flex justify-around max-w-lg mx-auto">
+          {navItems.map((item) => {
+            const isActive = currentPath === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={cn(
+                  "flex flex-col items-center py-3 px-4",
+                  isActive 
+                    ? "nav-item-active" 
+                    : "nav-item-inactive"
+                )}
+                onClick={handleNavClick}
+              >
+                <item.icon 
+                  className={cn(
+                    "h-6 w-6 transition-all duration-300",
+                    isActive ? "scale-110" : ""
+                  )} 
+                />
+                <span className={cn(
+                  "text-xs mt-1 transition-all duration-300",
+                  isActive ? "opacity-100" : "opacity-70"
+                )}>
+                  {item.name}
+                </span>
+                {isActive && (
+                  <span className="absolute bottom-1 w-10 h-1 bg-primary-gradient rounded-full animate-fade-in" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </nav>
     </div>
