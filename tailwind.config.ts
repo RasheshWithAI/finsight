@@ -63,30 +63,30 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Aura Finance colors - Vibrant Growth palette
+				// Aura Finance colors - Deep Sapphire & Gold palette
 				aura: {
 					// Primary Gradient Colors
-					'emerald': '#2ECC71',
-					'forest': '#228B22',
+					'sapphire': '#0B3D91',
+					'midnight': '#001F54',
 					// Accent Color
-					'magenta': '#E040FB',
+					'gold': '#D4AF37',
+					'bright-gold': '#FFD700',
 					// Chart Accent Colors
-					'electric-blue': '#00BFFF',
-					'orange': '#FFA500',
-					'yellow': '#FFDA63',
+					'muted-green': '#8BC34A',
+					'vibrant-orange': '#F48C06',
+					'light-blue': '#88B0F4',
 					// Neutral Colors
-					'white': '#FFFFFF',
-					'charcoal': '#1C1C1E',
-					'pale-gray': '#F2F4F6',
-					'dark-gray': '#3A3F4B',
-					'black': '#1C1C1E',
-					'off-white': '#FFFFFF',
-					'medium-gray': '#6B7280',
-					'soft-gray': '#A0A7B0',
+					'white': '#F5F7FA',
+					'charcoal': '#212529',
+					'silver-gray': '#DDE2E7',
+					'medium-gray': '#8892A0',
+					'dark-gray': '#333B48',
+					'off-white': '#F5F7FA',
+					'cool-gray': '#8892A0',
 					// Status Colors
-					'success': '#28A745',
-					'error': '#EF4444',
-					'warning': '#FBBF24'
+					'success': '#8BC34A',
+					'error': '#E57373',
+					'warning': '#FFB74D'
 				}
 			},
 			borderRadius: {
@@ -140,8 +140,12 @@ export default {
 					'100%': { transform: 'translateY(-100%)' }
 				},
 				'pulse-glow': {
-					'0%, 100%': { boxShadow: '0 0 0 0 rgba(46, 204, 113, 0.2)' },
-					'50%': { boxShadow: '0 0 0 8px rgba(46, 204, 113, 0)' }
+					'0%, 100%': { boxShadow: '0 0 0 0 rgba(11, 61, 145, 0.2)' },
+					'50%': { boxShadow: '0 0 0 8px rgba(11, 61, 145, 0)' }
+				},
+				'gold-shimmer': {
+					'0%': { backgroundPosition: '200% center' },
+					'100%': { backgroundPosition: '-200% center' }
 				},
 				'liquid-fill': {
 					'0%': { width: '0%' },
@@ -158,14 +162,15 @@ export default {
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
 				'count-up': 'count-up 0.5s ease-out',
 				'pulse-glow': 'pulse-glow 1.5s infinite ease-in-out',
+				'gold-shimmer': 'gold-shimmer 3s ease-in-out infinite',
 				'liquid-fill': 'liquid-fill 1s ease-out forwards'
 			},
 			backgroundImage: {
-				'primary-gradient': 'linear-gradient(to right, #2ECC71, #228B22)',
-				'accent-gradient': 'linear-gradient(to right, #E040FB, #D946EF)',
-				'success-gradient': 'linear-gradient(to right, #28A745, #20883E)',
-				'error-gradient': 'linear-gradient(to right, #EF4444, #DC2626)',
-				'warning-gradient': 'linear-gradient(to right, #FBBF24, #F59E0B)'
+				'primary-gradient': 'linear-gradient(to right, #0B3D91, #001F54)',
+				'accent-gradient': 'linear-gradient(to right, #D4AF37, #FFD700)',
+				'success-gradient': 'linear-gradient(to right, #8BC34A, #7CB342)',
+				'error-gradient': 'linear-gradient(to right, #E57373, #EF5350)',
+				'warning-gradient': 'linear-gradient(to right, #FFB74D, #FFA726)'
 			}
 		}
 	},

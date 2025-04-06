@@ -17,13 +17,13 @@ const Index = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-white to-pale-gray">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-aura-white to-aura-silver-gray">
       <div className="relative animate-pulse-subtle">
-        <CircleDollarSign className="h-20 w-20 text-emerald" />
+        <CircleDollarSign className="h-20 w-20 text-aura-sapphire" />
         <span className="absolute inset-0 rounded-full bg-primary-gradient opacity-20 animate-pulse-glow"></span>
       </div>
-      <h1 className="mt-6 text-3xl font-bold growth-gradient-text animate-fade-in">Aura Finance</h1>
-      <p className="mt-2 text-medium-gray animate-fade-in animate-stagger-1">Redirecting...</p>
+      <h1 className="mt-6 text-3xl font-bold aura-gradient-text animate-fade-in">Aura Finance</h1>
+      <p className="mt-2 text-aura-medium-gray animate-fade-in animate-stagger-1">Redirecting...</p>
     </div>
   );
 };
