@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,21 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Financial app specific colors
+				finance: {
+					primary: '#0A2463', // Deep blue for trust
+					secondary: '#247BA0', // Complementary blue
+					accent: '#44AF69', // Green for gains/positive metrics
+					danger: '#F25F5C', // Red for losses/negative metrics
+					warning: '#FFE066', // Yellow for warnings/alerts
+					background: '#FCFCFC', // Off-white background
+					card: '#FFFFFF', // White card background
+					text: {
+						primary: '#18253F', // Dark text for contrast
+						secondary: '#455877', // Secondary text
+						tertiary: '#8A9BB7', // Tertiary text
+					}
 				}
 			},
 			borderRadius: {
@@ -84,11 +100,26 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'pulse-subtle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' }
+				},
+				'slide-in-up': {
+					'0%': { transform: 'translateY(10px)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out',
+				'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
+				'slide-in-up': 'slide-in-up 0.3s ease-out'
 			}
 		}
 	},
