@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,10 @@ export default {
           'primary-text': '#333B48',    // Dark Gray for primary text
           'secondary-text': '#8892A0',  // Medium Cool Gray for secondary text
         }
+      },
+      fontFamily: {
+        satoshi: ['Satoshi', 'sans-serif'],
+        manrope: ['Manrope', 'sans-serif']
       }
     }
   },
