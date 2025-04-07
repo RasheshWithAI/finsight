@@ -1,3 +1,4 @@
+
 @import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
@@ -45,7 +46,7 @@
     --sidebar-border: 220 87% 25%;
     --sidebar-ring: 220 87% 40%;
 
-    // New text color variables for light mode
+    /* New text color variables for light mode */
     --primary-text: #333B48;
     --secondary-text: #8892A0;
   }
@@ -174,7 +175,7 @@
     @apply bg-gradient-to-r from-aura-gold via-aura-bright-gold to-aura-gold bg-[length:200%_auto] animate-gold-shimmer;
   }
 
-  // Global text color classes for flexible usage
+  /* Global text color classes for flexible usage */
   .primary-text {
     @apply text-aura-primary-text;
   }
@@ -183,12 +184,12 @@
     @apply text-aura-secondary-text;
   }
 
-  // Headings and major text elements
+  /* Headings and major text elements */
   h1, h2, h3, h4, h5, h6 {
     @apply text-aura-primary-text;
   }
 
-  // Secondary text elements
+  /* Secondary text elements */
   small, 
   .caption, 
   .timestamp, 
