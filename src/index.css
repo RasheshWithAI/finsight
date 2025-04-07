@@ -1,3 +1,4 @@
+
 @import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
@@ -29,51 +30,8 @@
 }
 
 @layer base {
+  /* We're now using only dark mode variables, so we'll set these as default */
   :root {
-    /* Light mode configuration remains mostly the same */
-    --background: 210 20% 98%;
-    --foreground: 215 25% 27%;
-    
-    /* Other color variables adjusted to complement Deep Charcoal */
-    --primary: 220 87% 31%;
-    --secondary: 43 65% 53%;
-    /* ... other variables remain similar to previous configuration */
-    --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 27%;
-
-    --muted: 210 10% 90%;
-    --muted-foreground: 215 10% 65%;
-
-    --accent: 43 65% 53%;
-    --accent-foreground: 215 25% 27%;
-
-    --destructive: 0 70% 65%;
-    --destructive-foreground: 210 33% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 220 87% 31%;
-
-    --radius: 1rem;
-
-    --sidebar-background: 220 87% 31%;
-    --sidebar-foreground: 210 33% 98%;
-    --sidebar-primary: 220 87% 25%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 43 65% 53%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 87% 25%;
-    --sidebar-ring: 220 87% 40%;
-
-    /* New text color variables for light mode */
-    --primary-text: #333B48;
-    --secondary-text: #8892A0;
-  }
-
-  .dark {
     --background: 210 20% 12%; /* Deep Charcoal base */
     --foreground: 0 0% 98%;
     
@@ -106,6 +64,19 @@
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 87% 15%;
     --sidebar-ring: 220 87% 25%;
+
+    /* Keep text color variables but adjusted for dark mode */
+    --primary-text: #F5F7FA;  /* Light text for dark background */
+    --secondary-text: #B8C0D0; /* Medium light gray for secondary text */
+  }
+
+  /* We no longer need light/dark mode toggle, but we'll keep the class 
+     for compatibility with existing code that might reference it */
+  .dark {
+    /* These are now the same as root */
+    --background: 210 20% 12%;
+    --foreground: 0 0% 98%;
+    /* ... other variables remain the same as root above */
   }
 }
 
@@ -124,17 +95,18 @@
     @apply text-aura-primary-text;
   }
 
+  /* Adjust financial card for dark mode */
   .financial-card {
-    @apply bg-white rounded-[var(--radius)] border border-gray-100 shadow-sm p-4 transition-all duration-200 hover:shadow-md;
+    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm p-4 transition-all duration-200 hover:shadow-md;
   }
   
-  /* Aura Finance custom classes */
+  /* Update Aura Finance custom classes for dark mode */
   .aura-card {
-    @apply bg-white rounded-[var(--radius)] border border-aura-silver-gray shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
   }
 
   .aura-card-gradient {
-    @apply bg-gradient-to-br from-aura-white to-aura-silver-gray rounded-[var(--radius)] border border-aura-silver-gray shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-gradient-to-br from-aura-charcoal to-gray-900 rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .aura-button-primary {
@@ -142,11 +114,11 @@
   }
   
   .aura-button-secondary {
-    @apply bg-transparent text-aura-sapphire border border-aura-sapphire px-4 py-2 rounded-lg font-medium hover:bg-aura-sapphire/5 transition-all;
+    @apply bg-transparent text-aura-gold border border-aura-gold px-4 py-2 rounded-lg font-medium hover:bg-aura-gold/10 transition-all;
   }
   
   .aura-input {
-    @apply w-full border-b-2 border-aura-silver-gray px-3 py-2 focus:border-aura-sapphire outline-none transition-colors;
+    @apply w-full border-b-2 border-gray-700 px-3 py-2 focus:border-aura-gold outline-none transition-colors bg-transparent text-foreground;
   }
   
   .aura-gradient-text {
@@ -162,19 +134,19 @@
   }
   
   .stat-label {
-    @apply text-sm text-aura-medium-gray;
+    @apply text-sm text-gray-400;
   }
 
   .positive-value {
-    @apply text-aura-success;
+    @apply text-green-400;
   }
 
   .negative-value {
-    @apply text-aura-error;
+    @apply text-red-400;
   }
   
   .glass-effect {
-    @apply backdrop-blur-md bg-white/80 dark:bg-aura-charcoal/80 border border-white/20 dark:border-aura-dark-gray/20;
+    @apply backdrop-blur-md bg-aura-charcoal/80 border border-gray-800/50;
   }
   
   .nav-item-active {
@@ -182,11 +154,11 @@
   }
   
   .nav-item-inactive {
-    @apply text-aura-medium-gray hover:text-aura-gold hover:scale-[1.05] transition-all duration-200;
+    @apply text-gray-400 hover:text-aura-gold hover:scale-[1.05] transition-all duration-200;
   }
   
   .progress-bar-container {
-    @apply h-2 bg-aura-silver-gray rounded-full overflow-hidden;
+    @apply h-2 bg-gray-800 rounded-full overflow-hidden;
   }
   
   .progress-bar-fill {

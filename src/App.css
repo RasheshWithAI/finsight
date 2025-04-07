@@ -1,3 +1,12 @@
+
+/* Reset CSS for dark mode */
+html, body {
+  background-color: hsl(210 20% 12%);
+  color: hsl(0 0% 98%);
+  margin: 0;
+  padding: 0;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,38 +14,23 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Force dark mode for specific components if needed */
+input, select, textarea {
+  background-color: hsl(210 20% 15%);
+  color: hsl(0 0% 98%);
+  border-color: hsl(210 20% 20%);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+button {
+  background-color: hsl(220 87% 25%);
+  color: hsl(0 0% 98%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+a {
+  color: hsl(43 65% 53%);
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Dark mode transitions */
+* {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }

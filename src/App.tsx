@@ -17,6 +17,9 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Force dark mode class on the document
+document.documentElement.classList.add('dark');
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>

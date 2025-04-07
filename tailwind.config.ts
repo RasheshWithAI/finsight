@@ -2,7 +2,6 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -12,14 +11,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(210 20% 12%)', // Slightly adjusted from pure Deep Charcoal for better readability
-        foreground: 'hsl(0 0% 98%)',
+        background: 'hsl(210 20% 12%)', // Dark charcoal background
+        foreground: 'hsl(0 0% 98%)',     // Light text for dark background
         
         border: 'hsl(210 20% 15%)',
         input: 'hsl(210 20% 15%)',
         ring: 'hsl(220 87% 40%)',
         
-        // Adjust other color variations to complement Deep Charcoal
+        // Adjust other color variations for dark mode
         primary: {
           DEFAULT: 'hsl(220 87% 25%)',
           foreground: 'hsl(0 0% 98%)'
@@ -59,14 +58,25 @@ export default {
           'bright-gold': '#FFD700',
           'sapphire': '#0B3D91',
           'midnight': '#001F54',
-          'primary-text': '#333B48',    // Dark Gray for primary text
-          'secondary-text': '#8892A0',  // Medium Cool Gray for secondary text
+          'primary-text': '#F5F7FA',    // Light text for dark mode
+          'secondary-text': '#B8C0D0',  // Medium light gray for secondary text
+          'success': '#4CAF50',         // Success color
+          'error': '#F44336',           // Error color
         }
       },
       fontFamily: {
         satoshi: ['Satoshi', 'sans-serif'],
         manrope: ['Manrope', 'sans-serif']
-      }
+      },
+      animation: {
+        'gold-shimmer': 'shimmer 2s linear infinite',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '0 0' },
+        }
+      },
     }
   },
   plugins: [require("tailwindcss-animate")],
