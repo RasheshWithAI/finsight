@@ -80,7 +80,7 @@ const Finance = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Income</span>
-                <ArrowUpCircle className="h-4 w-4 text-aura-success" />
+                <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
               <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
             </CardContent>
@@ -92,7 +92,7 @@ const Finance = () => {
                 <span className="stat-label">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
-              <span className="stat-value mt-2">{formatCurrency(totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
             </CardContent>
           </Card>
           
@@ -133,9 +133,9 @@ const Finance = () => {
             {transactions.length === 0 ? (
               <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
-                  <BarChart3 className="h-12 w-12 text-muted-foreground" />
+                  <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
                 </div>
-                <h3 className="text-lg font-medium mb-2">No transactions yet</h3>
+                <h3 className="text-lg font-medium mb-2 text-aura-primary-text">No transactions yet</h3>
                 <p className="text-aura-secondary-text mb-4">
                   Start by adding your income and expenses
                 </p>
@@ -146,24 +146,24 @@ const Finance = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Description</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Category</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">Amount</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Description</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Category</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {transactions.map((transaction) => (
                       <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
-                        <td className="px-4 py-3 text-sm">{transaction.date}</td>
-                        <td className="px-4 py-3 text-sm">{transaction.description}</td>
+                        <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.date}</td>
+                        <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.description}</td>
                         <td className="px-4 py-3 text-sm">
-                          <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-300">
+                          <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-aura-silver-gray">
                             {transaction.category}
                           </span>
                         </td>
                         <td className={`px-4 py-3 text-sm font-medium text-right ${
-                          transaction.type === 'income' ? 'text-aura-success' : 'text-red-400'
+                          transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </td>
@@ -210,14 +210,14 @@ const Finance = () => {
             {budgets.map((budget) => (
               <Card key={budget.id} className="financial-card p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium">{budget.category}</h3>
-                  <span className="text-sm text-gray-400">{budget.period}</span>
+                  <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
+                  <span className="text-sm text-aura-medium-gray">{budget.period}</span>
                 </div>
                 
                 <div className="space-y-1 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span>Spent: {formatCurrency(budget.spent)}</span>
-                    <span>Budgeted: {formatCurrency(budget.budgeted)}</span>
+                    <span className="text-aura-primary-text">Spent: {formatCurrency(budget.spent)}</span>
+                    <span className="text-aura-primary-text">Budgeted: {formatCurrency(budget.budgeted)}</span>
                   </div>
                   <Progress 
                     value={calculatePercentage(budget.spent, budget.budgeted)}
@@ -226,7 +226,7 @@ const Finance = () => {
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-aura-medium-gray">
                     {formatCurrency(budget.budgeted - budget.spent)} left
                   </span>
                   <Button variant="outline" size="sm">Edit</Button>

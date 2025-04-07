@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,7 +106,7 @@ const Market = () => {
           {mockMarketIndices.map((index) => (
             <Card key={index.id} className="financial-card">
               <CardContent className="p-4">
-                <h3 className="font-medium text-sm">{index.name}</h3>
+                <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-xl font-bold text-aura-primary-text">{index.value.toLocaleString()}</span>
                   <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -129,7 +128,7 @@ const Market = () => {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-aura-medium-gray" />
             <Input
               placeholder="Search stocks..."
               value={searchTerm}
@@ -154,6 +153,7 @@ const Market = () => {
             <TabsTrigger value="sectors">Sectors</TabsTrigger>
           </TabsList>
           
+          {/* Tabs content */}
           <TabsContent value="all">
             <Card className="financial-card overflow-hidden">
               <div className="overflow-x-auto">
@@ -379,11 +379,11 @@ const Market = () => {
                       onClick={() => handleStockClick(stock.symbol)}
                     >
                       <div>
-                        <p className="font-medium">{stock.symbol}</p>
-                        <p className="text-xs text-gray-400">{stock.name}</p>
+                        <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
+                        <p className="text-xs text-aura-medium-gray">{stock.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{formatCurrency(stock.price)}</p>
+                        <p className="font-medium text-aura-primary-text">{formatCurrency(stock.price)}</p>
                         <p className="text-xs text-green-400 flex items-center justify-end">
                           <ArrowUpRight className="h-3 w-3 mr-1" />
                           {formatPercentage(stock.changePercent)}
@@ -416,11 +416,11 @@ const Market = () => {
                       onClick={() => handleStockClick(stock.symbol)}
                     >
                       <div>
-                        <p className="font-medium">{stock.symbol}</p>
-                        <p className="text-xs text-gray-400">{stock.name}</p>
+                        <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
+                        <p className="text-xs text-aura-medium-gray">{stock.name}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{formatCurrency(stock.price)}</p>
+                        <p className="font-medium text-aura-primary-text">{formatCurrency(stock.price)}</p>
                         <p className="text-xs text-red-400 flex items-center justify-end">
                           <ArrowDownRight className="h-3 w-3 mr-1" />
                           {formatPercentage(Math.abs(stock.changePercent))}

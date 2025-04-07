@@ -51,23 +51,23 @@ const Dashboard = () => {
   return (
     <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-finance-text-primary">
+        <h1 className="text-2xl font-bold text-aura-primary-text">
           Welcome, {user?.name || 'Investor'}
         </h1>
-        <p className="text-finance-text-secondary">
+        <p className="text-aura-secondary-text">
           Your financial overview for April 2025
         </p>
       </header>
 
       {/* Financial Summary Cards */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3 text-finance-text-primary">Financial Summary</h2>
+        <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Financial Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="financial-card">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Income</span>
-                <DollarSign className="h-4 w-4 text-finance-accent" />
+                <DollarSign className="h-4 w-4 text-aura-gold" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.income)}</span>
             </CardContent>
@@ -77,7 +77,7 @@ const Dashboard = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Expenses</span>
-                <BarChart3 className="h-4 w-4 text-finance-danger" />
+                <BarChart3 className="h-4 w-4 text-red-400" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.expenses)}</span>
             </CardContent>
@@ -87,7 +87,7 @@ const Dashboard = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Savings</span>
-                <PiggyBank className="h-4 w-4 text-finance-primary" />
+                <PiggyBank className="h-4 w-4 text-aura-chart-blue" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.savings)}</span>
             </CardContent>
@@ -97,7 +97,7 @@ const Dashboard = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Savings Rate</span>
-                <Percent className="h-4 w-4 text-finance-secondary" />
+                <Percent className="h-4 w-4 text-aura-medium-gray" />
               </div>
               <span className="stat-value mt-2">{formatPercentage(financialSummary.savingsRate)}</span>
             </CardContent>
@@ -108,8 +108,8 @@ const Dashboard = () => {
       {/* Market Summary */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-finance-text-primary">Market Summary</h2>
-          <Link to="/market" className="text-sm text-finance-primary flex items-center hover:text-finance-secondary">
+          <h2 className="text-lg font-semibold text-aura-primary-text">Market Summary</h2>
+          <Link to="/market" className="text-sm text-aura-gold flex items-center hover:text-aura-bright-gold">
             View All <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
@@ -122,7 +122,7 @@ const Dashboard = () => {
                   <h3 className="font-medium text-sm">{index.name}</h3>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xl font-bold">{index.value.toLocaleString()}</span>
-                    <div className={`flex items-center ${index.change >= 0 ? 'text-finance-accent' : 'text-finance-danger'}`}>
+                    <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {index.change >= 0 ? (
                         <ArrowUpRight className="h-4 w-4 mr-1" />
                       ) : (
@@ -141,8 +141,8 @@ const Dashboard = () => {
       {/* Watchlist */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-finance-text-primary">Your Watchlist</h2>
-          <Link to="/market" className="text-sm text-finance-primary flex items-center hover:text-finance-secondary">
+          <h2 className="text-lg font-semibold text-aura-primary-text">Your Watchlist</h2>
+          <Link to="/market" className="text-sm text-aura-gold flex items-center hover:text-aura-bright-gold">
             Manage <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
@@ -150,9 +150,9 @@ const Dashboard = () => {
         <div className="grid gap-4">
           {watchlist.length === 0 ? (
             <Card className="financial-card p-6 flex flex-col items-center justify-center text-center">
-              <Eye className="h-8 w-8 text-finance-text-tertiary mb-2" />
+              <Eye className="h-8 w-8 text-aura-medium-gray mb-2" />
               <h3 className="font-medium">No stocks in your watchlist</h3>
-              <p className="text-finance-text-secondary text-sm mt-1 mb-3">
+              <p className="text-aura-secondary-text text-sm mt-1 mb-3">
                 Add stocks to keep track of your investments
               </p>
               <Button asChild variant="outline" size="sm">
@@ -164,20 +164,20 @@ const Dashboard = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-finance-text-tertiary">Symbol</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-finance-text-tertiary">Name</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-finance-text-tertiary">Price</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-finance-text-tertiary">Change</th>
+                    <tr className="border-b border-gray-800">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Symbol</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Name</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Price</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Change</th>
                     </tr>
                   </thead>
                   <tbody>
                     {watchlist.map((stock) => (
-                      <tr key={stock.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm font-medium">{stock.symbol}</td>
-                        <td className="px-4 py-3 text-sm text-finance-text-secondary">{stock.name}</td>
+                        <td className="px-4 py-3 text-sm text-aura-silver-gray">{stock.name}</td>
                         <td className="px-4 py-3 text-sm text-right">{formatCurrency(stock.price)}</td>
-                        <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-finance-accent' : 'text-finance-danger'}`}>
+                        <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           <div className="flex items-center justify-end">
                             {stock.change >= 0 ? (
                               <ArrowUpRight className="h-3 w-3 mr-1" />
@@ -200,8 +200,8 @@ const Dashboard = () => {
       {/* Insights */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-finance-text-primary">AI Insights</h2>
-          <Link to="/insights" className="text-sm text-finance-primary flex items-center hover:text-finance-secondary">
+          <h2 className="text-lg font-semibold text-aura-primary-text">AI Insights</h2>
+          <Link to="/insights" className="text-sm text-aura-gold flex items-center hover:text-aura-bright-gold">
             All Insights <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
@@ -212,31 +212,31 @@ const Dashboard = () => {
               <CardContent className="p-4">
                 <div className="flex items-start">
                   <div className={`p-2 rounded-full mr-3 ${
-                    insight.type === 'cost-saving' ? 'bg-red-50 text-finance-danger' :
-                    insight.type === 'investment' ? 'bg-blue-50 text-finance-primary' :
-                    'bg-yellow-50 text-yellow-600'
+                    insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' :
+                    insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' :
+                    'bg-yellow-900/30 text-yellow-500'
                   }`}>
                     <Lightbulb className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-finance-text-primary">{insight.title}</h3>
-                    <p className="text-sm text-finance-text-secondary mt-1">{insight.description}</p>
+                    <h3 className="font-medium text-aura-primary-text">{insight.title}</h3>
+                    <p className="text-sm text-aura-secondary-text mt-1">{insight.description}</p>
                     
                     {insight.potentialSavings && (
-                      <div className="mt-2 text-sm font-medium text-finance-accent">
+                      <div className="mt-2 text-sm font-medium text-aura-gold">
                         Potential savings: {insight.potentialSavings}
                       </div>
                     )}
                     
                     {insight.potentialReturn && (
-                      <div className="mt-2 text-sm font-medium text-finance-primary">
+                      <div className="mt-2 text-sm font-medium text-aura-chart-blue">
                         Potential return: {insight.potentialReturn}
                       </div>
                     )}
                     
                     {insight.relatedStocks && (
                       <div className="mt-2 text-sm">
-                        <span className="text-finance-text-secondary">Related: </span>
+                        <span className="text-aura-secondary-text">Related: </span>
                         {insight.relatedStocks.join(", ")}
                       </div>
                     )}

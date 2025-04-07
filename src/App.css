@@ -14,7 +14,7 @@ html, body {
   text-align: center;
 }
 
-/* Force dark mode for specific components if needed */
+/* Force dark mode for specific components */
 input, select, textarea {
   background-color: hsl(210 20% 15%);
   color: hsl(0 0% 98%);
@@ -28,6 +28,31 @@ button {
 
 a {
   color: hsl(43 65% 53%);
+}
+
+/* Additional styles to ensure text visibility */
+.text-finance-text-primary, 
+.text-finance-text-secondary,
+.text-finance-text-tertiary {
+  color: hsl(0 0% 98%); /* Override any problematic classes with light text */
+}
+
+.bg-gray-50, 
+.bg-blue-50,
+.bg-red-50,
+.bg-green-50,
+.bg-yellow-50,
+.bg-purple-50 {
+  @apply bg-opacity-10; /* Make light backgrounds semi-transparent */
+}
+
+/* Ensure finance text colors are visible */
+.text-finance-primary,
+.text-finance-secondary,
+.text-finance-accent,
+.text-finance-text-primary,
+.text-finance-text-secondary {
+  @apply text-aura-primary-text;
 }
 
 /* Dark mode transitions */
