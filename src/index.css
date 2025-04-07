@@ -5,6 +5,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Define all gradient classes that are referenced elsewhere */
+  .bg-primary-gradient {
+    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
+  }
+  
+  .bg-accent-gradient {
+    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
+  }
+  
+  .bg-error-gradient {
+    @apply bg-gradient-to-r from-red-500 to-red-600;
+  }
+  
+  .primary-gradient {
+    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
+  }
+  
+  .accent-gradient {
+    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
+  }
+}
+
 @layer base {
   :root {
     /* Light mode configuration remains mostly the same */
