@@ -15,10 +15,14 @@ import {
   Plus, 
   RefreshCw 
 } from "lucide-react";
+import { toast } from "sonner";
+import ExpensePieChart from "@/components/charts/ExpensePieChart";
+import BudgetBarChart from "@/components/charts/BudgetBarChart";
 
 const Finance = () => {
   const [transactions, setTransactions] = useState(mockTransactions);
   const [budgets, setBudgets] = useState(mockBudgets);
+  const [selectedMonth, setSelectedMonth] = useState("April 2025");
 
   // Format currency function
   const formatCurrency = (value: number) => {
@@ -43,31 +47,42 @@ const Finance = () => {
     return Math.min(Math.round((spent / budgeted) * 100), 100);
   };
 
+  const handleAddTransaction = () => {
+    toast.success("Transaction feature coming soon!");
+  };
+
+  const handleNewBudget = () => {
+    toast.success("Budget creation feature coming soon!");
+  };
+
   return (
     <div className="container px-4 py-6 animate-fade-in">
       <header className="flex flex-wrap justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-finance-text-primary">Finance</h1>
-          <p className="text-finance-text-secondary">
+          <h1 className="text-2xl font-bold text-aura-primary-text">Finance</h1>
+          <p className="text-aura-secondary-text">
             Track your income, expenses and budgets
           </p>
         </div>
-        <Button className="bg-finance-primary hover:bg-finance-secondary mt-2 sm:mt-0">
+        <Button 
+          className="bg-accent-gradient hover:brightness-105 mt-2 sm:mt-0 text-aura-dark-gray"
+          onClick={handleAddTransaction}
+        >
           <Plus className="h-4 w-4 mr-2" /> Add Transaction
         </Button>
       </header>
 
       {/* Financial Summary */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3 text-finance-text-primary">Summary</h2>
+        <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Summary</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="financial-card">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Income</span>
-                <ArrowUpCircle className="h-4 w-4 text-finance-accent" />
+                <ArrowUpCircle className="h-4 w-4 text-aura-success" />
               </div>
-              <span className="stat-value mt-2">{formatCurrency(totalIncome)}</span>
+              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
@@ -75,7 +90,7 @@ const Finance = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Expenses</span>
-                <ArrowDownCircle className="h-4 w-4 text-finance-danger" />
+                <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(totalExpenses)}</span>
             </CardContent>
@@ -85,9 +100,9 @@ const Finance = () => {
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label">Balance</span>
-                <BarChart3 className="h-4 w-4 text-finance-primary" />
+                <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome - totalExpenses)}</span>
             </CardContent>
           </Card>
         </div>
@@ -104,7 +119,7 @@ const Finance = () => {
         <TabsContent value="transactions">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <Button variant="outline" className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2" /> April 2025
+              <Calendar className="h-4 w-4 mr-2" /> {selectedMonth}
             </Button>
             <Button variant="outline" size="icon" className="h-9 w-9">
               <Filter className="h-4 w-4" />
@@ -121,34 +136,34 @@ const Finance = () => {
                   <BarChart3 className="h-12 w-12 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">No transactions yet</h3>
-                <p className="text-finance-text-secondary mb-4">
+                <p className="text-aura-secondary-text mb-4">
                   Start by adding your income and expenses
                 </p>
-                <Button>Add First Transaction</Button>
+                <Button onClick={handleAddTransaction}>Add First Transaction</Button>
               </CardContent>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-finance-text-tertiary">Date</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-finance-text-tertiary">Description</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-finance-text-tertiary">Category</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-finance-text-tertiary">Amount</th>
+                    <tr className="border-b border-gray-800">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Description</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400">Category</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-gray-400">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {transactions.map((transaction) => (
-                      <tr key={transaction.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm">{transaction.date}</td>
                         <td className="px-4 py-3 text-sm">{transaction.description}</td>
                         <td className="px-4 py-3 text-sm">
-                          <span className="px-2 py-1 rounded-full text-xs bg-gray-100">
+                          <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-gray-300">
                             {transaction.category}
                           </span>
                         </td>
                         <td className={`px-4 py-3 text-sm font-medium text-right ${
-                          transaction.type === 'income' ? 'text-finance-accent' : 'text-finance-danger'
+                          transaction.type === 'income' ? 'text-aura-success' : 'text-red-400'
                         }`}>
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </td>
@@ -159,16 +174,34 @@ const Finance = () => {
               </div>
             )}
           </Card>
+
+          {/* Expense Breakdown Chart */}
+          <Card className="financial-card p-6 mt-6">
+            <CardHeader className="px-0 pt-0 pb-4">
+              <CardTitle className="text-base flex items-center">
+                <PieChart className="h-4 w-4 mr-2 text-aura-gold" />
+                Expense Breakdown
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-0 py-0">
+              <div className="h-64">
+                <ExpensePieChart />
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         {/* Budgets Tab */}
         <TabsContent value="budgets">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <Button variant="outline" className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2" /> April 2025
+              <Calendar className="h-4 w-4 mr-2" /> {selectedMonth}
             </Button>
             <div className="grow"></div>
-            <Button>
+            <Button 
+              className="bg-accent-gradient hover:brightness-105 text-aura-dark-gray"
+              onClick={handleNewBudget}
+            >
               <Plus className="h-4 w-4 mr-2" /> New Budget
             </Button>
           </div>
@@ -178,7 +211,7 @@ const Finance = () => {
               <Card key={budget.id} className="financial-card p-4">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium">{budget.category}</h3>
-                  <span className="text-sm text-finance-text-secondary">{budget.period}</span>
+                  <span className="text-sm text-gray-400">{budget.period}</span>
                 </div>
                 
                 <div className="space-y-1 mb-4">
@@ -188,12 +221,12 @@ const Finance = () => {
                   </div>
                   <Progress 
                     value={calculatePercentage(budget.spent, budget.budgeted)}
-                    className={`h-2 ${budget.spent > budget.budgeted ? 'bg-finance-danger' : ''}`}
+                    className={`h-2 ${budget.spent > budget.budgeted ? 'bg-red-400' : ''}`}
                   />
                 </div>
                 
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-finance-text-tertiary">
+                  <span className="text-sm text-gray-400">
                     {formatCurrency(budget.budgeted - budget.spent)} left
                   </span>
                   <Button variant="outline" size="sm">Edit</Button>
@@ -202,20 +235,17 @@ const Finance = () => {
             ))}
           </div>
           
-          {/* Category Breakdown Chart Card */}
+          {/* Budget Comparison Chart */}
           <Card className="financial-card p-6 mt-6">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-base flex items-center">
-                <PieChart className="h-4 w-4 mr-2" />
-                Spending by Category
+                <BarChart3 className="h-4 w-4 mr-2 text-aura-gold" />
+                Budget vs Actual Spending
               </CardTitle>
             </CardHeader>
-            <CardContent className="px-0 py-0 flex justify-center">
-              <div className="text-center p-8">
-                <p className="text-finance-text-secondary">Chart component would be here</p>
-                <p className="text-xs text-finance-text-tertiary mt-1">
-                  This is a placeholder for a real chart visualization
-                </p>
+            <CardContent className="px-0 py-0">
+              <div className="h-64">
+                <BudgetBarChart />
               </div>
             </CardContent>
           </Card>
