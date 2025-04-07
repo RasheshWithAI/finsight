@@ -1,3 +1,4 @@
+
 @import url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
@@ -7,14 +8,14 @@
 
 @layer base {
   :root {
-    // Light mode configuration remains mostly the same
+    /* Light mode configuration remains mostly the same */
     --background: 210 20% 98%;
     --foreground: 215 25% 27%;
     
-    // Other color variables adjusted to complement Deep Charcoal
+    /* Other color variables adjusted to complement Deep Charcoal */
     --primary: 220 87% 31%;
     --secondary: 43 65% 53%;
-    // ... other variables remain similar to previous configuration
+    /* ... other variables remain similar to previous configuration */
     --card: 0 0% 100%;
     --card-foreground: 215 25% 27%;
 
@@ -47,17 +48,17 @@
   }
 
   .dark {
-    --background: 210 20% 12%; // Deep Charcoal base
+    --background: 210 20% 12%; /* Deep Charcoal base */
     --foreground: 0 0% 98%;
     
     --primary: 220 87% 25%;
     --secondary: 43 65% 53%;
     
-    // Adjusted for dark mode with Deep Charcoal foundation
+    /* Adjusted for dark mode with Deep Charcoal foundation */
     --muted: 210 20% 20%;
     --accent: 43 65% 53%;
     
-    // Border and input colors aligned with Deep Charcoal
+    /* Border and input colors aligned with Deep Charcoal */
     --border: 210 20% 15%;
     --input: 210 20% 15%;
     --card: 215 25% 12%;
