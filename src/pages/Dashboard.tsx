@@ -98,7 +98,7 @@ const Dashboard = () => {
         
         <div className="overflow-x-auto">
           <div className="flex space-x-4 pb-2">
-            {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-zinc-800">
+            {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-violet-900 rounded-xl">
                 <CardContent className="p-4">
                   <h3 className="font-medium text-sm">{index.name}</h3>
                   <div className="flex items-center justify-between mt-1">
