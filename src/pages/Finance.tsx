@@ -56,30 +56,30 @@ const Finance = () => {
           <Card className="financial-card bg-green-600">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label text-yellow-300">Income</span>
+                <span className="stat-label text-amber-400">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
               <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card bg-indigo-50">
+          <Card className="financial-card bg-violet-800">
             <CardContent className="p-4 flex flex-col">
-              <div className="flex items-center justify-between">
-                <span className="stat-label text-red-600">Expenses</span>
+              <div className="flex items-center justify-between bg-transparent">
+                <span className="stat-label bg-violet-900 hover:bg-violet-800 text-slate-50 font-normal">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-primary-text text-slate-950">{formatCurrency(totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card bg-yellow-400">
+          <Card className="financial-card">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label text-sky-700">Balance</span>
+                <span className="stat-label text-base text-yellow-950">Balance</span>
                 <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold text-lime-600">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome - totalExpenses)}</span>
             </CardContent>
           </Card>
         </div>
@@ -88,8 +88,8 @@ const Finance = () => {
       {/* Tabs for Transactions and Budgets */}
       <Tabs defaultValue="transactions">
         <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="transactions" className="bg-violet-900 hover:bg-violet-800 rounded-2xl">Transactions</TabsTrigger>
-          <TabsTrigger value="budgets" className="rounded-2xl">Budgets</TabsTrigger>
+          <TabsTrigger value="transactions" className="bg-purple-950 hover:bg-purple-800">Transactions</TabsTrigger>
+          <TabsTrigger value="budgets" className="bg-violet-900 hover:bg-violet-800">Budgets</TabsTrigger>
         </TabsList>
         
         {/* Transactions Tab */}
@@ -197,9 +197,9 @@ const Finance = () => {
           </div>
           
           {/* Budget Comparison Chart */}
-          <Card className="financial-card p-6 mt-6">
+          <Card className="financial-card p-6 mt-6 bg-green-50">
             <CardHeader className="px-0 pt-0 pb-4">
-              <CardTitle className="text-base flex items-center">
+              <CardTitle className="text-base flex items-center text-gray-950">
                 <BarChart3 className="h-4 w-4 mr-2 text-aura-gold" />
                 Budget vs Actual Spending
               </CardTitle>
