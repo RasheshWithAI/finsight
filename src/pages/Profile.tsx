@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -10,27 +9,14 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import {
-  User,
-  Settings,
-  Bell,
-  LogOut,
-  Mail,
-  Shield,
-  ScanLine,
-  CreditCard,
-  Lock,
-  HelpCircle,
-  ChevronRight,
-  Cloud,
-  RefreshCcw
-} from "lucide-react";
-
+import { User, Settings, Bell, LogOut, Mail, Shield, ScanLine, CreditCard, Lock, HelpCircle, ChevronRight, Cloud, RefreshCcw } from "lucide-react";
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const {
+    user,
+    logout
+  } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
   const handleLogout = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -40,17 +26,10 @@ const Profile = () => {
       setIsLoading(false);
     }, 500);
   };
-
   const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
+    return name.split(" ").map(n => n[0]).join("").toUpperCase();
   };
-
-  return (
-    <div className="container px-4 py-6 pb-20 animate-fade-in">
+  return <div className="container px-4 py-6 pb-20 animate-fade-in">
       <header className="mb-6">
         <h1 className="text-2xl font-bold">
           Profile & Settings
@@ -62,11 +41,11 @@ const Profile = () => {
 
       {/* Profile Card */}
       <Card className="mb-6">
-        <CardHeader className="pb-4">
-          <CardTitle>Profile</CardTitle>
-          <CardDescription>Manage your personal information</CardDescription>
+        <CardHeader className="pb-4 bg-slate-900">
+          <CardTitle className="text-slate-50">Profile</CardTitle>
+          <CardDescription className="text-slate-50">Manage your personal information</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-slate-900">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <Avatar className="h-20 w-20">
               <AvatarFallback className="bg-primary text-primary-foreground text-xl">
@@ -78,22 +57,13 @@ const Profile = () => {
                 <Label htmlFor="name" className="text-muted-foreground text-sm block mb-1">
                   Name
                 </Label>
-                <Input
-                  id="name"
-                  defaultValue={user?.name || ""}
-                  placeholder="Your name"
-                />
+                <Input id="name" defaultValue={user?.name || ""} placeholder="Your name" />
               </div>
               <div>
                 <Label htmlFor="email" className="text-muted-foreground text-sm block mb-1">
                   Email
                 </Label>
-                <Input
-                  id="email"
-                  defaultValue={user?.email || ""}
-                  placeholder="Your email"
-                  disabled
-                />
+                <Input id="email" defaultValue={user?.email || ""} placeholder="Your email" disabled />
               </div>
             </div>
           </div>
@@ -110,7 +80,7 @@ const Profile = () => {
         </h2>
         <Card className="overflow-hidden">
           <div className="divide-y divide-border">
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 bg-slate-900">
               <div className="flex items-center">
                 <div className="p-2 rounded-full bg-muted mr-3">
                   <Bell className="h-5 w-5 text-muted-foreground" />
@@ -123,7 +93,7 @@ const Profile = () => {
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </div>
 
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 bg-slate-900">
               <div className="flex items-center">
                 <div className="p-2 rounded-full bg-muted mr-3">
                   <Lock className="h-5 w-5 text-muted-foreground" />
@@ -136,7 +106,7 @@ const Profile = () => {
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </div>
 
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 bg-slate-900">
               <div className="flex items-center">
                 <div className="p-2 rounded-full bg-muted mr-3">
                   <Cloud className="h-5 w-5 text-muted-foreground" />
@@ -149,7 +119,7 @@ const Profile = () => {
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </div>
 
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between p-4 bg-slate-900">
               <div className="flex items-center">
                 <div className="p-2 rounded-full bg-muted mr-3">
                   <CreditCard className="h-5 w-5 text-muted-foreground" />
@@ -168,8 +138,8 @@ const Profile = () => {
       {/* Preferences */}
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Preferences</h2>
-        <Card>
-          <CardContent className="p-4 space-y-4">
+        <Card className="bg-slate-900">
+          <CardContent className="p-4 space-y-4 bg-slate-900">
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="market-alerts" className="font-medium">Market Alerts</Label>
@@ -202,8 +172,8 @@ const Profile = () => {
         <h2 className="text-lg font-semibold mb-3 flex items-center">
           <HelpCircle className="h-5 w-5 mr-2" /> Help & Support
         </h2>
-        <Card>
-          <CardContent className="p-4 space-y-2">
+        <Card className="bg-slate-900">
+          <CardContent className="p-4 space-y-2 bg-slate-900">
             <Button variant="ghost" className="w-full justify-start text-muted-foreground">
               Documentation & Tutorials
             </Button>
@@ -224,19 +194,10 @@ const Profile = () => {
       <section>
         <h2 className="text-lg font-semibold mb-3">Account</h2>
         <div className="space-y-3">
-          <Button
-            variant="outline"
-            onClick={() => toast.info("Data refresh initiated")}
-            className="w-full justify-start text-muted-foreground"
-          >
+          <Button variant="outline" onClick={() => toast.info("Data refresh initiated")} className="w-full justify-start text-muted-foreground">
             <RefreshCcw className="h-4 w-4 mr-2" /> Refresh Data
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            disabled={isLoading}
-            className="w-full justify-start"
-          >
+          <Button variant="destructive" onClick={handleLogout} disabled={isLoading} className="w-full justify-start bg-red-700 hover:bg-red-600">
             <LogOut className="h-4 w-4 mr-2" />
             {isLoading ? "Logging out..." : "Log Out"}
           </Button>
@@ -248,8 +209,6 @@ const Profile = () => {
           Aura Finance v1.0.0
         </p>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Profile;
