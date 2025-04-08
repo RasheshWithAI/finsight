@@ -1,35 +1,19 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
-  calculateFinancialSummary, 
-  generateWatchlist, 
-  mockInsights, 
-  mockMarketIndices 
-} from "@/utils/mockData";
-import { 
-  ArrowDownRight, 
-  ArrowUpRight, 
-  BarChart3, 
-  ChevronRight, 
-  DollarSign, 
-  Eye, 
-  LineChart, 
-  Lightbulb, 
-  Percent, 
-  PiggyBank
-} from "lucide-react";
+import { calculateFinancialSummary, generateWatchlist, mockInsights, mockMarketIndices } from "@/utils/mockData";
+import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, LineChart, Lightbulb, Percent, PiggyBank } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 const Dashboard = () => {
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const [financialSummary, setFinancialSummary] = useState(calculateFinancialSummary());
   const [watchlist, setWatchlist] = useState(generateWatchlist());
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
-  
+
   // Format currency function
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -47,9 +31,7 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
-
-  return (
-    <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">
           Welcome, {user?.name || 'Investor'}
@@ -63,41 +45,41 @@ const Dashboard = () => {
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Financial Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="financial-card">
+          <Card className="financial-card bg-amber-400 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Income</span>
+                <span className="stat-label text-zinc-950">Income</span>
                 <DollarSign className="h-4 w-4 text-aura-gold" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.income)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-red-600 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Expenses</span>
+                <span className="stat-label text-zinc-950">Expenses</span>
                 <BarChart3 className="h-4 w-4 text-red-400" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.expenses)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-lime-500 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Savings</span>
+                <span className="stat-label text-zinc-950">Savings</span>
                 <PiggyBank className="h-4 w-4 text-aura-chart-blue" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.savings)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-blue-500 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Savings Rate</span>
-                <Percent className="h-4 w-4 text-aura-medium-gray" />
+                <span className="stat-label text-stone-950">Savings Rate</span>
+                <Percent className="h-4 w-4 text-aura-medium-gray bg-transparent" />
               </div>
               <span className="stat-value mt-2">{formatPercentage(financialSummary.savingsRate)}</span>
             </CardContent>
@@ -116,24 +98,18 @@ const Dashboard = () => {
         
         <div className="overflow-x-auto">
           <div className="flex space-x-4 pb-2">
-            {currentMarketIndices.map((index) => (
-              <Card key={index.id} className="financial-card w-60 flex-shrink-0">
+            {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-zinc-800">
                 <CardContent className="p-4">
                   <h3 className="font-medium text-sm">{index.name}</h3>
                   <div className="flex items-center justify-between mt-1">
                     <span className="text-xl font-bold">{index.value.toLocaleString()}</span>
                     <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {index.change >= 0 ? (
-                        <ArrowUpRight className="h-4 w-4 mr-1" />
-                      ) : (
-                        <ArrowDownRight className="h-4 w-4 mr-1" />
-                      )}
+                      {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
                       <span>{formatPercentage(index.changePercent)}</span>
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -148,8 +124,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-4">
-          {watchlist.length === 0 ? (
-            <Card className="financial-card p-6 flex flex-col items-center justify-center text-center">
+          {watchlist.length === 0 ? <Card className="financial-card p-6 flex flex-col items-center justify-center text-center">
               <Eye className="h-8 w-8 text-aura-medium-gray mb-2" />
               <h3 className="font-medium">No stocks in your watchlist</h3>
               <p className="text-aura-secondary-text text-sm mt-1 mb-3">
@@ -158,9 +133,7 @@ const Dashboard = () => {
               <Button asChild variant="outline" size="sm">
                 <Link to="/market">Browse Stocks</Link>
               </Button>
-            </Card>
-          ) : (
-            <Card className="financial-card overflow-hidden">
+            </Card> : <Card className="financial-card overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -172,28 +145,21 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {watchlist.map((stock) => (
-                      <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30">
+                    {watchlist.map(stock => <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm font-medium">{stock.symbol}</td>
                         <td className="px-4 py-3 text-sm text-aura-silver-gray">{stock.name}</td>
                         <td className="px-4 py-3 text-sm text-right">{formatCurrency(stock.price)}</td>
                         <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           <div className="flex items-center justify-end">
-                            {stock.change >= 0 ? (
-                              <ArrowUpRight className="h-3 w-3 mr-1" />
-                            ) : (
-                              <ArrowDownRight className="h-3 w-3 mr-1" />
-                            )}
+                            {stock.change >= 0 ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
                             {formatPercentage(stock.changePercent)}
                           </div>
                         </td>
-                      </tr>
-                    ))}
+                      </tr>)}
                   </tbody>
                 </table>
               </div>
-            </Card>
-          )}
+            </Card>}
         </div>
       </section>
 
@@ -207,48 +173,34 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-4">
-          {currentInsights.map((insight) => (
-            <Card key={insight.id} className="financial-card">
+          {currentInsights.map(insight => <Card key={insight.id} className="financial-card">
               <CardContent className="p-4">
                 <div className="flex items-start">
-                  <div className={`p-2 rounded-full mr-3 ${
-                    insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' :
-                    insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' :
-                    'bg-yellow-900/30 text-yellow-500'
-                  }`}>
+                  <div className={`p-2 rounded-full mr-3 ${insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' : insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' : 'bg-yellow-900/30 text-yellow-500'}`}>
                     <Lightbulb className="h-5 w-5" />
                   </div>
                   <div>
                     <h3 className="font-medium text-aura-primary-text">{insight.title}</h3>
                     <p className="text-sm text-aura-secondary-text mt-1">{insight.description}</p>
                     
-                    {insight.potentialSavings && (
-                      <div className="mt-2 text-sm font-medium text-aura-gold">
+                    {insight.potentialSavings && <div className="mt-2 text-sm font-medium text-aura-gold">
                         Potential savings: {insight.potentialSavings}
-                      </div>
-                    )}
+                      </div>}
                     
-                    {insight.potentialReturn && (
-                      <div className="mt-2 text-sm font-medium text-aura-chart-blue">
+                    {insight.potentialReturn && <div className="mt-2 text-sm font-medium text-aura-chart-blue">
                         Potential return: {insight.potentialReturn}
-                      </div>
-                    )}
+                      </div>}
                     
-                    {insight.relatedStocks && (
-                      <div className="mt-2 text-sm">
+                    {insight.relatedStocks && <div className="mt-2 text-sm">
                         <span className="text-aura-secondary-text">Related: </span>
                         {insight.relatedStocks.join(", ")}
-                      </div>
-                    )}
+                      </div>}
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
