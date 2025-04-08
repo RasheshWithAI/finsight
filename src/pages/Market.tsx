@@ -116,9 +116,9 @@ const Market = () => {
 
         <Tabs defaultValue="all">
           <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="all" className="text-zinc-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">All Stocks</TabsTrigger>
-            <TabsTrigger value="watchlist" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Watchlist</TabsTrigger>
-            <TabsTrigger value="sectors" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Sectors</TabsTrigger>
+            <TabsTrigger value="all" className="text-zinc-50 rounded-3xl bg-amber-500 hover:bg-amber-400">All Stocks</TabsTrigger>
+            <TabsTrigger value="watchlist" className="text-slate-50 rounded-3xl bg-amber-500 hover:bg-amber-400">Watchlist</TabsTrigger>
+            <TabsTrigger value="sectors" className="text-slate-50 rounded-3xl bg-amber-500 hover:bg-amber-400">Sectors</TabsTrigger>
           </TabsList>
           
           {/* Tabs content */}
@@ -226,7 +226,7 @@ const Market = () => {
           </TabsContent>
           
           <TabsContent value="sectors">
-            <Card className="financial-card p-6">
+            <Card className="financial-card p-6 bg-sky-950 rounded-2xl">
               <h3 className="text-lg font-medium mb-4">Sectors Performance</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -289,7 +289,7 @@ const Market = () => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Trending Today</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Card className="financial-card">
+          <Card className="financial-card bg-green-700 rounded-2xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center">
                 <TrendingUp className="h-4 w-4 mr-2 text-green-400" />
@@ -315,7 +315,7 @@ const Market = () => {
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-red-700 rounded-2xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center">
                 <TrendingDown className="h-4 w-4 mr-2 text-red-400" />
