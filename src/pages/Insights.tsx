@@ -1,22 +1,9 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { mockInsights, mockStocks } from "@/utils/mockData";
-import { 
-  AlertCircle,
-  BarChart3,
-  BookmarkPlus,
-  ChevronRight,
-  CircleDollarSign,
-  DollarSign,
-  Lightbulb,
-  PiggyBank,
-  TrendingUp
-} from "lucide-react";
+import { AlertCircle, BarChart3, BookmarkPlus, ChevronRight, CircleDollarSign, DollarSign, Lightbulb, PiggyBank, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 const Insights = () => {
-  return (
-    <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">
           Insights
@@ -32,26 +19,26 @@ const Insights = () => {
         
         <div className="space-y-4">
           {/* Cost Saving Insight */}
-          <Card className="financial-card">
+          <Card className="financial-card bg-amber-300">
             <CardContent className="p-4">
               <div className="flex">
-                <div className="bg-red-900/30 p-3 rounded-full mr-4">
+                <div className="p-3 rounded-full mr-4 bg-red-900">
                   <Lightbulb className="h-6 w-6 text-red-400" />
                 </div>
                 <div>
                   <div className="flex items-center mb-1">
-                    <span className="text-xs px-2 py-1 bg-red-900/30 text-red-400 rounded-full mr-2">
+                    <span className="text-xs px-2 py-1 bg-red-900/30 rounded-full mr-2 text-red-600">
                       Cost Saving
                     </span>
-                    <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-lime-500">April 6, 2025</span>
                   </div>
                   
-                  <h3 className="text-lg font-medium mb-2 text-aura-primary-text">Reduce Food Expenses</h3>
-                  <p className="text-aura-secondary-text mb-3">
+                  <h3 className="text-lg font-medium mb-2 text-aura-primary-text text-gray-950">Reduce Food Expenses</h3>
+                  <p className="text-aura-secondary-text mb-3 text-gray-950">
                     Your food spending is trending 15% higher than last month. Consider meal planning to reduce costs.
                   </p>
                   
-                  <div className="flex items-center text-aura-gold font-medium mb-4">
+                  <div className="flex items-center text-aura-gold font-medium mb-4 bg-[aura-chart-green] bg-green-600">
                     <DollarSign className="h-4 w-4 mr-1" />
                     Potential savings: $90/month
                   </div>
@@ -70,7 +57,7 @@ const Insights = () => {
           </Card>
 
           {/* Investment Opportunity */}
-          <Card className="financial-card">
+          <Card className="financial-card bg-sky-200">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="bg-blue-900/30 p-3 rounded-full mr-4">
@@ -84,13 +71,13 @@ const Insights = () => {
                     <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
                   </div>
                   
-                  <h3 className="text-lg font-medium mb-2 text-aura-primary-text">Investment Opportunity</h3>
-                  <p className="text-aura-secondary-text mb-3">
+                  <h3 className="text-lg font-medium mb-2 text-aura-primary-text text-zinc-950">Investment Opportunity</h3>
+                  <p className="text-aura-secondary-text mb-3 text-zinc-950">
                     Based on your current savings, you could invest $500 in index funds this month without impacting your emergency fund.
                   </p>
                   
-                  <div className="bg-gray-800/50 p-3 rounded-md mb-4">
-                    <div className="text-aura-primary-text font-medium mb-1">Potential Outcomes</div>
+                  <div className="p-3 rounded-md mb-4 bg-blue-950">
+                    <div className="text-aura-primary-text font-medium mb-1 bg-transparent">Potential Outcomes</div>
                     <div className="flex flex-wrap gap-4 text-sm">
                       <div>
                         <span className="text-aura-secondary-text">1 Year:</span>
@@ -297,8 +284,6 @@ const Insights = () => {
           </p>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Insights;
