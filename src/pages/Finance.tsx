@@ -106,7 +106,7 @@ const Finance = () => {
             </Button>
           </div>
           
-          <Card className="financial-card overflow-hidden">
+          <Card className="financial-card overflow-hidden bg-gray-600">
             {transactions.length === 0 ? <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
@@ -120,7 +120,7 @@ const Finance = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray bg-transparent">Date</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Description</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Category</th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Amount</th>
@@ -128,10 +128,10 @@ const Finance = () => {
                   </thead>
                   <tbody>
                     {transactions.map(transaction => <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
-                        <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.date}</td>
-                        <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.description}</td>
-                        <td className="px-4 py-3 text-sm">
-                          <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-aura-silver-gray">
+                        <td className="px-4 py-3 text-sm text-aura-primary-text bg-transparent">{transaction.date}</td>
+                        <td className="px-4 py-3 text-sm text-aura-primary-text bg-transparent">{transaction.description}</td>
+                        <td className="px-4 py-3 text-sm bg-transparent">
+                          <span className="px-2 py-1 rounded-full text-xs bg-gray-800 text-aura-silver-gray text-zinc-50">
                             {transaction.category}
                           </span>
                         </td>
@@ -145,7 +145,7 @@ const Finance = () => {
           </Card>
 
           {/* Expense Breakdown Chart */}
-          <Card className="financial-card p-6 mt-6">
+          <Card className="financial-card p-6 mt-6 bg-[aura-chart-pink] bg-transparent">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-base flex items-center">
                 <PieChart className="h-4 w-4 mr-2 text-aura-gold" />
