@@ -133,12 +133,12 @@ const Dashboard = () => {
               <Button asChild variant="outline" size="sm">
                 <Link to="/market">Browse Stocks</Link>
               </Button>
-            </Card> : <Card className="financial-card overflow-hidden">
+            </Card> : <Card className="financial-card overflow-hidden rounded-2xl bg-amber-500">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Symbol</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray bg-transparent">Symbol</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Name</th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Price</th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Change</th>
@@ -148,7 +148,7 @@ const Dashboard = () => {
                     {watchlist.map(stock => <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm font-medium">{stock.symbol}</td>
                         <td className="px-4 py-3 text-sm text-aura-silver-gray">{stock.name}</td>
-                        <td className="px-4 py-3 text-sm text-right">{formatCurrency(stock.price)}</td>
+                        <td className="px-4 py-3 text-sm text-right bg-transparent">{formatCurrency(stock.price)}</td>
                         <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           <div className="flex items-center justify-end">
                             {stock.change >= 0 ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
