@@ -88,8 +88,8 @@ const Finance = () => {
       {/* Tabs for Transactions and Budgets */}
       <Tabs defaultValue="transactions">
         <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="transactions" className="rounded-3xl bg-purple-900 hover:bg-purple-800">Transactions</TabsTrigger>
-          <TabsTrigger value="budgets" className="rounded-3xl bg-purple-900 hover:bg-purple-800">Budgets</TabsTrigger>
+          <TabsTrigger value="transactions" className="rounded-3xl bg-violet-900 hover:bg-violet-800">Transactions</TabsTrigger>
+          <TabsTrigger value="budgets" className="rounded-3xl bg-violet-900 hover:bg-violet-800">Budgets</TabsTrigger>
         </TabsList>
         
         {/* Transactions Tab */}
