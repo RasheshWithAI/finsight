@@ -301,7 +301,7 @@ const Market = () => {
                 {mockStocks.filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
-                        <p className="text-xs text-aura-medium-gray">{stock.name}</p>
+                        <p className="text-xs text-aura-medium-gray text-slate-900">{stock.name}</p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-aura-primary-text">{formatCurrency(stock.price)}</p>
@@ -327,7 +327,7 @@ const Market = () => {
                 {mockStocks.filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
-                        <p className="text-xs text-aura-medium-gray">{stock.name}</p>
+                        <p className="text-xs text-aura-medium-gray text-slate-900">{stock.name}</p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-aura-primary-text">{formatCurrency(stock.price)}</p>
