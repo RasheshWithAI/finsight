@@ -133,7 +133,7 @@ const Dashboard = () => {
               <Button asChild variant="outline" size="sm">
                 <Link to="/market">Browse Stocks</Link>
               </Button>
-            </Card> : <Card className="financial-card overflow-hidden rounded-2xl bg-amber-500">
+            </Card> : <Card className="financial-card overflow-hidden rounded-2xl bg-emerald-800">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -173,7 +173,7 @@ const Dashboard = () => {
         </div>
 
         <div className="grid gap-4">
-          {currentInsights.map(insight => <Card key={insight.id} className="financial-card">
+          {currentInsights.map(insight => <Card key={insight.id} className="financial-card bg-rose-700">
               <CardContent className="p-4">
                 <div className="flex items-start">
                   <div className={`p-2 rounded-full mr-3 ${insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' : insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' : 'bg-yellow-900/30 text-yellow-500'}`}>
