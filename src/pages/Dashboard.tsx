@@ -45,43 +45,43 @@ const Dashboard = () => {
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Financial Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="financial-card">
+          <Card className="financial-card bg-amber-400 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Income</span>
+                <span className="stat-label text-zinc-950">Income</span>
                 <DollarSign className="h-4 w-4 text-aura-gold" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.income)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-red-600 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Expenses</span>
+                <span className="stat-label text-zinc-950">Expenses</span>
                 <BarChart3 className="h-4 w-4 text-red-400" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.expenses)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-lime-500 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Savings</span>
+                <span className="stat-label text-zinc-950">Savings</span>
                 <PiggyBank className="h-4 w-4 text-aura-chart-blue" />
               </div>
               <span className="stat-value mt-2">{formatCurrency(financialSummary.savings)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-blue-500 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Savings Rate</span>
-                <Percent className="h-4 w-4 text-aura-medium-gray" />
+                <span className="stat-label text-stone-950">Savings Rate</span>
+                <Percent className="h-4 w-4 text-aura-medium-gray bg-transparent" />
               </div>
-              <span className="stat-value mt-2 bg-violet-900 py-[30px] px-[29px] my-[12px] mx-[8px] rounded-2xl">{formatPercentage(financialSummary.savingsRate)}</span>
+              <span className="stat-value mt-2">{formatPercentage(financialSummary.savingsRate)}</span>
             </CardContent>
           </Card>
         </div>
@@ -98,7 +98,7 @@ const Dashboard = () => {
         
         <div className="overflow-x-auto">
           <div className="flex space-x-4 pb-2">
-            {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0">
+            {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-zinc-800">
                 <CardContent className="p-4">
                   <h3 className="font-medium text-sm">{index.name}</h3>
                   <div className="flex items-center justify-between mt-1">
