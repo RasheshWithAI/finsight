@@ -9,11 +9,11 @@
 @layer components {
   /* Define all gradient classes that are referenced elsewhere */
   .bg-primary-gradient {
-    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
+    @apply bg-gradient-to-r from-aura-purple to-purple-800;
   }
   
   .bg-accent-gradient {
-    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
+    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
   }
   
   .bg-error-gradient {
@@ -21,61 +21,59 @@
   }
   
   .primary-gradient {
-    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
+    @apply bg-gradient-to-r from-aura-purple to-purple-800;
   }
   
   .accent-gradient {
-    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
+    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
   }
 }
 
 @layer base {
-  /* We're now using only dark mode variables, so we'll set these as default */
+  /* Dark mode variables */
   :root {
-    --background: 210 20% 12%; /* Deep Charcoal base */
-    --foreground: 0 0% 98%;
+    --background: 225 12% 8%; /* Dark charcoal #121217 */
+    --foreground: 0 0% 100%; /* White */
     
-    --primary: 220 87% 25%;
-    --secondary: 43 65% 53%;
+    --primary: 265 75% 53%; /* Vibrant Purple #8A2BE2 */
+    --secondary: 330 100% 50%; /* Pink/Magenta #FF1493 */
     
-    /* Adjusted for dark mode with Deep Charcoal foundation */
-    --muted: 210 20% 20%;
-    --accent: 43 65% 53%;
+    /* Dark theme card and UI element colors */
+    --muted: 225 10% 17%; /* #1E1E24 */
+    --accent: 265 75% 53%; /* Same as primary */
     
-    /* Border and input colors aligned with Deep Charcoal */
-    --border: 210 20% 15%;
-    --input: 210 20% 15%;
-    --card: 215 25% 12%;
-    --card-foreground: 210 33% 98%;
+    --border: 225 10% 15%;
+    --input: 225 10% 15%;
+    --card: 225 10% 17%; /* #1E1E24 */
+    --card-foreground: 0 0% 100%;
 
-    --popover: 215 25% 12%;
-    --popover-foreground: 210 33% 98%;
+    --popover: 225 10% 17%;
+    --popover-foreground: 0 0% 100%;
 
     --destructive: 0 70% 45%;
-    --destructive-foreground: 210 33% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --ring: 210 33% 80%;
+    --ring: 265 75% 40%;
     
-    --sidebar-background: 220 87% 15%;
-    --sidebar-foreground: 210 33% 98%;
-    --sidebar-primary: 220 87% 20%;
+    --sidebar-background: 225 12% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 265 75% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 43 65% 53%;
+    --sidebar-accent: 265 75% 53%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 87% 15%;
-    --sidebar-ring: 220 87% 25%;
+    --sidebar-border: 225 10% 15%;
+    --sidebar-ring: 265 75% 40%;
 
-    /* Keep text color variables but adjusted for dark mode */
-    --primary-text: #F5F7FA;  /* Light text for dark background */
-    --secondary-text: #B8C0D0; /* Medium light gray for secondary text */
+    --primary-text: #FFFFFF;
+    --secondary-text: #EAEAEA;
   }
 
   /* We no longer need light/dark mode toggle, but we'll keep the class 
      for compatibility with existing code that might reference it */
   .dark {
     /* These are now the same as root */
-    --background: 210 20% 12%;
-    --foreground: 0 0% 98%;
+    --background: 225 12% 8%;
+    --foreground: 0 0% 100%;
     /* ... other variables remain the same as root above */
   }
 }
@@ -92,33 +90,33 @@
   body {
     @apply bg-background text-foreground font-satoshi;
     font-feature-settings: "rlig" 1, "calt" 1;
-    @apply text-aura-primary-text;
+    @apply text-white;
   }
 
-  /* Adjust financial card for dark mode */
+  /* Financial card styling */
   .financial-card {
-    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm p-4 transition-all duration-200 hover:shadow-md;
+    @apply bg-card rounded-xl border border-gray-800/50 shadow-md p-4 transition-all duration-200 hover:shadow-lg;
   }
   
   /* Update Aura Finance custom classes for dark mode */
   .aura-card {
-    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-card rounded-xl border border-gray-800/50 shadow-md hover:shadow-lg transition-all duration-300;
   }
 
   .aura-card-gradient {
-    @apply bg-gradient-to-br from-aura-charcoal to-gray-900 rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-gradient-to-br from-aura-dark-gray to-gray-900 rounded-xl border border-gray-800/50 shadow-md hover:shadow-lg transition-all duration-300;
   }
   
   .aura-button-primary {
-    @apply bg-accent-gradient text-aura-dark-gray px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow transition-transform hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow transition-transform hover:scale-[1.02] active:scale-[0.98];
   }
   
   .aura-button-secondary {
-    @apply bg-transparent text-aura-gold border border-aura-gold px-4 py-2 rounded-lg font-medium hover:bg-aura-gold/10 transition-all;
+    @apply bg-transparent text-aura-purple border border-aura-purple px-4 py-2 rounded-lg font-medium hover:bg-aura-purple/10 transition-all;
   }
   
   .aura-input {
-    @apply w-full border-b-2 border-gray-700 px-3 py-2 focus:border-aura-gold outline-none transition-colors bg-transparent text-foreground;
+    @apply w-full border-b-2 border-gray-700 px-3 py-2 focus:border-aura-purple outline-none transition-colors bg-transparent text-foreground;
   }
   
   .aura-gradient-text {
@@ -150,11 +148,11 @@
   }
   
   .nav-item-active {
-    @apply text-aura-gold scale-[1.1] transition-all duration-200;
+    @apply text-aura-purple scale-[1.1] transition-all duration-200;
   }
   
   .nav-item-inactive {
-    @apply text-gray-400 hover:text-aura-gold hover:scale-[1.05] transition-all duration-200;
+    @apply text-gray-400 hover:text-aura-purple hover:scale-[1.05] transition-all duration-200;
   }
   
   .progress-bar-container {
@@ -165,22 +163,22 @@
     @apply h-full bg-primary-gradient rounded-full transition-all duration-300;
   }
   
-  .gold-shimmer {
-    @apply bg-gradient-to-r from-aura-gold via-aura-bright-gold to-aura-gold bg-[length:200%_auto] animate-gold-shimmer;
+  .purple-shimmer {
+    @apply bg-gradient-to-r from-aura-purple via-aura-pink to-aura-purple bg-[length:200%_auto] animate-gold-shimmer;
   }
 
   /* Global text color classes for flexible usage */
   .primary-text {
-    @apply text-aura-primary-text;
+    @apply text-white;
   }
 
   .secondary-text {
-    @apply text-aura-secondary-text;
+    @apply text-aura-silver-gray;
   }
 
   /* Headings and major text elements */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-aura-primary-text;
+    @apply text-white;
   }
 
   /* Secondary text elements */
@@ -189,7 +187,7 @@
   .timestamp, 
   .helper-text, 
   .placeholder {
-    @apply text-aura-secondary-text;
+    @apply text-aura-silver-gray;
   }
 }
 

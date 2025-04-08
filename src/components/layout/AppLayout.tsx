@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, LineChart, WalletCards, Lightbulb, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -28,11 +28,11 @@ const AppLayout = ({ children }: AppLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-aura-white flex flex-col">
+    <div className="min-h-screen bg-aura-charcoal flex flex-col">
       <main className="flex-1 overflow-auto pb-16 animate-fade-in">{children}</main>
       
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-10 glass-effect shadow-lg border-t border-white/20">
+      <nav className="fixed bottom-0 left-0 right-0 z-10 glass-effect shadow-lg border-t border-aura-purple/10">
         <div className="flex justify-around max-w-lg mx-auto">
           {navItems.map((item) => {
             const isActive = currentPath === item.path;
