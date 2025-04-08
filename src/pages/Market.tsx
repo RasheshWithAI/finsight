@@ -102,13 +102,13 @@ const Market = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-aura-medium-gray" />
-            <Input placeholder="Search stocks..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
+            <Input placeholder="Search stocks..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10 bg-purple-800 rounded-full" />
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10 bg-purple-800 hover:bg-purple-700">
               <Filter className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button variant="outline" size="icon" className="h-10 w-10 bg-purple-800 hover:bg-purple-700">
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
