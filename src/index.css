@@ -17,16 +17,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 185 100% 20%;
+    --primary: 140 63% 49%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 180 58% 49%;
+    --secondary: 289 98% 62%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 16 100% 66%;
+    --accent: 289 98% 62%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,18 +34,18 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 185 100% 20%;
+    --ring: 140 63% 49%;
 
     --radius: 1rem;
 
-    --sidebar-background: 185 100% 20%;
+    --sidebar-background: 140 63% 30%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 185 100% 25%;
+    --sidebar-primary: 140 63% 35%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 16 100% 66%;
+    --sidebar-accent: 289 98% 62%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 185 100% 25%;
-    --sidebar-ring: 185 100% 30%;
+    --sidebar-border: 140 63% 35%;
+    --sidebar-ring: 140 63% 40%;
   }
 
   .dark {
@@ -58,16 +58,16 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 185 100% 30%;
+    --primary: 140 63% 40%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 180 58% 60%;
+    --secondary: 289 98% 62%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 16 100% 66%;
+    --accent: 289 98% 62%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -77,14 +77,14 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
     
-    --sidebar-background: 185 100% 10%;
+    --sidebar-background: 140 63% 15%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 185 100% 20%;
+    --sidebar-primary: 140 63% 25%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 16 100% 66%;
+    --sidebar-accent: 289 98% 62%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 185 100% 15%;
-    --sidebar-ring: 185 100% 25%;
+    --sidebar-border: 140 63% 20%;
+    --sidebar-ring: 140 63% 30%;
   }
 }
 
@@ -108,11 +108,11 @@
   
   /* Aura Finance custom classes */
   .aura-card {
-    @apply bg-white rounded-[var(--radius)] border border-aura-light-gray shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-white rounded-[var(--radius)] border border-aura-pale-gray shadow-sm hover:shadow-md transition-all duration-300;
   }
 
   .aura-card-gradient {
-    @apply bg-gradient-to-br from-aura-white to-aura-light-gray rounded-[var(--radius)] border border-aura-light-gray shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-gradient-to-br from-aura-white to-aura-pale-gray rounded-[var(--radius)] border border-aura-pale-gray shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .aura-button-primary {
@@ -120,18 +120,22 @@
   }
   
   .aura-button-secondary {
-    @apply bg-transparent text-aura-teal border border-aura-teal px-4 py-2 rounded-lg font-medium hover:bg-aura-teal/5 transition-all;
+    @apply bg-transparent text-aura-emerald border border-aura-emerald px-4 py-2 rounded-lg font-medium hover:bg-aura-emerald/5 transition-all;
   }
   
   .aura-input {
-    @apply w-full border-b-2 border-aura-light-gray px-3 py-2 focus:border-aura-teal outline-none transition-colors;
+    @apply w-full border-b-2 border-aura-pale-gray px-3 py-2 focus:border-aura-emerald outline-none transition-colors;
   }
   
   .aura-gradient-text {
     @apply bg-primary-gradient bg-clip-text text-transparent;
   }
   
-  .aura-accent-text {
+  .growth-gradient-text {
+    @apply bg-primary-gradient bg-clip-text text-transparent;
+  }
+  
+  .accent-gradient-text {
     @apply bg-accent-gradient bg-clip-text text-transparent;
   }
 
@@ -156,15 +160,15 @@
   }
   
   .nav-item-active {
-    @apply text-aura-teal scale-[1.1] transition-all duration-200;
+    @apply text-aura-emerald scale-[1.1] transition-all duration-200;
   }
   
   .nav-item-inactive {
-    @apply text-aura-medium-gray hover:text-aura-teal hover:scale-[1.05] transition-all duration-200;
+    @apply text-aura-medium-gray hover:text-aura-emerald hover:scale-[1.05] transition-all duration-200;
   }
   
   .progress-bar-container {
-    @apply h-2 bg-aura-light-gray rounded-full overflow-hidden;
+    @apply h-2 bg-aura-pale-gray rounded-full overflow-hidden;
   }
   
   .progress-bar-fill {
