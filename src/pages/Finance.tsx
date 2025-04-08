@@ -65,7 +65,7 @@ const Finance = () => {
           
           <Card className="financial-card">
             <CardContent className="p-4 flex flex-col">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between bg-violet-900 hover:bg-violet-800">
                 <span className="stat-label bg-violet-900 hover:bg-violet-800">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
