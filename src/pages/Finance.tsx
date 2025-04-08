@@ -1,24 +1,13 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { mockTransactions, mockBudgets } from "@/utils/mockData";
-import { 
-  ArrowDownCircle, 
-  ArrowUpCircle, 
-  BarChart3, 
-  Calendar, 
-  Filter, 
-  PieChart, 
-  Plus, 
-  RefreshCw 
-} from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, Plus, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import BudgetBarChart from "@/components/charts/BudgetBarChart";
-
 const Finance = () => {
   const [transactions, setTransactions] = useState(mockTransactions);
   const [budgets, setBudgets] = useState(mockBudgets);
@@ -32,31 +21,22 @@ const Finance = () => {
       minimumFractionDigits: 2
     }).format(value);
   };
-  
+
   // Calculate totals
-  const totalIncome = transactions
-    .filter(t => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
-    
-  const totalExpenses = transactions
-    .filter(t => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+  const totalIncome = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
 
   // Calculate percentage for budget progress bars
   const calculatePercentage = (spent: number, budgeted: number) => {
-    return Math.min(Math.round((spent / budgeted) * 100), 100);
+    return Math.min(Math.round(spent / budgeted * 100), 100);
   };
-
   const handleAddTransaction = () => {
     toast.success("Transaction feature coming soon!");
   };
-
   const handleNewBudget = () => {
     toast.success("Budget creation feature coming soon!");
   };
-
-  return (
-    <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in">
       <header className="flex flex-wrap justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-aura-primary-text">Finance</h1>
@@ -64,10 +44,7 @@ const Finance = () => {
             Track your income, expenses and budgets
           </p>
         </div>
-        <Button 
-          className="bg-accent-gradient hover:brightness-105 mt-2 sm:mt-0 text-aura-dark-gray"
-          onClick={handleAddTransaction}
-        >
+        <Button className="bg-accent-gradient hover:brightness-105 mt-2 sm:mt-0 text-aura-dark-gray" onClick={handleAddTransaction}>
           <Plus className="h-4 w-4 mr-2" /> Add Transaction
         </Button>
       </header>
@@ -76,33 +53,33 @@ const Finance = () => {
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Summary</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="financial-card">
+          <Card className="financial-card bg-green-600">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Income</span>
+                <span className="stat-label text-yellow-300">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
               <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-indigo-50">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Expenses</span>
+                <span className="stat-label text-red-600">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-primary-text text-slate-950">{formatCurrency(totalExpenses)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-yellow-400">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Balance</span>
+                <span className="stat-label text-sky-700">Balance</span>
                 <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-lime-600">{formatCurrency(totalIncome - totalExpenses)}</span>
             </CardContent>
           </Card>
         </div>
@@ -111,8 +88,8 @@ const Finance = () => {
       {/* Tabs for Transactions and Budgets */}
       <Tabs defaultValue="transactions">
         <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="budgets">Budgets</TabsTrigger>
+          <TabsTrigger value="transactions" className="bg-violet-900 hover:bg-violet-800 rounded-2xl">Transactions</TabsTrigger>
+          <TabsTrigger value="budgets" className="rounded-2xl">Budgets</TabsTrigger>
         </TabsList>
         
         {/* Transactions Tab */}
@@ -130,8 +107,7 @@ const Finance = () => {
           </div>
           
           <Card className="financial-card overflow-hidden">
-            {transactions.length === 0 ? (
-              <CardContent className="p-8 text-center">
+            {transactions.length === 0 ? <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
                 </div>
@@ -140,9 +116,7 @@ const Finance = () => {
                   Start by adding your income and expenses
                 </p>
                 <Button onClick={handleAddTransaction}>Add First Transaction</Button>
-              </CardContent>
-            ) : (
-              <div className="overflow-x-auto">
+              </CardContent> : <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
@@ -153,8 +127,7 @@ const Finance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((transaction) => (
-                      <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
+                    {transactions.map(transaction => <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.date}</td>
                         <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.description}</td>
                         <td className="px-4 py-3 text-sm">
@@ -162,17 +135,13 @@ const Finance = () => {
                             {transaction.category}
                           </span>
                         </td>
-                        <td className={`px-4 py-3 text-sm font-medium text-right ${
-                          transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
-                        }`}>
+                        <td className={`px-4 py-3 text-sm font-medium text-right ${transaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </td>
-                      </tr>
-                    ))}
+                      </tr>)}
                   </tbody>
                 </table>
-              </div>
-            )}
+              </div>}
           </Card>
 
           {/* Expense Breakdown Chart */}
@@ -198,17 +167,13 @@ const Finance = () => {
               <Calendar className="h-4 w-4 mr-2" /> {selectedMonth}
             </Button>
             <div className="grow"></div>
-            <Button 
-              className="bg-accent-gradient hover:brightness-105 text-aura-dark-gray"
-              onClick={handleNewBudget}
-            >
+            <Button className="bg-accent-gradient hover:brightness-105 text-aura-dark-gray" onClick={handleNewBudget}>
               <Plus className="h-4 w-4 mr-2" /> New Budget
             </Button>
           </div>
           
           <div className="grid md:grid-cols-2 gap-4">
-            {budgets.map((budget) => (
-              <Card key={budget.id} className="financial-card p-4">
+            {budgets.map(budget => <Card key={budget.id} className="financial-card p-4">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
                   <span className="text-sm text-aura-medium-gray">{budget.period}</span>
@@ -219,10 +184,7 @@ const Finance = () => {
                     <span className="text-aura-primary-text">Spent: {formatCurrency(budget.spent)}</span>
                     <span className="text-aura-primary-text">Budgeted: {formatCurrency(budget.budgeted)}</span>
                   </div>
-                  <Progress 
-                    value={calculatePercentage(budget.spent, budget.budgeted)}
-                    className={`h-2 ${budget.spent > budget.budgeted ? 'bg-red-400' : ''}`}
-                  />
+                  <Progress value={calculatePercentage(budget.spent, budget.budgeted)} className={`h-2 ${budget.spent > budget.budgeted ? 'bg-red-400' : ''}`} />
                 </div>
                 
                 <div className="flex justify-between items-center">
@@ -231,8 +193,7 @@ const Finance = () => {
                   </span>
                   <Button variant="outline" size="sm">Edit</Button>
                 </div>
-              </Card>
-            ))}
+              </Card>)}
           </div>
           
           {/* Budget Comparison Chart */}
@@ -251,8 +212,6 @@ const Finance = () => {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };
-
 export default Finance;
