@@ -1,4 +1,3 @@
-
 export interface MarketIndex {
   id: string;
   name: string;
@@ -19,6 +18,12 @@ export interface Stock {
   pe: number;
   sector: string;
   isWatchlisted?: boolean;
+  peRatio?: number;  // Using optional because some stocks might use pe instead
+  dividend?: number;
+  high52?: number;
+  low52?: number;
+  description?: string;
+  industry?: string;
 }
 
 export interface Transaction {
@@ -56,7 +61,13 @@ export const mockStocks: Stock[] = [
     volume: 58762145,
     marketCap: 2950000000000,
     pe: 30.5,
-    sector: "Technology"
+    peRatio: 30.5,
+    sector: "Technology",
+    dividend: 0.92,
+    high52: 199.62,
+    low52: 143.90,
+    description: "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide.",
+    industry: "Consumer Electronics"
   },
   {
     id: "2",
@@ -68,7 +79,13 @@ export const mockStocks: Stock[] = [
     volume: 25631087,
     marketCap: 3100000000000,
     pe: 34.2,
-    sector: "Technology"
+    peRatio: 34.2,
+    sector: "Technology",
+    dividend: 1.12,
+    high52: 430.82,
+    low52: 309.35,
+    description: "Microsoft Corporation develops, licenses, and supports software, services, devices, and solutions worldwide.",
+    industry: "Software-Infrastructure"
   },
   {
     id: "3",
@@ -80,7 +97,13 @@ export const mockStocks: Stock[] = [
     volume: 31254896,
     marketCap: 1850000000000,
     pe: 62.3,
-    sector: "Consumer Cyclical"
+    peRatio: 62.3,
+    sector: "Consumer Cyclical",
+    dividend: 0,
+    high52: 185.74,
+    low52: 118.35,
+    description: "Amazon.com, Inc. engages in the retail sale of consumer products and subscriptions through online and physical stores in North America and internationally.",
+    industry: "Internet Retail"
   },
   {
     id: "4",
@@ -92,7 +115,13 @@ export const mockStocks: Stock[] = [
     volume: 22145783,
     marketCap: 1900000000000,
     pe: 28.7,
-    sector: "Communication Services"
+    peRatio: 28.7,
+    sector: "Communication Services",
+    dividend: 0,
+    high52: 155.37,
+    low52: 102.63,
+    description: "Alphabet Inc. offers various products and platforms in the United States, Europe, the Middle East, Africa, the Asia-Pacific, Canada, and Latin America.",
+    industry: "Internet Content & Information"
   },
   {
     id: "5",
@@ -104,7 +133,13 @@ export const mockStocks: Stock[] = [
     volume: 18743209,
     marketCap: 1230000000000,
     pe: 25.3,
-    sector: "Communication Services"
+    peRatio: 25.3,
+    sector: "Communication Services",
+    dividend: 0,
+    high52: 485.96,
+    low52: 229.85,
+    description: "Meta Platforms, Inc. engages in the development of products that enable people to connect and share with friends and family through mobile devices, personal computers, and other surfaces.",
+    industry: "Internet Content & Information"
   },
   {
     id: "6",
@@ -116,7 +151,13 @@ export const mockStocks: Stock[] = [
     volume: 35891234,
     marketCap: 557000000000,
     pe: 42.8,
-    sector: "Consumer Cyclical"
+    peRatio: 42.8,
+    sector: "Consumer Cyclical",
+    dividend: 0,
+    high52: 299.29,
+    low52: 138.80,
+    description: "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems worldwide.",
+    industry: "Auto Manufacturers"
   },
   {
     id: "7",
@@ -128,7 +169,13 @@ export const mockStocks: Stock[] = [
     volume: 3621578,
     marketCap: 890000000000,
     pe: 9.2,
-    sector: "Financial Services"
+    peRatio: 9.2,
+    sector: "Financial Services",
+    dividend: 0,
+    high52: 407.05,
+    low52: 310.35,
+    description: "Berkshire Hathaway Inc. engages in the insurance, freight rail transportation, and utility businesses worldwide.",
+    industry: "Insurance-Diversified"
   },
   {
     id: "8",
@@ -140,7 +187,13 @@ export const mockStocks: Stock[] = [
     volume: 8123654,
     marketCap: 570000000000,
     pe: 29.6,
-    sector: "Financial Services"
+    peRatio: 29.6,
+    sector: "Financial Services",
+    dividend: 1.8,
+    high52: 290.96,
+    low52: 227.35,
+    description: "Visa Inc. operates as a payments technology company worldwide. It facilitates digital payments among consumers, merchants, financial institutions, businesses, strategic partners, and government entities.",
+    industry: "Credit Services"
   }
 ];
 

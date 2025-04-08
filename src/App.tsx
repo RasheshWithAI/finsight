@@ -14,8 +14,13 @@ import Finance from "./pages/Finance";
 import Insights from "./pages/Insights";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import StockDetail from "./pages/StockDetail";
+import StockCompare from "./pages/StockCompare";
 
 const queryClient = new QueryClient();
+
+// Force dark mode class on the document
+document.documentElement.classList.add('dark');
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -44,6 +49,26 @@ const App = () => (
                 <PrivateRoute>
                   <AppLayout>
                     <Market />
+                  </AppLayout>
+                </PrivateRoute>
+              } 
+            />
+            <Route 
+              path="/market/stock/:symbol" 
+              element={
+                <PrivateRoute>
+                  <AppLayout>
+                    <StockDetail />
+                  </AppLayout>
+                </PrivateRoute>
+              } 
+            />
+            <Route 
+              path="/market/compare" 
+              element={
+                <PrivateRoute>
+                  <AppLayout>
+                    <StockCompare />
                   </AppLayout>
                 </PrivateRoute>
               } 
