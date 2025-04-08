@@ -63,27 +63,29 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Aura Finance colors
+				// Aura Finance colors - Vibrant Growth palette
 				aura: {
 					// Primary Gradient Colors
-					'teal': '#005B64',
-					'cyan': '#76D7C4',
-					'sea-green': '#007A74',
-					// Accent Gradient Colors
-					'coral': '#FF7F50',
-					'orange': '#FFAC70',
+					'emerald': '#2ECC71',
+					'forest': '#228B22',
+					// Accent Color
+					'magenta': '#E040FB',
+					// Chart Accent Colors
+					'electric-blue': '#00BFFF',
+					'orange': '#FFA500',
+					'yellow': '#FFDA63',
 					// Neutral Colors
-					'white': '#FDFEFF',
-					'charcoal': '#1A1D21',
-					'light-gray': '#F0F2F5',
-					'dark-gray': '#2C3036',
-					'black': '#101316',
-					'off-white': '#EAECEF',
+					'white': '#FFFFFF',
+					'charcoal': '#1C1C1E',
+					'pale-gray': '#F2F4F6',
+					'dark-gray': '#3A3F4B',
+					'black': '#1C1C1E',
+					'off-white': '#FFFFFF',
 					'medium-gray': '#6B7280',
 					'soft-gray': '#A0A7B0',
 					// Status Colors
-					'success': '#34D399',
-					'error': '#F87171',
+					'success': '#28A745',
+					'error': '#EF4444',
 					'warning': '#FBBF24'
 				}
 			},
@@ -138,8 +140,8 @@ export default {
 					'100%': { transform: 'translateY(-100%)' }
 				},
 				'pulse-glow': {
-					'0%, 100%': { boxShadow: '0 0 0 0 rgba(0, 91, 100, 0.2)' },
-					'50%': { boxShadow: '0 0 0 8px rgba(0, 91, 100, 0)' }
+					'0%, 100%': { boxShadow: '0 0 0 0 rgba(46, 204, 113, 0.2)' },
+					'50%': { boxShadow: '0 0 0 8px rgba(46, 204, 113, 0)' }
 				},
 				'liquid-fill': {
 					'0%': { width: '0%' },
@@ -159,10 +161,10 @@ export default {
 				'liquid-fill': 'liquid-fill 1s ease-out forwards'
 			},
 			backgroundImage: {
-				'primary-gradient': 'linear-gradient(to right, #005B64, #76D7C4, #007A74)',
-				'accent-gradient': 'linear-gradient(to right, #FF7F50, #FFAC70)',
-				'success-gradient': 'linear-gradient(to right, #34D399, #10B981)',
-				'error-gradient': 'linear-gradient(to right, #F87171, #EF4444)',
+				'primary-gradient': 'linear-gradient(to right, #2ECC71, #228B22)',
+				'accent-gradient': 'linear-gradient(to right, #E040FB, #D946EF)',
+				'success-gradient': 'linear-gradient(to right, #28A745, #20883E)',
+				'error-gradient': 'linear-gradient(to right, #EF4444, #DC2626)',
 				'warning-gradient': 'linear-gradient(to right, #FBBF24, #F59E0B)'
 			}
 		}
