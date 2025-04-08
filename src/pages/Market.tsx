@@ -5,20 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { mockMarketIndices, mockStocks, Stock } from "@/utils/mockData";
-import { 
-  ArrowDownRight, 
-  ArrowUpRight, 
-  BookmarkPlus, 
-  BookmarkMinus,
-  Search, 
-  Filter, 
-  TrendingUp, 
-  TrendingDown, 
-  RefreshCw,
-  BarChart4
-} from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, BookmarkPlus, BookmarkMinus, Search, Filter, TrendingUp, TrendingDown, RefreshCw, BarChart4 } from "lucide-react";
 import { toast } from "sonner";
-
 const Market = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [stocks, setStocks] = useState(mockStocks);
@@ -54,32 +42,26 @@ const Market = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
-
   const toggleWatchlist = (stock: Stock) => {
     if (watchlist.some(item => item.id === stock.id)) {
       setWatchlist(watchlist.filter(item => item.id !== stock.id));
       toast.success(`Removed ${stock.symbol} from your watchlist`);
     } else {
-      setWatchlist([...watchlist, { ...stock, isWatchlisted: true }]);
+      setWatchlist([...watchlist, {
+        ...stock,
+        isWatchlisted: true
+      }]);
       toast.success(`Added ${stock.symbol} to your watchlist`);
     }
   };
-
   const handleStockClick = (symbol: string) => {
     navigate(`/market/stock/${symbol}`);
   };
-
   const handleCompareClick = () => {
     navigate('/market/compare');
   };
-
-  const filteredStocks = stocks.filter(stock => 
-    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="container px-4 py-6 animate-fade-in">
+  const filteredStocks = stocks.filter(stock => stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()));
+  return <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
         <div className="flex justify-between items-center">
           <div>
@@ -90,10 +72,7 @@ const Market = () => {
               Track stocks, indices, and market trends
             </p>
           </div>
-          <Button 
-            className="bg-accent-gradient text-aura-dark-gray hover:brightness-105"
-            onClick={handleCompareClick}
-          >
+          <Button className="bg-accent-gradient text-aura-dark-gray hover:brightness-105" onClick={handleCompareClick}>
             <BarChart4 className="h-4 w-4 mr-2" /> Compare Stocks
           </Button>
         </div>
@@ -103,24 +82,18 @@ const Market = () => {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Market Indices</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {mockMarketIndices.map((index) => (
-            <Card key={index.id} className="financial-card">
+          {mockMarketIndices.map(index => <Card key={index.id} className="financial-card bg-emerald-700">
               <CardContent className="p-4">
                 <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-xl font-bold text-aura-primary-text">{index.value.toLocaleString()}</span>
                   <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {index.change >= 0 ? (
-                      <ArrowUpRight className="h-4 w-4 mr-1" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4 mr-1" />
-                    )}
+                    {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
                     <span>{formatPercentage(index.changePercent)}</span>
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
       </div>
 
@@ -129,12 +102,7 @@ const Market = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-aura-medium-gray" />
-            <Input
-              placeholder="Search stocks..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            <Input placeholder="Search stocks..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10" />
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="icon" className="h-10 w-10">
@@ -148,14 +116,14 @@ const Market = () => {
 
         <Tabs defaultValue="all">
           <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="all">All Stocks</TabsTrigger>
-            <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
-            <TabsTrigger value="sectors">Sectors</TabsTrigger>
+            <TabsTrigger value="all" className="text-zinc-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">All Stocks</TabsTrigger>
+            <TabsTrigger value="watchlist" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Watchlist</TabsTrigger>
+            <TabsTrigger value="sectors" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Sectors</TabsTrigger>
           </TabsList>
           
           {/* Tabs content */}
           <TabsContent value="all">
-            <Card className="financial-card overflow-hidden">
+            <Card className="financial-card overflow-hidden bg-sky-950">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -169,52 +137,33 @@ const Market = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredStocks.map((stock) => {
-                      const isWatchlisted = watchlist.some(item => item.id === stock.id);
-                      return (
-                        <tr 
-                          key={stock.id} 
-                          className="border-b border-gray-800 hover:bg-gray-900/30 cursor-pointer"
-                          onClick={(e) => {
-                            // Don't navigate when clicking on the watchlist button
-                            if ((e.target as HTMLElement).closest('button')) return;
-                            handleStockClick(stock.symbol);
-                          }}
-                        >
+                    {filteredStocks.map(stock => {
+                    const isWatchlisted = watchlist.some(item => item.id === stock.id);
+                    return <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30 cursor-pointer" onClick={e => {
+                      // Don't navigate when clicking on the watchlist button
+                      if ((e.target as HTMLElement).closest('button')) return;
+                      handleStockClick(stock.symbol);
+                    }}>
                           <td className="px-4 py-3 text-sm font-medium">{stock.symbol}</td>
                           <td className="px-4 py-3 text-sm text-gray-300">{stock.name}</td>
                           <td className="px-4 py-3 text-sm text-right">{formatCurrency(stock.price)}</td>
                           <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                             <div className="flex items-center justify-end">
-                              {stock.change >= 0 ? (
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
-                              ) : (
-                                <ArrowDownRight className="h-3 w-3 mr-1" />
-                              )}
+                              {stock.change >= 0 ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
                               {formatPercentage(stock.changePercent)}
                             </div>
                           </td>
                           <td className="px-4 py-3 text-sm text-right">{formatLargeNumber(stock.marketCap)}</td>
                           <td className="px-4 py-3 text-center">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className={`h-8 w-8 ${isWatchlisted ? 'text-aura-gold' : 'text-gray-400'}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleWatchlist(stock);
-                              }}
-                            >
-                              {isWatchlisted ? (
-                                <BookmarkMinus className="h-4 w-4" />
-                              ) : (
-                                <BookmarkPlus className="h-4 w-4" />
-                              )}
+                            <Button variant="ghost" size="icon" className={`h-8 w-8 ${isWatchlisted ? 'text-aura-gold' : 'text-gray-400'}`} onClick={e => {
+                          e.stopPropagation();
+                          toggleWatchlist(stock);
+                        }}>
+                              {isWatchlisted ? <BookmarkMinus className="h-4 w-4" /> : <BookmarkPlus className="h-4 w-4" />}
                             </Button>
                           </td>
-                        </tr>
-                      );
-                    })}
+                        </tr>;
+                  })}
                   </tbody>
                 </table>
               </div>
@@ -223,8 +172,7 @@ const Market = () => {
           
           <TabsContent value="watchlist">
             <Card className="financial-card">
-              {watchlist.length === 0 ? (
-                <CardContent className="p-8 text-center">
+              {watchlist.length === 0 ? <CardContent className="p-8 text-center">
                   <div className="flex justify-center mb-4">
                     <BookmarkPlus className="h-12 w-12 text-muted-foreground" />
                   </div>
@@ -233,16 +181,14 @@ const Market = () => {
                     Add stocks to your watchlist to keep track of them here
                   </p>
                   <Button onClick={() => {
-                    const allTabTrigger = document.querySelector('[data-value="all"]');
-                    if (allTabTrigger) {
-                      (allTabTrigger as HTMLElement).click();
-                    }
-                  }}>
+                const allTabTrigger = document.querySelector('[data-value="all"]');
+                if (allTabTrigger) {
+                  (allTabTrigger as HTMLElement).click();
+                }
+              }}>
                     Browse Stocks
                   </Button>
-                </CardContent>
-              ) : (
-                <div className="overflow-x-auto">
+                </CardContent> : <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-800">
@@ -254,44 +200,28 @@ const Market = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {watchlist.map((stock) => (
-                        <tr 
-                          key={stock.id} 
-                          className="border-b border-gray-800 hover:bg-gray-900/30 cursor-pointer"
-                          onClick={() => handleStockClick(stock.symbol)}
-                        >
+                      {watchlist.map(stock => <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30 cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                           <td className="px-4 py-3 text-sm font-medium">{stock.symbol}</td>
                           <td className="px-4 py-3 text-sm text-gray-300">{stock.name}</td>
                           <td className="px-4 py-3 text-sm text-right">{formatCurrency(stock.price)}</td>
                           <td className={`px-4 py-3 text-sm text-right ${stock.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                             <div className="flex items-center justify-end">
-                              {stock.change >= 0 ? (
-                                <ArrowUpRight className="h-3 w-3 mr-1" />
-                              ) : (
-                                <ArrowDownRight className="h-3 w-3 mr-1" />
-                              )}
+                              {stock.change >= 0 ? <ArrowUpRight className="h-3 w-3 mr-1" /> : <ArrowDownRight className="h-3 w-3 mr-1" />}
                               {formatPercentage(stock.changePercent)}
                             </div>
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-aura-gold"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleWatchlist(stock);
-                              }}
-                            >
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-aura-gold" onClick={e => {
+                        e.stopPropagation();
+                        toggleWatchlist(stock);
+                      }}>
                               <BookmarkMinus className="h-4 w-4" />
                             </Button>
                           </td>
-                        </tr>
-                      ))}
+                        </tr>)}
                     </tbody>
                   </table>
-                </div>
-              )}
+                </div>}
             </Card>
           </TabsContent>
           
@@ -368,16 +298,7 @@ const Market = () => {
             </CardHeader>
             <CardContent>
               <ul className="divide-y divide-gray-800">
-                {mockStocks
-                  .filter(s => s.change > 0)
-                  .sort((a, b) => b.changePercent - a.changePercent)
-                  .slice(0, 4)
-                  .map(stock => (
-                    <li 
-                      key={stock.id} 
-                      className="py-2 flex justify-between items-center cursor-pointer"
-                      onClick={() => handleStockClick(stock.symbol)}
-                    >
+                {mockStocks.filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
                         <p className="text-xs text-aura-medium-gray">{stock.name}</p>
@@ -389,9 +310,7 @@ const Market = () => {
                           {formatPercentage(stock.changePercent)}
                         </p>
                       </div>
-                    </li>
-                  ))
-                }
+                    </li>)}
               </ul>
             </CardContent>
           </Card>
@@ -405,16 +324,7 @@ const Market = () => {
             </CardHeader>
             <CardContent>
               <ul className="divide-y divide-gray-800">
-                {mockStocks
-                  .filter(s => s.change < 0)
-                  .sort((a, b) => a.changePercent - b.changePercent)
-                  .slice(0, 4)
-                  .map(stock => (
-                    <li 
-                      key={stock.id} 
-                      className="py-2 flex justify-between items-center cursor-pointer"
-                      onClick={() => handleStockClick(stock.symbol)}
-                    >
+                {mockStocks.filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
                         <p className="text-xs text-aura-medium-gray">{stock.name}</p>
@@ -426,16 +336,12 @@ const Market = () => {
                           {formatPercentage(Math.abs(stock.changePercent))}
                         </p>
                       </div>
-                    </li>
-                  ))
-                }
+                    </li>)}
               </ul>
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Market;
