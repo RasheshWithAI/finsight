@@ -53,33 +53,33 @@ const Finance = () => {
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Summary</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="financial-card">
+          <Card className="financial-card bg-green-600">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Income</span>
+                <span className="stat-label text-yellow-300">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
               <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-indigo-50">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label bg-violet-900 hover:bg-violet-800">Expenses</span>
+                <span className="stat-label text-red-600">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-primary-text text-slate-950">{formatCurrency(totalExpenses)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-yellow-400">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label">Balance</span>
+                <span className="stat-label text-sky-700">Balance</span>
                 <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-lime-600">{formatCurrency(totalIncome - totalExpenses)}</span>
             </CardContent>
           </Card>
         </div>
@@ -88,8 +88,8 @@ const Finance = () => {
       {/* Tabs for Transactions and Budgets */}
       <Tabs defaultValue="transactions">
         <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="budgets">Budgets</TabsTrigger>
+          <TabsTrigger value="transactions" className="bg-violet-900 hover:bg-violet-800 rounded-2xl">Transactions</TabsTrigger>
+          <TabsTrigger value="budgets" className="rounded-2xl">Budgets</TabsTrigger>
         </TabsList>
         
         {/* Transactions Tab */}
