@@ -116,7 +116,7 @@ const Market = () => {
 
         <Tabs defaultValue="all">
           <TabsList className="grid grid-cols-3 mb-4">
-            <TabsTrigger value="all" className="text-zinc-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">All Stocks</TabsTrigger>
+            <TabsTrigger value="all" className="text-zinc-50 rounded-3xl bg-amber-500 hover:bg-amber-400">All Stocks</TabsTrigger>
             <TabsTrigger value="watchlist" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Watchlist</TabsTrigger>
             <TabsTrigger value="sectors" className="text-slate-50 bg-amber-500 hover:bg-amber-400 rounded-3xl">Sectors</TabsTrigger>
           </TabsList>
