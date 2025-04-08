@@ -30,7 +30,7 @@ const Insights = () => {
                     <span className="text-xs px-2 py-1 bg-red-900/30 rounded-full mr-2 text-red-600">
                       Cost Saving
                     </span>
-                    <span className="text-xs text-aura-medium-gray text-lime-500">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
                   </div>
                   
                   <h3 className="text-lg font-medium mb-2 text-aura-primary-text text-gray-950">Reduce Food Expenses</h3>
@@ -68,7 +68,7 @@ const Insights = () => {
                     <span className="text-xs px-2 py-1 bg-blue-900/30 text-aura-chart-blue rounded-full mr-2">
                       Investment
                     </span>
-                    <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
                   </div>
                   
                   <h3 className="text-lg font-medium mb-2 text-aura-primary-text text-zinc-950">Investment Opportunity</h3>
@@ -108,10 +108,10 @@ const Insights = () => {
           </Card>
 
           {/* Market Alert */}
-          <Card className="financial-card">
+          <Card className="financial-card bg-yellow-600">
             <CardContent className="p-4">
               <div className="flex">
-                <div className="bg-yellow-900/30 p-3 rounded-full mr-4">
+                <div className="p-3 rounded-full mr-4 bg-yellow-900">
                   <TrendingUp className="h-6 w-6 text-yellow-500" />
                 </div>
                 <div>
@@ -119,7 +119,7 @@ const Insights = () => {
                     <span className="text-xs px-2 py-1 bg-yellow-900/30 text-yellow-500 rounded-full mr-2">
                       Market Alert
                     </span>
-                    <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
                   </div>
                   
                   <h3 className="text-lg font-medium mb-2 text-aura-primary-text">Technology Sector Trending Up</h3>
@@ -167,10 +167,10 @@ const Insights = () => {
           </Card>
 
           {/* Financial Health */}
-          <Card className="financial-card">
+          <Card className="financial-card bg-green-400">
             <CardContent className="p-4">
               <div className="flex">
-                <div className="bg-green-900/30 p-3 rounded-full mr-4">
+                <div className="p-3 rounded-full mr-4 bg-green-900">
                   <BarChart3 className="h-6 w-6 text-green-400" />
                 </div>
                 <div>
@@ -178,7 +178,7 @@ const Insights = () => {
                     <span className="text-xs px-2 py-1 bg-green-900/30 text-green-400 rounded-full mr-2">
                       Financial Health
                     </span>
-                    <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
                   </div>
                   
                   <h3 className="text-lg font-medium mb-2 text-aura-primary-text">Your Financial Health Score: B+</h3>
@@ -187,8 +187,8 @@ const Insights = () => {
                   </p>
                   
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-800/50 p-3 rounded-md">
-                      <div className="text-sm text-aura-medium-gray">Strengths</div>
+                    <div className="p-3 rounded-md bg-gray-800">
+                      <div className="text-sm text-aura-medium-gray bg-transparent">Strengths</div>
                       <ul className="text-sm mt-1 space-y-1 text-aura-primary-text">
                         <li className="flex items-start">
                           <div className="text-green-400 mr-1">✓</div>
@@ -201,7 +201,7 @@ const Insights = () => {
                       </ul>
                     </div>
                     
-                    <div className="bg-gray-800/50 p-3 rounded-md">
+                    <div className="p-3 rounded-md bg-gray-800">
                       <div className="text-sm text-aura-medium-gray">Areas to Improve</div>
                       <ul className="text-sm mt-1 space-y-1 text-aura-primary-text">
                         <li className="flex items-start">
@@ -230,10 +230,10 @@ const Insights = () => {
           </Card>
 
           {/* Educational Tip */}
-          <Card className="financial-card">
+          <Card className="financial-card bg-violet-500">
             <CardContent className="p-4">
               <div className="flex">
-                <div className="bg-purple-900/30 p-3 rounded-full mr-4">
+                <div className="p-3 rounded-full mr-4 bg-purple-900">
                   <CircleDollarSign className="h-6 w-6 text-purple-400" />
                 </div>
                 <div>
@@ -241,7 +241,7 @@ const Insights = () => {
                     <span className="text-xs px-2 py-1 bg-purple-900/30 text-purple-400 rounded-full mr-2">
                       Education
                     </span>
-                    <span className="text-xs text-aura-medium-gray">April 6, 2025</span>
+                    <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
                   </div>
                   
                   <h3 className="text-lg font-medium mb-2 text-aura-primary-text">Understanding Dollar-Cost Averaging</h3>
@@ -249,7 +249,7 @@ const Insights = () => {
                     Dollar-cost averaging is an investment strategy that can help reduce the impact of volatility on your investments.
                   </p>
                   
-                  <div className="bg-gray-800/50 p-3 rounded-md mb-4 text-sm">
+                  <div className="p-3 rounded-md mb-4 text-sm bg-gray-800">
                     <p className="mb-2 text-aura-primary-text">
                       <strong>How it works:</strong> Instead of investing a large amount at once, you invest smaller amounts at regular intervals regardless of price.
                     </p>
