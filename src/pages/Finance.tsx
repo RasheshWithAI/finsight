@@ -73,7 +73,7 @@ const Finance = () => {
             </CardContent>
           </Card>
           
-          <Card className="financial-card">
+          <Card className="financial-card bg-amber-500">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label text-base text-yellow-950">Balance</span>
