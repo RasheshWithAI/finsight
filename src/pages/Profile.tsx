@@ -52,16 +52,16 @@ const Profile = () => {
   return (
     <div className="container px-4 py-6 pb-20 animate-fade-in">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl font-bold text-finance-text-primary">
           Profile & Settings
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-finance-text-secondary">
           Manage your account and preferences
         </p>
       </header>
 
       {/* Profile Card */}
-      <Card className="mb-6">
+      <Card className="financial-card mb-6">
         <CardHeader className="pb-4">
           <CardTitle>Profile</CardTitle>
           <CardDescription>Manage your personal information</CardDescription>
@@ -69,13 +69,13 @@ const Profile = () => {
         <CardContent>
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+              <AvatarFallback className="bg-finance-primary text-white text-xl">
                 {getInitials(user?.name || user?.email || "User")}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-3 grow">
               <div>
-                <Label htmlFor="name" className="text-muted-foreground text-sm block mb-1">
+                <Label htmlFor="name" className="text-finance-text-secondary text-sm block mb-1">
                   Name
                 </Label>
                 <Input
@@ -85,7 +85,7 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="email" className="text-muted-foreground text-sm block mb-1">
+                <Label htmlFor="email" className="text-finance-text-secondary text-sm block mb-1">
                   Email
                 </Label>
                 <Input
@@ -108,55 +108,55 @@ const Profile = () => {
         <h2 className="text-lg font-semibold mb-3 flex items-center">
           <Settings className="h-5 w-5 mr-2" /> Settings
         </h2>
-        <Card className="overflow-hidden">
-          <div className="divide-y divide-border">
+        <Card className="financial-card overflow-hidden">
+          <div className="divide-y divide-gray-100">
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Bell className="h-5 w-5 text-muted-foreground" />
+                <div className="p-2 rounded-full bg-gray-100 mr-3">
+                  <Bell className="h-5 w-5 text-finance-text-secondary" />
                 </div>
                 <div>
                   <h3 className="font-medium">Notifications</h3>
-                  <p className="text-sm text-muted-foreground">Manage your alerts and notifications</p>
+                  <p className="text-sm text-finance-text-tertiary">Manage your alerts and notifications</p>
                 </div>
               </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              <ChevronRight className="h-5 w-5 text-finance-text-tertiary" />
             </div>
 
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Lock className="h-5 w-5 text-muted-foreground" />
+                <div className="p-2 rounded-full bg-gray-100 mr-3">
+                  <Lock className="h-5 w-5 text-finance-text-secondary" />
                 </div>
                 <div>
                   <h3 className="font-medium">Security</h3>
-                  <p className="text-sm text-muted-foreground">Password and two-factor authentication</p>
+                  <p className="text-sm text-finance-text-tertiary">Password and two-factor authentication</p>
                 </div>
               </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              <ChevronRight className="h-5 w-5 text-finance-text-tertiary" />
             </div>
 
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Cloud className="h-5 w-5 text-muted-foreground" />
+                <div className="p-2 rounded-full bg-gray-100 mr-3">
+                  <Cloud className="h-5 w-5 text-finance-text-secondary" />
                 </div>
                 <div>
                   <h3 className="font-medium">Google Sheets Integration</h3>
-                  <p className="text-sm text-muted-foreground">Link and manage your spreadsheets</p>
+                  <p className="text-sm text-finance-text-tertiary">Link and manage your spreadsheets</p>
                 </div>
               </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              <ChevronRight className="h-5 w-5 text-finance-text-tertiary" />
             </div>
 
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                <div className="p-2 rounded-full bg-gray-100 mr-3">
+                  <CreditCard className="h-5 w-5 text-finance-text-secondary" />
                 </div>
                 <div>
                   <h3 className="font-medium">Currency</h3>
-                  <p className="text-sm text-muted-foreground">Set your preferred currency</p>
+                  <p className="text-sm text-finance-text-tertiary">Set your preferred currency</p>
                 </div>
               </div>
               <div className="text-sm font-medium">USD</div>
@@ -168,12 +168,12 @@ const Profile = () => {
       {/* Preferences */}
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3">Preferences</h2>
-        <Card>
+        <Card className="financial-card">
           <CardContent className="p-4 space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="market-alerts" className="font-medium">Market Alerts</Label>
-                <p className="text-sm text-muted-foreground">Receive alerts about market changes</p>
+                <p className="text-sm text-finance-text-tertiary">Receive alerts about market changes</p>
               </div>
               <Switch id="market-alerts" />
             </div>
@@ -181,7 +181,7 @@ const Profile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="budget-alerts" className="font-medium">Budget Alerts</Label>
-                <p className="text-sm text-muted-foreground">Get notified when approaching budget limits</p>
+                <p className="text-sm text-finance-text-tertiary">Get notified when approaching budget limits</p>
               </div>
               <Switch id="budget-alerts" checked />
             </div>
@@ -189,7 +189,7 @@ const Profile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="ai-insights" className="font-medium">AI Insights</Label>
-                <p className="text-sm text-muted-foreground">Allow AI to analyze your data for personalized tips</p>
+                <p className="text-sm text-finance-text-tertiary">Allow AI to analyze your data for personalized tips</p>
               </div>
               <Switch id="ai-insights" checked />
             </div>
@@ -202,18 +202,18 @@ const Profile = () => {
         <h2 className="text-lg font-semibold mb-3 flex items-center">
           <HelpCircle className="h-5 w-5 mr-2" /> Help & Support
         </h2>
-        <Card>
+        <Card className="financial-card">
           <CardContent className="p-4 space-y-2">
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Button variant="ghost" className="w-full justify-start text-finance-text-secondary">
               Documentation & Tutorials
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Button variant="ghost" className="w-full justify-start text-finance-text-secondary">
               Contact Support
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Button variant="ghost" className="w-full justify-start text-finance-text-secondary">
               Privacy Policy
             </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+            <Button variant="ghost" className="w-full justify-start text-finance-text-secondary">
               Terms of Service
             </Button>
           </CardContent>
@@ -227,7 +227,7 @@ const Profile = () => {
           <Button
             variant="outline"
             onClick={() => toast.info("Data refresh initiated")}
-            className="w-full justify-start text-muted-foreground"
+            className="w-full justify-start text-finance-text-secondary"
           >
             <RefreshCcw className="h-4 w-4 mr-2" /> Refresh Data
           </Button>
@@ -244,8 +244,8 @@ const Profile = () => {
       </section>
       
       <div className="mt-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          Aura Finance v1.0.0
+        <p className="text-sm text-finance-text-tertiary">
+          FinanceGrowth App v1.0.0
         </p>
       </div>
     </div>

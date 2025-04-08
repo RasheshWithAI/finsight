@@ -1,12 +1,3 @@
-
-/* Reset CSS for dark mode */
-html, body {
-  background-color: hsl(210 20% 12%);
-  color: hsl(0 0% 98%);
-  margin: 0;
-  padding: 0;
-}
-
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -14,48 +5,38 @@ html, body {
   text-align: center;
 }
 
-/* Force dark mode for specific components */
-input, select, textarea {
-  background-color: hsl(210 20% 15%);
-  color: hsl(0 0% 98%);
-  border-color: hsl(210 20% 20%);
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-button {
-  background-color: hsl(220 87% 25%);
-  color: hsl(0 0% 98%);
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-a {
-  color: hsl(43 65% 53%);
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
 }
 
-/* Additional styles to ensure text visibility */
-.text-finance-text-primary, 
-.text-finance-text-secondary,
-.text-finance-text-tertiary {
-  color: hsl(0 0% 98%); /* Override any problematic classes with light text */
+.card {
+  padding: 2em;
 }
 
-.bg-gray-50, 
-.bg-blue-50,
-.bg-red-50,
-.bg-green-50,
-.bg-yellow-50,
-.bg-purple-50 {
-  @apply bg-opacity-10; /* Make light backgrounds semi-transparent */
-}
-
-/* Ensure finance text colors are visible */
-.text-finance-primary,
-.text-finance-secondary,
-.text-finance-accent,
-.text-finance-text-primary,
-.text-finance-text-secondary {
-  @apply text-aura-primary-text;
-}
-
-/* Dark mode transitions */
-* {
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+.read-the-docs {
+  color: #888;
 }

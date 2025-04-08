@@ -9,17 +9,17 @@ const Index = () => {
   useEffect(() => {
     // Add a small delay for the animation to be visible
     const redirectTimer = setTimeout(() => {
-      // Redirect to the welcome page
-      navigate('/welcome');
+      // Redirect to the welcome page (or dashboard if user is already logged in)
+      navigate('/');
     }, 1500);
     
     return () => clearTimeout(redirectTimer);
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-aura-white to-aura-silver-gray">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-aura-white to-aura-light-gray">
       <div className="relative animate-pulse-subtle">
-        <CircleDollarSign className="h-20 w-20 text-aura-sapphire" />
+        <CircleDollarSign className="h-20 w-20 text-aura-teal" />
         <span className="absolute inset-0 rounded-full bg-primary-gradient opacity-20 animate-pulse-glow"></span>
       </div>
       <h1 className="mt-6 text-3xl font-bold aura-gradient-text animate-fade-in">Aura Finance</h1>

@@ -6,77 +6,85 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  /* Define all gradient classes that are referenced elsewhere */
-  .bg-primary-gradient {
-    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
-  }
-  
-  .bg-accent-gradient {
-    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
-  }
-  
-  .bg-error-gradient {
-    @apply bg-gradient-to-r from-red-500 to-red-600;
-  }
-  
-  .primary-gradient {
-    @apply bg-gradient-to-r from-aura-sapphire to-aura-midnight;
-  }
-  
-  .accent-gradient {
-    @apply bg-gradient-to-r from-aura-gold to-aura-bright-gold;
-  }
-}
-
 @layer base {
-  /* We're now using only dark mode variables, so we'll set these as default */
   :root {
-    --background: 210 20% 12%; /* Deep Charcoal base */
-    --foreground: 0 0% 98%;
-    
-    --primary: 220 87% 25%;
-    --secondary: 43 65% 53%;
-    
-    /* Adjusted for dark mode with Deep Charcoal foundation */
-    --muted: 210 20% 20%;
-    --accent: 43 65% 53%;
-    
-    /* Border and input colors aligned with Deep Charcoal */
-    --border: 210 20% 15%;
-    --input: 210 20% 15%;
-    --card: 215 25% 12%;
-    --card-foreground: 210 33% 98%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --popover: 215 25% 12%;
-    --popover-foreground: 210 33% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 210 33% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --ring: 210 33% 80%;
-    
-    --sidebar-background: 220 87% 15%;
-    --sidebar-foreground: 210 33% 98%;
-    --sidebar-primary: 220 87% 20%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 43 65% 53%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 87% 15%;
-    --sidebar-ring: 220 87% 25%;
+    --primary: 185 100% 20%;
+    --primary-foreground: 210 40% 98%;
 
-    /* Keep text color variables but adjusted for dark mode */
-    --primary-text: #F5F7FA;  /* Light text for dark background */
-    --secondary-text: #B8C0D0; /* Medium light gray for secondary text */
+    --secondary: 180 58% 49%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 16 100% 66%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 185 100% 20%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 185 100% 20%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 185 100% 25%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 16 100% 66%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 185 100% 25%;
+    --sidebar-ring: 185 100% 30%;
   }
 
-  /* We no longer need light/dark mode toggle, but we'll keep the class 
-     for compatibility with existing code that might reference it */
   .dark {
-    /* These are now the same as root */
-    --background: 210 20% 12%;
-    --foreground: 0 0% 98%;
-    /* ... other variables remain the same as root above */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 185 100% 30%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 180 58% 60%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 16 100% 66%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    
+    --sidebar-background: 185 100% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 185 100% 20%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 16 100% 66%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 185 100% 15%;
+    --sidebar-ring: 185 100% 25%;
   }
 }
 
@@ -92,40 +100,38 @@
   body {
     @apply bg-background text-foreground font-satoshi;
     font-feature-settings: "rlig" 1, "calt" 1;
-    @apply text-aura-primary-text;
   }
 
-  /* Adjust financial card for dark mode */
   .financial-card {
-    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm p-4 transition-all duration-200 hover:shadow-md;
+    @apply bg-white rounded-[var(--radius)] border border-gray-100 shadow-sm p-4 transition-all duration-200 hover:shadow-md;
   }
   
-  /* Update Aura Finance custom classes for dark mode */
+  /* Aura Finance custom classes */
   .aura-card {
-    @apply bg-card rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-white rounded-[var(--radius)] border border-aura-light-gray shadow-sm hover:shadow-md transition-all duration-300;
   }
 
   .aura-card-gradient {
-    @apply bg-gradient-to-br from-aura-charcoal to-gray-900 rounded-[var(--radius)] border border-gray-800 shadow-sm hover:shadow-md transition-all duration-300;
+    @apply bg-gradient-to-br from-aura-white to-aura-light-gray rounded-[var(--radius)] border border-aura-light-gray shadow-sm hover:shadow-md transition-all duration-300;
   }
   
   .aura-button-primary {
-    @apply bg-accent-gradient text-aura-dark-gray px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow transition-transform hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-accent-gradient text-white px-4 py-2 rounded-lg font-medium shadow-sm hover:shadow transition-transform hover:scale-[1.02] active:scale-[0.98];
   }
   
   .aura-button-secondary {
-    @apply bg-transparent text-aura-gold border border-aura-gold px-4 py-2 rounded-lg font-medium hover:bg-aura-gold/10 transition-all;
+    @apply bg-transparent text-aura-teal border border-aura-teal px-4 py-2 rounded-lg font-medium hover:bg-aura-teal/5 transition-all;
   }
   
   .aura-input {
-    @apply w-full border-b-2 border-gray-700 px-3 py-2 focus:border-aura-gold outline-none transition-colors bg-transparent text-foreground;
+    @apply w-full border-b-2 border-aura-light-gray px-3 py-2 focus:border-aura-teal outline-none transition-colors;
   }
   
   .aura-gradient-text {
     @apply bg-primary-gradient bg-clip-text text-transparent;
   }
   
-  .accent-gradient-text {
+  .aura-accent-text {
     @apply bg-accent-gradient bg-clip-text text-transparent;
   }
 
@@ -134,62 +140,35 @@
   }
   
   .stat-label {
-    @apply text-sm text-gray-400;
+    @apply text-sm text-aura-medium-gray;
   }
 
   .positive-value {
-    @apply text-green-400;
+    @apply text-aura-success;
   }
 
   .negative-value {
-    @apply text-red-400;
+    @apply text-aura-error;
   }
   
   .glass-effect {
-    @apply backdrop-blur-md bg-aura-charcoal/80 border border-gray-800/50;
+    @apply backdrop-blur-md bg-white/80 dark:bg-aura-charcoal/80 border border-white/20 dark:border-aura-dark-gray/20;
   }
   
   .nav-item-active {
-    @apply text-aura-gold scale-[1.1] transition-all duration-200;
+    @apply text-aura-teal scale-[1.1] transition-all duration-200;
   }
   
   .nav-item-inactive {
-    @apply text-gray-400 hover:text-aura-gold hover:scale-[1.05] transition-all duration-200;
+    @apply text-aura-medium-gray hover:text-aura-teal hover:scale-[1.05] transition-all duration-200;
   }
   
   .progress-bar-container {
-    @apply h-2 bg-gray-800 rounded-full overflow-hidden;
+    @apply h-2 bg-aura-light-gray rounded-full overflow-hidden;
   }
   
   .progress-bar-fill {
     @apply h-full bg-primary-gradient rounded-full transition-all duration-300;
-  }
-  
-  .gold-shimmer {
-    @apply bg-gradient-to-r from-aura-gold via-aura-bright-gold to-aura-gold bg-[length:200%_auto] animate-gold-shimmer;
-  }
-
-  /* Global text color classes for flexible usage */
-  .primary-text {
-    @apply text-aura-primary-text;
-  }
-
-  .secondary-text {
-    @apply text-aura-secondary-text;
-  }
-
-  /* Headings and major text elements */
-  h1, h2, h3, h4, h5, h6 {
-    @apply text-aura-primary-text;
-  }
-
-  /* Secondary text elements */
-  small, 
-  .caption, 
-  .timestamp, 
-  .helper-text, 
-  .placeholder {
-    @apply text-aura-secondary-text;
   }
 }
 
