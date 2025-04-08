@@ -106,7 +106,7 @@ const Finance = () => {
             </Button>
           </div>
           
-          <Card className="financial-card overflow-hidden">
+          <Card className="financial-card overflow-hidden bg-gray-600">
             {transactions.length === 0 ? <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
@@ -120,7 +120,7 @@ const Finance = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
-                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Date</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray bg-transparent">Date</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Description</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-aura-medium-gray">Category</th>
                       <th className="px-4 py-3 text-right text-xs font-medium text-aura-medium-gray">Amount</th>
@@ -145,7 +145,7 @@ const Finance = () => {
           </Card>
 
           {/* Expense Breakdown Chart */}
-          <Card className="financial-card p-6 mt-6 rounded-3xl bg-gray-400">
+          <Card className="financial-card p-6 mt-6">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-base flex items-center">
                 <PieChart className="h-4 w-4 mr-2 text-aura-gold" />
