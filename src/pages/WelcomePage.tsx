@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,18 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Apple, Twitter } from "lucide-react";
-
 const WelcomePage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const {
+    login
+  } = useAuth();
   const navigate = useNavigate();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       await login(email, password);
       toast.success("Login successful!");
@@ -28,16 +26,10 @@ const WelcomePage = () => {
       setIsSubmitting(false);
     }
   };
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#1E1E2F] to-[#3A3A5B]">
+  return <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#1E1E2F] to-[#3A3A5B]">
       {/* Logo - Small and subtle at the top */}
       <div className="mb-12 mt-8">
-        <img 
-          src="/lovable-uploads/40ddd2e1-237b-497c-a073-39fe0af7b02a.png" 
-          alt="FinSight Logo" 
-          className="h-10 w-10 object-contain"
-        />
+        
       </div>
       
       {/* Title */}
@@ -48,34 +40,16 @@ const WelcomePage = () => {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Input */}
           <div>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="w-full h-12 bg-[#3A3A5B] border-none rounded-xl text-white placeholder:text-[#A0A0B8]"
-              required
-            />
+            <Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="w-full h-12 bg-[#3A3A5B] border-none rounded-xl text-white placeholder:text-[#A0A0B8]" required />
           </div>
           
           {/* Password Input */}
           <div>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full h-12 bg-[#3A3A5B] border-none rounded-xl text-white placeholder:text-[#A0A0B8]"
-              required
-            />
+            <Input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="w-full h-12 bg-[#3A3A5B] border-none rounded-xl text-white placeholder:text-[#A0A0B8]" required />
           </div>
           
           {/* Sign In Button */}
-          <Button
-            type="submit"
-            className="w-full h-12 bg-[#EAEAEF] hover:bg-[#FFFFFF] text-[#1E1E2F] font-medium rounded-xl"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full h-12 bg-[#EAEAEF] hover:bg-[#FFFFFF] text-[#1E1E2F] font-medium rounded-xl" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign in"}
           </Button>
         </form>
@@ -113,8 +87,6 @@ const WelcomePage = () => {
           <a href="#" className="text-[#A0A0B8] hover:text-white underline">Privacy Policy</a>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default WelcomePage;
