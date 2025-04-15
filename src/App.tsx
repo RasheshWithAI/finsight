@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import StockDetail from "./pages/StockDetail";
 import StockCompare from "./pages/StockCompare";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +31,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
+            <Route path="/" element={<Index />} />
+            <Route path="/welcome" element={<WelcomePage />} />
             
             {/* Protected Routes with AppLayout */}
             <Route 
@@ -103,9 +105,6 @@ const App = () => (
                 </PrivateRoute>
               } 
             />
-            
-            {/* Update the Index route to redirect to either dashboard or welcome page */}
-            <Route path="/index" element={<Navigate to="/" replace />} />
             
             {/* 404 Page */}
             <Route path="*" element={<NotFound />} />
