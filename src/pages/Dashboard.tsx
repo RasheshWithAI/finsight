@@ -1,9 +1,19 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { calculateFinancialSummary, generateWatchlist, mockInsights, mockMarketIndices } from "@/utils/mockData";
-import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, LineChart, Lightbulb, Percent, PiggyBank } from "lucide-react";
+import { 
+  ArrowDownRight, 
+  ArrowUpRight, 
+  BarChart3, 
+  ChevronRight, 
+  DollarSign, 
+  Eye, 
+  Lightbulb, 
+  Percent, 
+  PiggyBank,
+  Sparkles 
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
@@ -17,7 +27,6 @@ const Dashboard = () => {
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
 
-  // Format currency function
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -26,7 +35,6 @@ const Dashboard = () => {
     }).format(value);
   };
 
-  // Format percentage function
   const formatPercentage = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'percent',
@@ -34,8 +42,7 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
-  
-  // Demo effect: Show an Arya notification after 15 seconds
+
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
       sendAryaNotification(
@@ -44,9 +51,19 @@ const Dashboard = () => {
       );
     }, 15000);
     
-    return () => clearTimeout(notificationTimer);
+    const premiumTimer = setTimeout(() => {
+      sendAryaNotification(
+        "Unlock Arya Pro for advanced portfolio analysis and personalized tax strategies.",
+        "info"
+      );
+    }, 45000);
+    
+    return () => {
+      clearTimeout(notificationTimer);
+      clearTimeout(premiumTimer);
+    };
   }, []);
-  
+
   return <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">
@@ -57,7 +74,20 @@ const Dashboard = () => {
         </p>
       </header>
 
-      {/* Financial Summary Cards */}
+      <section className="mb-6">
+        <Card className="financial-card bg-gradient-to-r from-[#3F51B5] to-[#5B4EBD] border-none">
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <Sparkles className="h-5 w-5 mr-2 text-amber-300" />
+              <span className="font-medium text-white">Unlock Premium Financial Insights</span>
+            </div>
+            <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              Learn More
+            </Button>
+          </CardContent>
+        </Card>
+      </section>
+
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Financial Summary</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -103,7 +133,6 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Market Summary */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-aura-primary-text">Market Summary</h2>
@@ -130,7 +159,6 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Watchlist */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-aura-primary-text">Your Watchlist</h2>
@@ -179,7 +207,6 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Insights */}
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-semibold text-aura-primary-text">AI Insights</h2>

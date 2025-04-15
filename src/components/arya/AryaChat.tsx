@@ -1,11 +1,11 @@
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, X } from 'lucide-react';
+import { Send, X, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AryaMessage from './AryaMessage';
-import { getAryaResponse } from '@/utils/aryaUtils';
+import { getAryaResponse, isPremiumTopic } from '@/utils/aryaUtils';
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface Message {
@@ -13,6 +13,7 @@ interface Message {
   content: string;
   isUser: boolean;
   timestamp: Date;
+  isPremium?: boolean;
 }
 
 interface AryaChatProps {
@@ -24,6 +25,7 @@ const AryaChat = ({ isOpen, onClose }: AryaChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showPremiumBadge, setShowPremiumBadge] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -57,6 +59,9 @@ const AryaChat = ({ isOpen, onClose }: AryaChatProps) => {
     
     if (!input.trim()) return;
     
+    // Check if message contains premium topics
+    const isRequestingPremium = isPremiumTopic(input);
+    
     // Add user message
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -78,10 +83,29 @@ const AryaChat = ({ isOpen, onClose }: AryaChatProps) => {
         id: crypto.randomUUID(),
         content: response,
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isPremium: isRequestingPremium
       };
       
       setMessages(prev => [...prev, aryaMessage]);
+      
+      // Show premium badge if premium topic detected
+      if (isRequestingPremium) {
+        setShowPremiumBadge(true);
+        
+        // Add premium upsell message after a short delay
+        setTimeout(() => {
+          const premiumMessage: Message = {
+            id: crypto.randomUUID(),
+            content: "I see you're interested in advanced financial insights! Upgrade to Arya Pro for access to detailed portfolio analysis, tax optimization strategies, and personalized financial planning.",
+            isUser: false,
+            timestamp: new Date(),
+            isPremium: true
+          };
+          
+          setMessages(prev => [...prev, premiumMessage]);
+        }, 2000);
+      }
     } catch (error) {
       console.error('Error getting response from Arya:', error);
       
@@ -118,8 +142,16 @@ const AryaChat = ({ isOpen, onClose }: AryaChatProps) => {
               <div className="h-8 w-8 rounded-full bg-[#3F51B5] flex items-center justify-center">
                 <MessageSquare className="h-4 w-4 text-white" />
               </div>
-              <div>
-                <h3 className="font-medium text-white">Arya</h3>
+              <div className="flex flex-col">
+                <div className="flex items-center">
+                  <h3 className="font-medium text-white">Arya</h3>
+                  {showPremiumBadge && (
+                    <span className="ml-2 px-1.5 py-0.5 text-xs rounded bg-gradient-to-r from-amber-400 to-amber-600 text-black font-semibold flex items-center">
+                      <Sparkles className="h-3 w-3 mr-0.5" />
+                      PRO
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-400">Financial Assistant</p>
               </div>
             </div>
@@ -141,6 +173,7 @@ const AryaChat = ({ isOpen, onClose }: AryaChatProps) => {
                 message={message.content}
                 isUser={message.isUser}
                 timestamp={message.timestamp}
+                isPremium={message.isPremium}
               />
             ))}
             

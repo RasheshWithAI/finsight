@@ -8,7 +8,7 @@ interface Message {
   timestamp: Date;
 }
 
-// Mock responses for different financial topics
+// Enhanced mock responses for different financial topics with premium-style insights
 const mockResponses = {
   budgeting: [
     "Based on your spending patterns, I recommend allocating 50% of your income to necessities, 30% to wants, and 20% to savings.",
@@ -33,6 +33,25 @@ const mockResponses = {
     "To add stocks to your watchlist, visit the Market section and tap the bookmark icon.",
     "The Insights section provides AI-powered recommendations based on your financial data.",
     "You can customize your notifications in the Profile section under Preferences."
+  ],
+  // New premium-style advanced financial analysis responses
+  advancedAnalysis: [
+    "I've analyzed your investment portfolio and found that your sector allocation is heavily weighted towards technology (42%). Consider diversifying to reduce sector-specific risk.",
+    "Your current debt-to-income ratio is 28%, which is within the recommended range. You have capacity to take on additional strategic debt if needed for wealth building.",
+    "Based on your retirement goals and current savings rate, you're on track to reach your target of $1.2M by age 62. Consider increasing contributions by 2% to provide an additional safety margin.",
+    "I've identified that your emergency fund covers 2.4 months of expenses. This is below the recommended 3-6 months. Prioritizing this could be beneficial before increasing investment allocations."
+  ],
+  taxStrategies: [
+    "Based on your investment activity, you could benefit from tax-loss harvesting. Consider selling positions with unrealized losses to offset capital gains, potentially saving up to $1,500 in taxes.",
+    "Your current tax efficiency score is 82/100. Consider moving high-yield investments to tax-advantaged accounts to improve this score.",
+    "You might qualify for the Saver's Credit based on your income and retirement contributions. This could reduce your tax liability by up to $1,000.",
+    "I notice you're not currently maximizing your HSA contributions. This triple-tax-advantaged account could save you approximately $840 in taxes this year."
+  ],
+  marketInsights: [
+    "Recent Fed statements suggest a shift toward a more accommodative monetary policy, which historically has supported equity valuations, particularly in growth sectors.",
+    "The yield curve is currently inverted at -0.42%, which has historically preceded economic slowdowns. Consider increasing allocation to defensive sectors like utilities and consumer staples.",
+    "Corporate earnings for Q1 2025 have exceeded expectations by 4.2% on average, with technology and healthcare showing the strongest performance.",
+    "Current market volatility (VIX at 22.4) is slightly elevated compared to historical averages. This may present opportunities for strategic entry points in quality stocks."
   ]
 };
 
@@ -49,10 +68,16 @@ export const getAryaResponse = async (
   
   const input = userInput.toLowerCase();
   
-  // Determine which category the question falls into
-  if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
+  // Enhanced categorization of questions for premium-style responses
+  if (input.includes('portfolio') || input.includes('allocation') || input.includes('risk analysis') || input.includes('retirement') || input.includes('debt')) {
+    return getRandomResponse('advancedAnalysis');
+  } else if (input.includes('tax') || input.includes('harvest') || input.includes('deduction') || input.includes('credit')) {
+    return getRandomResponse('taxStrategies');
+  } else if (input.includes('fed') || input.includes('market') || input.includes('earnings') || input.includes('volatility') || input.includes('trend')) {
+    return getRandomResponse('marketInsights');
+  } else if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
     return getRandomResponse('budgeting');
-  } else if (input.includes('invest') || input.includes('stock') || input.includes('market')) {
+  } else if (input.includes('invest') || input.includes('stock') || input.includes('etf')) {
     return getRandomResponse('investing');
   } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
     return getRandomResponse('savings');
@@ -60,12 +85,12 @@ export const getAryaResponse = async (
     return getRandomResponse('appFeatures');
   } else {
     // Default response
-    return "I'm focused on helping with finances, investments, and app features. Could you ask something related to these topics?";
+    return "I'm focused on helping with finances, investments, tax strategies, and market insights. Could you ask something related to these topics?";
   }
 };
 
 // Helper function to get a random response from a category
-const getRandomResponse = (category: 'budgeting' | 'investing' | 'savings' | 'appFeatures'): string => {
+const getRandomResponse = (category: 'budgeting' | 'investing' | 'savings' | 'appFeatures' | 'advancedAnalysis' | 'taxStrategies' | 'marketInsights'): string => {
   const responses = mockResponses[category];
   const randomIndex = Math.floor(Math.random() * responses.length);
   return responses[randomIndex];
@@ -86,4 +111,22 @@ export const sendAryaNotification = (
       }
     }
   });
+};
+
+// New function to detect premium topics and suggest upgrade
+export const isPremiumTopic = (userInput: string): boolean => {
+  const premiumKeywords = [
+    'portfolio analysis', 
+    'tax strategy', 
+    'retirement planning',
+    'detailed forecast',
+    'sector allocation',
+    'risk analysis',
+    'yield curve',
+    'advanced metrics',
+    'tax-loss harvesting',
+    'correlation analysis'
+  ];
+  
+  return premiumKeywords.some(keyword => userInput.toLowerCase().includes(keyword));
 };
