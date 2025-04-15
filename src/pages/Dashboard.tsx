@@ -2,23 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { calculateFinancialSummary, generateWatchlist, mockInsights, mockMarketIndices } from "@/utils/mockData";
-import { 
-  ArrowDownRight, 
-  ArrowUpRight, 
-  BarChart3, 
-  ChevronRight, 
-  DollarSign, 
-  Eye, 
-  Lightbulb, 
-  Percent, 
-  PiggyBank,
-  Sparkles 
-} from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, Lightbulb, Percent, PiggyBank, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
 import { PricingModal } from "@/components/premium/PricingModal";
-
 const Dashboard = () => {
   const {
     user
@@ -28,7 +16,6 @@ const Dashboard = () => {
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -36,7 +23,6 @@ const Dashboard = () => {
       minimumFractionDigits: 2
     }).format(value);
   };
-
   const formatPercentage = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'percent',
@@ -44,34 +30,22 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
-
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
-      sendAryaNotification(
-        "Your savings rate is on track! At 20.5%, you're above the recommended 20% target.",
-        "success"
-      );
+      sendAryaNotification("Your savings rate is on track! At 20.5%, you're above the recommended 20% target.", "success");
     }, 15000);
-    
     const premiumTimer = setTimeout(() => {
-      sendAryaNotification(
-        "Unlock Arya Pro for advanced portfolio analysis and personalized tax strategies.",
-        "info"
-      );
+      sendAryaNotification("Unlock Arya Pro for advanced portfolio analysis and personalized tax strategies.", "info");
     }, 45000);
-    
     return () => {
       clearTimeout(notificationTimer);
       clearTimeout(premiumTimer);
     };
   }, []);
-
   const handleLearnMoreClick = () => {
     setIsPricingModalOpen(true);
   };
-
-  return (
-    <>
+  return <>
       <div className="container px-4 py-6 animate-fade-in">
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-aura-primary-text">
@@ -83,18 +57,13 @@ const Dashboard = () => {
         </header>
 
         <section className="mb-6">
-          <Card className="financial-card bg-gradient-to-r from-[#3F51B5] to-[#5B4EBD] border-none">
+          <Card className="financial-card bg-gradient-to-r from-[#3F51B5] to-[#5B4EBD] border-none rounded-3xl">
             <CardContent className="p-4 flex items-center justify-between">
               <div className="flex items-center">
                 <Sparkles className="h-5 w-5 mr-2 text-amber-300" />
                 <span className="font-medium text-white">Unlock Premium Financial Insights</span>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                onClick={handleLearnMoreClick}
-              >
+              <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLearnMoreClick}>
                 Learn More
               </Button>
             </CardContent>
@@ -259,12 +228,7 @@ const Dashboard = () => {
         </section>
       </div>
 
-      <PricingModal 
-        isOpen={isPricingModalOpen} 
-        onClose={() => setIsPricingModalOpen(false)} 
-      />
-    </>
-  );
+      <PricingModal isOpen={isPricingModalOpen} onClose={() => setIsPricingModalOpen(false)} />
+    </>;
 };
-
 export default Dashboard;
