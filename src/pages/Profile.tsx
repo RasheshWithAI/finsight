@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -8,207 +9,267 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LogOut, User, Bell, Shield, CreditCard, Settings, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
-import { User, Settings, Bell, LogOut, Mail, Shield, ScanLine, CreditCard, Lock, HelpCircle, ChevronRight, Cloud, RefreshCcw } from "lucide-react";
+import AryaNotificationSettings from "@/components/arya/AryaNotificationSettings";
+
 const Profile = () => {
-  const {
-    user,
-    logout
-  } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+  const [notifications, setNotifications] = useState(true);
+  const [biometrics, setBiometrics] = useState(false);
+
   const handleLogout = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      logout();
-      toast.success("You've been logged out");
-      navigate("/");
-      setIsLoading(false);
-    }, 500);
+    logout();
+    toast.success("You have been logged out");
+    navigate("/");
   };
-  const getInitials = (name: string) => {
-    return name.split(" ").map(n => n[0]).join("").toUpperCase();
+
+  // Get user initials for avatar fallback
+  const getUserInitials = () => {
+    if (!user?.name) return "U";
+    return user.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
   };
-  return <div className="container px-4 py-6 pb-20 animate-fade-in">
+
+  return (
+    <div className="container px-4 py-6 animate-fade-in pb-20">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold">
-          Profile & Settings
-        </h1>
-        <p className="text-muted-foreground">
-          Manage your account and preferences
-        </p>
+        <h1 className="text-2xl font-bold text-aura-primary-text">Profile</h1>
+        <p className="text-aura-secondary-text">Manage your account and preferences</p>
       </header>
 
-      {/* Profile Card */}
-      <Card className="mb-6">
-        <CardHeader className="pb-4 bg-slate-900">
-          <CardTitle className="text-slate-50">Profile</CardTitle>
-          <CardDescription className="text-slate-50">Manage your personal information</CardDescription>
-        </CardHeader>
-        <CardContent className="bg-slate-900">
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
+      {/* User Profile Card */}
+      <Card className="financial-card mb-6">
+        <CardContent className="p-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                {getInitials(user?.name || user?.email || "User")}
+              <AvatarImage src={user?.photoURL || ""} alt={user?.name || "User"} />
+              <AvatarFallback className="text-xl bg-primary text-white">
+                {getUserInitials()}
               </AvatarFallback>
             </Avatar>
-            <div className="space-y-3 grow">
-              <div>
-                <Label htmlFor="name" className="text-muted-foreground text-sm block mb-1">
-                  Name
-                </Label>
-                <Input id="name" defaultValue={user?.name || ""} placeholder="Your name" />
-              </div>
-              <div>
-                <Label htmlFor="email" className="text-muted-foreground text-sm block mb-1">
-                  Email
-                </Label>
-                <Input id="email" defaultValue={user?.email || ""} placeholder="Your email" disabled />
-              </div>
+            <div className="text-center sm:text-left space-y-1 flex-1">
+              <h2 className="text-xl font-bold text-aura-primary-text">{user?.name || "User"}</h2>
+              <p className="text-aura-secondary-text">{user?.email}</p>
+              <p className="text-sm text-aura-gold">Premium Member</p>
             </div>
-          </div>
-          <div className="mt-4 flex justify-end">
-            <Button>Save Changes</Button>
+            <Button variant="outline" onClick={handleLogout} className="mt-2 sm:mt-0">
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Settings List */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3 flex items-center">
-          <Settings className="h-5 w-5 mr-2" /> Settings
-        </h2>
-        <Card className="overflow-hidden">
-          <div className="divide-y divide-border">
-            <div className="flex items-center justify-between p-4 bg-slate-900">
-              <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Bell className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-medium">Notifications</h3>
-                  <p className="text-sm text-muted-foreground">Manage your alerts and notifications</p>
-                </div>
-              </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-            </div>
+      {/* Settings Tabs */}
+      <Tabs defaultValue="preferences">
+        <TabsList className="grid grid-cols-3 mb-6">
+          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        </TabsList>
 
-            <div className="flex items-center justify-between p-4 bg-slate-900">
-              <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Lock className="h-5 w-5 text-muted-foreground" />
-                </div>
+        {/* Preferences Tab */}
+        <TabsContent value="preferences">
+          <Card>
+            <CardHeader>
+              <CardTitle>App Preferences</CardTitle>
+              <CardDescription>Customize how the app looks and behaves</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium">Security</h3>
-                  <p className="text-sm text-muted-foreground">Password and two-factor authentication</p>
+                  <Label htmlFor="dark-mode" className="text-aura-primary-text">Dark Mode</Label>
+                  <p className="text-sm text-aura-secondary-text">
+                    Use dark theme throughout the app
+                  </p>
                 </div>
+                <Switch
+                  id="dark-mode"
+                  checked={darkMode}
+                  onCheckedChange={setDarkMode}
+                  disabled={true}
+                />
               </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-            </div>
 
-            <div className="flex items-center justify-between p-4 bg-slate-900">
-              <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <Cloud className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-medium">Google Sheets Integration</h3>
-                  <p className="text-sm text-muted-foreground">Link and manage your spreadsheets</p>
-                </div>
-              </div>
-              <ChevronRight className="h-5 w-5 text-muted-foreground" />
-            </div>
+              <Separator className="my-4" />
 
-            <div className="flex items-center justify-between p-4 bg-slate-900">
-              <div className="flex items-center">
-                <div className="p-2 rounded-full bg-muted mr-3">
-                  <CreditCard className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="font-medium">Currency</h3>
-                  <p className="text-sm text-muted-foreground">Set your preferred currency</p>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="language" className="text-aura-primary-text">Language</Label>
+                <select
+                  id="language"
+                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2"
+                >
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                </select>
               </div>
-              <div className="text-sm font-medium">USD</div>
-            </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency" className="text-aura-primary-text">Currency</Label>
+                <select
+                  id="currency"
+                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2"
+                >
+                  <option value="usd">USD ($)</option>
+                  <option value="eur">EUR (€)</option>
+                  <option value="gbp">GBP (£)</option>
+                </select>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Security Tab */}
+        <TabsContent value="security">
+          <Card>
+            <CardHeader>
+              <CardTitle>Security Settings</CardTitle>
+              <CardDescription>Manage your account security preferences</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="biometrics" className="text-aura-primary-text">
+                    Biometric Authentication
+                  </Label>
+                  <p className="text-sm text-aura-secondary-text">
+                    Use fingerprint or Face ID to unlock the app
+                  </p>
+                </div>
+                <Switch
+                  id="biometrics"
+                  checked={biometrics}
+                  onCheckedChange={setBiometrics}
+                />
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <Label htmlFor="current-password" className="text-aura-primary-text">
+                  Current Password
+                </Label>
+                <Input
+                  id="current-password"
+                  type="password"
+                  placeholder="Enter current password"
+                  className="bg-gray-800"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="new-password" className="text-aura-primary-text">
+                  New Password
+                </Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="Enter new password"
+                  className="bg-gray-800"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password" className="text-aura-primary-text">
+                  Confirm New Password
+                </Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="Confirm new password"
+                  className="bg-gray-800"
+                />
+              </div>
+
+              <Button className="w-full mt-4">Update Password</Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Notifications Tab */}
+        <TabsContent value="notifications">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Bell className="h-5 w-5 text-aura-gold" />
+                  <CardTitle>App Notifications</CardTitle>
+                </div>
+                <CardDescription>Manage your notification preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="notifications" className="text-aura-primary-text">
+                      Enable Notifications
+                    </Label>
+                    <p className="text-sm text-aura-secondary-text">
+                      Receive updates, alerts, and important information
+                    </p>
+                  </div>
+                  <Switch
+                    id="notifications"
+                    checked={notifications}
+                    onCheckedChange={setNotifications}
+                  />
+                </div>
+
+                <Separator className="my-2" />
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="budget-alerts" className="text-aura-primary-text">
+                      Budget Alerts
+                    </Label>
+                    <p className="text-sm text-aura-secondary-text">
+                      Get notified when approaching budget limits
+                    </p>
+                  </div>
+                  <Switch id="budget-alerts" defaultChecked={true} />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="stock-alerts" className="text-aura-primary-text">
+                      Stock Alerts
+                    </Label>
+                    <p className="text-sm text-aura-secondary-text">
+                      Receive updates about your watchlisted stocks
+                    </p>
+                  </div>
+                  <Switch id="stock-alerts" defaultChecked={true} />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="new-features" className="text-aura-primary-text">
+                      New Features
+                    </Label>
+                    <p className="text-sm text-aura-secondary-text">
+                      Stay informed about new app features and updates
+                    </p>
+                  </div>
+                  <Switch id="new-features" defaultChecked={false} />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Arya Notification Settings */}
+            <AryaNotificationSettings />
           </div>
-        </Card>
-      </section>
-
-      {/* Preferences */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3">Preferences</h2>
-        <Card className="bg-slate-900">
-          <CardContent className="p-4 space-y-4 bg-slate-900">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="market-alerts" className="font-medium">Market Alerts</Label>
-                <p className="text-sm text-muted-foreground">Receive alerts about market changes</p>
-              </div>
-              <Switch id="market-alerts" />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="budget-alerts" className="font-medium">Budget Alerts</Label>
-                <p className="text-sm text-muted-foreground">Get notified when approaching budget limits</p>
-              </div>
-              <Switch id="budget-alerts" checked />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="ai-insights" className="font-medium">AI Insights</Label>
-                <p className="text-sm text-muted-foreground">Allow AI to analyze your data for personalized tips</p>
-              </div>
-              <Switch id="ai-insights" checked />
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Help & Support */}
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-3 flex items-center">
-          <HelpCircle className="h-5 w-5 mr-2" /> Help & Support
-        </h2>
-        <Card className="bg-slate-900">
-          <CardContent className="p-4 space-y-2 bg-slate-900">
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-              Documentation & Tutorials
-            </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-              Contact Support
-            </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-              Privacy Policy
-            </Button>
-            <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-              Terms of Service
-            </Button>
-          </CardContent>
-        </Card>
-      </section>
-
-      {/* Account Actions */}
-      <section>
-        <h2 className="text-lg font-semibold mb-3">Account</h2>
-        <div className="space-y-3">
-          <Button variant="outline" onClick={() => toast.info("Data refresh initiated")} className="w-full justify-start text-muted-foreground">
-            <RefreshCcw className="h-4 w-4 mr-2" /> Refresh Data
-          </Button>
-          <Button variant="destructive" onClick={handleLogout} disabled={isLoading} className="w-full justify-start bg-red-700 hover:bg-red-600">
-            <LogOut className="h-4 w-4 mr-2" />
-            {isLoading ? "Logging out..." : "Log Out"}
-          </Button>
-        </div>
-      </section>
-      
-      <div className="mt-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          Aura Finance v1.0.0
-        </p>
-      </div>
-    </div>;
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
+
 export default Profile;

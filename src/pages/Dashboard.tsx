@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
@@ -5,6 +6,8 @@ import { calculateFinancialSummary, generateWatchlist, mockInsights, mockMarketI
 import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, LineChart, Lightbulb, Percent, PiggyBank } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { sendAryaNotification } from "@/utils/aryaUtils";
+
 const Dashboard = () => {
   const {
     user
@@ -31,6 +34,19 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
+  
+  // Demo effect: Show an Arya notification after 15 seconds
+  useEffect(() => {
+    const notificationTimer = setTimeout(() => {
+      sendAryaNotification(
+        "Your savings rate is on track! At 20.5%, you're above the recommended 20% target.",
+        "success"
+      );
+    }, 15000);
+    
+    return () => clearTimeout(notificationTimer);
+  }, []);
+  
   return <div className="container px-4 py-6 animate-fade-in">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">

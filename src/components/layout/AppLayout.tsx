@@ -3,6 +3,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, LineChart, WalletCards, Lightbulb, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AryaFAB from "@/components/arya/AryaFAB";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -40,6 +41,9 @@ const AppLayout = ({ children }: AppLayoutProps) => {
       </header>
       
       <main className="flex-1 overflow-auto pb-16 animate-fade-in">{children}</main>
+      
+      {/* Arya Chatbot FAB */}
+      <AryaFAB />
       
       {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-10 glass-effect shadow-lg border-t border-aura-purple/10">
