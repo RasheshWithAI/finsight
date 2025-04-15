@@ -8,37 +8,11 @@
 @layer base {
   @font-face {
     font-family: 'Satoshi';
-    src: url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap') format('opentype');
+    src: url('https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap');
     font-weight: normal;
     font-style: normal;
   }
-}
-
-@layer components {
-  /* Define all gradient classes that are referenced elsewhere */
-  .bg-primary-gradient {
-    @apply bg-gradient-to-r from-aura-purple to-purple-800;
-  }
   
-  .bg-accent-gradient {
-    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
-  }
-  
-  .bg-error-gradient {
-    @apply bg-gradient-to-r from-red-500 to-red-600;
-  }
-  
-  .primary-gradient {
-    @apply bg-gradient-to-r from-aura-purple to-purple-800;
-  }
-  
-  .accent-gradient {
-    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
-  }
-}
-
-@layer base {
-  /* Dark mode variables */
   :root {
     --background: 225 12% 8%; /* Dark charcoal #121217 */
     --foreground: 0 0% 100%; /* White */
@@ -46,7 +20,6 @@
     --primary: 265 75% 53%; /* Vibrant Purple #8A2BE2 */
     --secondary: 330 100% 50%; /* Pink/Magenta #FF1493 */
     
-    /* Dark theme card and UI element colors */
     --muted: 225 10% 17%; /* #1E1E24 */
     --accent: 265 75% 53%; /* Same as primary */
     
@@ -76,17 +49,34 @@
     --secondary-text: #EAEAEA;
   }
 
-  /* We no longer need light/dark mode toggle, but we'll keep the class 
-     for compatibility with existing code that might reference it */
   .dark {
-    /* These are now the same as root */
     --background: 225 12% 8%;
     --foreground: 0 0% 100%;
-    /* ... other variables remain the same as root above */
+    --primary: 265 75% 53%;
+    --secondary: 330 100% 50%;
+    --muted: 225 10% 17%;
+    --accent: 265 75% 53%;
+    --border: 225 10% 15%;
+    --input: 225 10% 15%;
+    --card: 225 10% 17%;
+    --card-foreground: 0 0% 100%;
+    --popover: 225 10% 17%;
+    --popover-foreground: 0 0% 100%;
+    --destructive: 0 70% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --ring: 265 75% 40%;
+    --sidebar-background: 225 12% 8%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 265 75% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 265 75% 53%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 225 10% 15%;
+    --sidebar-ring: 265 75% 40%;
+    --primary-text: #FFFFFF;
+    --secondary-text: #EAEAEA;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
@@ -96,17 +86,15 @@
   }
 
   body {
-    @apply bg-background text-foreground font-satoshi;
+    @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
     @apply text-white;
   }
 
-  /* Financial card styling */
   .financial-card {
     @apply bg-card rounded-xl border border-gray-800/50 shadow-md p-4 transition-all duration-200 hover:shadow-lg;
   }
   
-  /* Update Aura Finance custom classes for dark mode */
   .aura-card {
     @apply bg-card rounded-xl border border-gray-800/50 shadow-md hover:shadow-lg transition-all duration-300;
   }
@@ -175,7 +163,6 @@
     @apply bg-gradient-to-r from-aura-purple via-aura-pink to-aura-purple bg-[length:200%_auto] animate-gold-shimmer;
   }
 
-  /* Global text color classes for flexible usage */
   .primary-text {
     @apply text-white;
   }
@@ -184,12 +171,10 @@
     @apply text-aura-silver-gray;
   }
 
-  /* Headings and major text elements */
   h1, h2, h3, h4, h5, h6 {
     @apply text-white;
   }
 
-  /* Secondary text elements */
   small, 
   .caption, 
   .timestamp, 
@@ -198,7 +183,6 @@
     @apply text-aura-silver-gray;
   }
   
-  /* Arya Chatbot Typing Indicator Animation */
   .typing-indicator {
     @apply flex items-center space-x-1;
   }
@@ -231,7 +215,6 @@
     }
   }
   
-  /* Add animation for FAB pulse */
   .animate-pulse-subtle {
     animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
@@ -247,7 +230,6 @@
     }
   }
   
-  /* Add animation for FAB pulse glow */
   .animate-pulse-glow {
     animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
@@ -261,6 +243,28 @@
       opacity: 0.3;
       transform: scale(1.05);
     }
+  }
+}
+
+@layer components {
+  .bg-primary-gradient {
+    @apply bg-gradient-to-r from-aura-purple to-purple-800;
+  }
+  
+  .bg-accent-gradient {
+    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
+  }
+  
+  .bg-error-gradient {
+    @apply bg-gradient-to-r from-red-500 to-red-600;
+  }
+  
+  .primary-gradient {
+    @apply bg-gradient-to-r from-aura-purple to-purple-800;
+  }
+  
+  .accent-gradient {
+    @apply bg-gradient-to-r from-aura-pink to-aura-purple;
   }
 }
 

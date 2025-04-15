@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -71,8 +72,9 @@ export default {
         }
       },
       fontFamily: {
-        'satoshi': ['Satoshi', 'sans-serif'],
-        manrope: ['Manrope', 'sans-serif']
+        'sans': ['Satoshi', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'satoshi': ['Satoshi', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        'manrope': ['Manrope', 'sans-serif']
       },
       animation: {
         'gold-shimmer': 'shimmer 2s linear infinite',
