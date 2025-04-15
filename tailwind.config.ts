@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -72,7 +71,7 @@ export default {
         }
       },
       fontFamily: {
-        satoshi: ['Satoshi', 'sans-serif'],
+        'satoshi': ['Satoshi', 'sans-serif'],
         manrope: ['Manrope', 'sans-serif']
       },
       animation: {
