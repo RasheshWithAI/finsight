@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { ChevronRight, CircleDollarSign, Mail, Lock, UserPlus, LogIn } from "lucide-react";
+import { ChevronRight, Mail, Lock, UserPlus, LogIn } from "lucide-react";
 
 const WelcomePage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -43,11 +43,15 @@ const WelcomePage = () => {
       <div className="mb-8 text-center animate-fade-in">
         <div className="flex justify-center mb-4">
           <div className="relative">
-            <CircleDollarSign className="h-20 w-20 text-aura-teal animate-pulse-subtle" />
+            <img 
+              src="/lovable-uploads/40ddd2e1-237b-497c-a073-39fe0af7b02a.png" 
+              alt="FinSight Logo" 
+              className="h-20 w-20 object-contain animate-pulse-subtle"
+            />
             <span className="absolute inset-0 rounded-full bg-primary-gradient opacity-20 animate-pulse-glow"></span>
           </div>
         </div>
-        <h1 className="text-4xl font-bold mb-2 aura-gradient-text">Aura Finance</h1>
+        <h1 className="text-4xl font-bold mb-2 aura-gradient-text">FinSight</h1>
         <p className="text-aura-medium-gray text-lg">Track, Manage, Grow Your Money</p>
       </div>
 

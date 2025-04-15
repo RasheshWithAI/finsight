@@ -29,6 +29,16 @@ const AppLayout = ({ children }: AppLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-aura-charcoal flex flex-col">
+      {/* Optional: Add a small header with the logo */}
+      <header className="py-2 px-4 flex items-center justify-center border-b border-aura-purple/10">
+        <img 
+          src="/lovable-uploads/40ddd2e1-237b-497c-a073-39fe0af7b02a.png" 
+          alt="FinSight Logo" 
+          className="h-8 w-8 object-contain mr-2"
+        />
+        <h1 className="text-lg font-bold aura-gradient-text">FinSight</h1>
+      </header>
+      
       <main className="flex-1 overflow-auto pb-16 animate-fade-in">{children}</main>
       
       {/* Bottom Navigation Bar */}
