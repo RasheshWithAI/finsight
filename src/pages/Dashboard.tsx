@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
 import { PricingModal } from "@/components/premium/PricingModal";
+import { GradientButton } from "@/components/ui/gradient-button";
+
 const Dashboard = () => {
   const {
     user
@@ -16,6 +18,7 @@ const Dashboard = () => {
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -23,6 +26,7 @@ const Dashboard = () => {
       minimumFractionDigits: 2
     }).format(value);
   };
+
   const formatPercentage = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'percent',
@@ -30,6 +34,7 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
+
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
       sendAryaNotification("Your savings rate is on track! At 20.5%, you're above the recommended 20% target.", "success");
@@ -42,9 +47,11 @@ const Dashboard = () => {
       clearTimeout(premiumTimer);
     };
   }, []);
+
   const handleLearnMoreClick = () => {
     setIsPricingModalOpen(true);
   };
+
   return <>
       <div className="container px-4 py-6 animate-fade-in">
         <header className="mb-6">
@@ -63,9 +70,12 @@ const Dashboard = () => {
                 <Sparkles className="h-5 w-5 mr-2 text-amber-300" />
                 <span className="font-medium text-white">Unlock Premium Financial Insights</span>
               </div>
-              <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20" onClick={handleLearnMoreClick}>
+              <GradientButton 
+                onClick={handleLearnMoreClick}
+                className="px-4 py-2 text-sm"
+              >
                 Learn More
-              </Button>
+              </GradientButton>
             </CardContent>
           </Card>
         </section>
@@ -231,4 +241,5 @@ const Dashboard = () => {
       <PricingModal isOpen={isPricingModalOpen} onClose={() => setIsPricingModalOpen(false)} />
     </>;
 };
+
 export default Dashboard;

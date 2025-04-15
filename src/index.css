@@ -91,6 +91,27 @@
     @apply text-white;
   }
 
+  .gradient-button {
+    background: linear-gradient(90deg, hsla(277, 75%, 84%, 1) 0%, hsla(297, 50%, 51%, 1) 100%);
+    transition: all 0.3s ease;
+  }
+  
+  .gradient-button:hover {
+    background: linear-gradient(90deg, hsla(297, 50%, 51%, 1) 0%, hsla(277, 75%, 84%, 1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(157, 76, 241, 0.4);
+  }
+  
+  .gradient-button-variant {
+    background: linear-gradient(90deg, hsla(24, 100%, 83%, 1) 0%, hsla(341, 91%, 68%, 1) 100%);
+  }
+  
+  .gradient-button-variant:hover {
+    background: linear-gradient(90deg, hsla(341, 91%, 68%, 1) 0%, hsla(24, 100%, 83%, 1) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(255, 99, 99, 0.4);
+  }
+
   .financial-card {
     @apply bg-card rounded-xl border border-gray-800/50 shadow-md p-4 transition-all duration-200 hover:shadow-lg;
   }
