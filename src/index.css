@@ -112,6 +112,17 @@
     box-shadow: 0 10px 25px -5px rgba(255, 99, 99, 0.4);
   }
 
+  .gradient-button-primary {
+    background: linear-gradient(90deg, #8B5CF6 0%, #9b87f5 100%);
+    transition: all 0.3s ease;
+  }
+  
+  .gradient-button-primary:hover {
+    background: linear-gradient(90deg, #9b87f5 0%, #8B5CF6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+  }
+
   .financial-card {
     @apply bg-card rounded-xl border border-gray-800/50 shadow-md p-4 transition-all duration-200 hover:shadow-lg;
   }
