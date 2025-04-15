@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,24 +5,18 @@ import { Button } from "@/components/ui/button";
 import { mockStocks } from "@/utils/mockData";
 import { toast } from "sonner";
 import StockLineChart from "@/components/charts/StockLineChart";
-import { 
-  ArrowDown, 
-  ArrowUp, 
-  BookmarkPlus, 
-  BookmarkMinus,
-  ArrowLeft,
-  Share2,
-  BarChart4,
-  TrendingUp
-} from "lucide-react";
-
+import { ArrowDown, ArrowUp, BookmarkPlus, BookmarkMinus, ArrowLeft, Share2, BarChart4, TrendingUp } from "lucide-react";
 const StockDetail = () => {
-  const { symbol } = useParams<{ symbol: string }>();
+  const {
+    symbol
+  } = useParams<{
+    symbol: string;
+  }>();
   const navigate = useNavigate();
   const [isWatchlisted, setIsWatchlisted] = useState(false);
 
   // Find the stock by symbol or use default data
-  const stock = mockStocks.find((s) => s.symbol === symbol) || {
+  const stock = mockStocks.find(s => s.symbol === symbol) || {
     id: "default",
     symbol: symbol || "AAPL",
     name: "Apple Inc.",
@@ -40,17 +33,16 @@ const StockDetail = () => {
     sector: "Technology",
     industry: "Consumer Electronics"
   };
-
   const handleToggleWatchlist = () => {
     setIsWatchlisted(!isWatchlisted);
-    toast.success(isWatchlisted ? 
-      `Removed ${stock.symbol} from your watchlist` : 
-      `Added ${stock.symbol} to your watchlist`
-    );
+    toast.success(isWatchlisted ? `Removed ${stock.symbol} from your watchlist` : `Added ${stock.symbol} to your watchlist`);
   };
-
   const handleCompare = () => {
-    navigate("/market/compare", { state: { initialStock: stock } });
+    navigate("/market/compare", {
+      state: {
+        initialStock: stock
+      }
+    });
   };
 
   // Format currency function
@@ -73,16 +65,9 @@ const StockDetail = () => {
     }
     return value.toString();
   };
-
-  return (
-    <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in">
       <div className="flex items-center mb-6">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => navigate("/market")}
-          className="mr-2"
-        >
+        <Button variant="ghost" size="sm" onClick={() => navigate("/market")} className="mr-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
         </Button>
         <h1 className="text-2xl font-bold text-aura-primary-text">{stock.name} ({stock.symbol})</h1>
@@ -97,34 +82,17 @@ const StockDetail = () => {
                 <div className="flex items-baseline">
                   <h2 className="text-2xl font-bold text-aura-gold">{formatCurrency(stock.price)}</h2>
                   <span className={`ml-2 flex items-center ${stock.change >= 0 ? "text-green-400" : "text-red-400"}`}>
-                    {stock.change >= 0 ? (
-                      <ArrowUp className="h-4 w-4 mr-1" />
-                    ) : (
-                      <ArrowDown className="h-4 w-4 mr-1" />
-                    )}
+                    {stock.change >= 0 ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
                     {stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
                   </span>
                 </div>
                 <p className="text-sm text-aura-secondary-text">Last updated: Today, 4:00 PM ET</p>
               </div>
               <div className="flex space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={handleToggleWatchlist}
-                  className={isWatchlisted ? "text-aura-gold border-aura-gold" : ""}
-                >
-                  {isWatchlisted ? (
-                    <BookmarkMinus className="h-4 w-4" />
-                  ) : (
-                    <BookmarkPlus className="h-4 w-4" />
-                  )}
+                <Button variant="outline" size="icon" onClick={handleToggleWatchlist} className={isWatchlisted ? "text-aura-gold border-aura-gold" : ""}>
+                  {isWatchlisted ? <BookmarkMinus className="h-4 w-4" /> : <BookmarkPlus className="h-4 w-4" />}
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="icon"
-                  onClick={handleCompare}
-                >
+                <Button variant="outline" size="icon" onClick={handleCompare}>
                   <BarChart4 className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon">
@@ -204,16 +172,12 @@ const StockDetail = () => {
               </div>
 
               <div className="pt-4">
-                <Button className="bg-accent-gradient text-aura-dark-gray hover:brightness-105">
-                  Buy {stock.symbol}
-                </Button>
+                
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default StockDetail;
