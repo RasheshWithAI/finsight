@@ -102,7 +102,7 @@ const AddTransactionForm = ({
             <div className="col-span-3">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-gray-700">
+                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-gray-700 rounded-2xl">
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {date ? format(date, "PPP") : <span>Pick a date</span>}
                   </Button>
@@ -119,7 +119,7 @@ const AddTransactionForm = ({
             <Label htmlFor="description" className="text-right">
               Description
             </Label>
-            <Input id="description" value={description} onChange={e => setDescription(e.target.value)} className="col-span-3 bg-gray-700 border-gray-600" />
+            <Input id="description" value={description} onChange={e => setDescription(e.target.value)} className="col-span-3 bg-gray-700 border-gray-600 rounded-2xl" />
           </div>
           
           {/* Category Selection */}
@@ -129,7 +129,7 @@ const AddTransactionForm = ({
             </Label>
             <div className="col-span-3">
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full bg-gray-700 border-gray-600">
+                <SelectTrigger className="w-full bg-gray-700 border-gray-600 rounded-2xl">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-700 border-gray-600">
@@ -154,15 +154,15 @@ const AddTransactionForm = ({
             <Label htmlFor="amount" className="text-right">
               Amount
             </Label>
-            <Input id="amount" type="number" value={amount} onChange={e => setAmount(e.target.value)} className="col-span-3 bg-gray-700 border-gray-600" step="0.01" />
+            <Input id="amount" type="number" value={amount} onChange={e => setAmount(e.target.value)} step="0.01" className="col-span-3 bg-gray-700 border-gray-600 rounded-2xl" />
           </div>
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} className="bg-gray-700 hover:bg-gray-600">
+          <Button variant="outline" onClick={onClose} className="bg-gray-700 hover:bg-gray-600 rounded-2xl">
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-accent-gradient hover:brightness-105">
+          <Button onClick={handleSubmit} className="bg-accent-gradient hover:brightness-105 rounded-2xl">
             Save
           </Button>
         </DialogFooter>
