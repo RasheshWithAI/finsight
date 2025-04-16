@@ -38,16 +38,17 @@ interface AddTransactionFormProps {
   onSave: (transaction: Transaction) => void;
 }
 
+// Define categories and their types
 const CATEGORIES = [
-  { name: "Income", type: "income" },
-  { name: "Utilities", type: "expense" },
-  { name: "Food & Dining", type: "expense" },
-  { name: "Education", type: "expense" },
-  { name: "Transportation", type: "expense" },
-  { name: "Gym memberships", type: "expense" },
-  { name: "Debt", type: "expense" },
-  { name: "Maintenance and repairs", type: "expense" },
-  { name: "Others", type: "expense" },
+  { name: "Income", type: "income" as const },
+  { name: "Utilities", type: "expense" as const },
+  { name: "Food & Dining", type: "expense" as const },
+  { name: "Education", type: "expense" as const },
+  { name: "Transportation", type: "expense" as const },
+  { name: "Gym memberships", type: "expense" as const },
+  { name: "Debt", type: "expense" as const },
+  { name: "Maintenance and repairs", type: "expense" as const },
+  { name: "Others", type: "expense" as const },
 ];
 
 const AddTransactionForm = ({ isOpen, onClose, onSave }: AddTransactionFormProps) => {
@@ -75,7 +76,7 @@ const AddTransactionForm = ({ isOpen, onClose, onSave }: AddTransactionFormProps
       description,
       category,
       amount: parseFloat(amount),
-      type: selectedCategory.type,
+      type: selectedCategory.type, // Now correctly typed as "income" | "expense"
     };
 
     onSave(newTransaction);
