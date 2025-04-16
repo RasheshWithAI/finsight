@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { mockStocks } from "@/utils/mockData";
 import { toast } from "sonner";
 import StockLineChart from "@/components/charts/StockLineChart";
-import { ArrowDown, ArrowUp, BookmarkPlus, BookmarkMinus, ArrowLeft, Share2, BarChart4, TrendingUp } from "lucide-react";
+import { useStockData } from "@/hooks/useStockData";
+import { ArrowDown, ArrowUp, BookmarkPlus, BookmarkMinus, ArrowLeft, Share2, BarChart4, TrendingUp, Loader2 } from "lucide-react";
+
 const StockDetail = () => {
-  const {
-    symbol
-  } = useParams<{
-    symbol: string;
-  }>();
+  const { symbol } = useParams<{ symbol: string }>();
   const navigate = useNavigate();
   const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [stockData, setStockData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const { getStockQuote } = useStockData();
 
   // Find the stock by symbol or use default data
-  const stock = mockStocks.find(s => s.symbol === symbol) || {
+  const defaultStock = mockStocks.find(s => s.symbol === symbol) || {
     id: "default",
     symbol: symbol || "AAPL",
     name: "Apple Inc.",
@@ -33,10 +35,48 @@ const StockDetail = () => {
     sector: "Technology",
     industry: "Consumer Electronics"
   };
+  
+  useEffect(() => {
+    const fetchStockData = async () => {
+      setIsLoading(true);
+      if (symbol) {
+        try {
+          const quote = await getStockQuote(symbol);
+          
+          if (quote) {
+            // Merge the API data with our default stock data to ensure we have all fields
+            setStockData({
+              ...defaultStock,
+              price: quote.price,
+              change: quote.change,
+              changePercent: quote.changePercent,
+              volume: quote.volume,
+              // Other fields will come from our default data
+            });
+          } else {
+            setStockData(defaultStock);
+            toast.info("Using sample stock data as real-time data is unavailable");
+          }
+        } catch (error) {
+          console.error("Error fetching stock data:", error);
+          setStockData(defaultStock);
+          toast.error("Failed to fetch real-time data. Using sample data instead.");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    fetchStockData();
+  }, [symbol]);
+  
+  const stock = stockData || defaultStock;
+  
   const handleToggleWatchlist = () => {
     setIsWatchlisted(!isWatchlisted);
     toast.success(isWatchlisted ? `Removed ${stock.symbol} from your watchlist` : `Added ${stock.symbol} to your watchlist`);
   };
+  
   const handleCompare = () => {
     navigate("/market/compare", {
       state: {
@@ -65,7 +105,33 @@ const StockDetail = () => {
     }
     return value.toString();
   };
-  return <div className="container px-4 py-6 animate-fade-in">
+  
+  const refreshStockData = async () => {
+    if (symbol) {
+      try {
+        setIsLoading(true);
+        const quote = await getStockQuote(symbol);
+        
+        if (quote) {
+          setStockData(prev => ({
+            ...prev,
+            price: quote.price,
+            change: quote.change,
+            changePercent: quote.changePercent,
+            volume: quote.volume,
+          }));
+          toast.success(`${symbol} data refreshed`);
+        }
+      } catch (error) {
+        toast.error("Failed to refresh stock data");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+  
+  return (
+    <div className="container px-4 py-6 animate-fade-in">
       <div className="flex items-center mb-6">
         <Button variant="ghost" size="sm" onClick={() => navigate("/market")} className="mr-2">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back
@@ -79,16 +145,26 @@ const StockDetail = () => {
           <CardContent className="p-4 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
-                <div className="flex items-baseline">
-                  <h2 className="text-2xl font-bold text-aura-gold">{formatCurrency(stock.price)}</h2>
-                  <span className={`ml-2 flex items-center ${stock.change >= 0 ? "text-green-400" : "text-red-400"}`}>
-                    {stock.change >= 0 ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
-                    {stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
-                  </span>
-                </div>
-                <p className="text-sm text-aura-secondary-text">Last updated: Today, 4:00 PM ET</p>
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-aura-gold" />
+                    <span className="text-aura-secondary-text">Fetching latest data...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline">
+                    <h2 className="text-2xl font-bold text-aura-gold">{formatCurrency(stock.price)}</h2>
+                    <span className={`ml-2 flex items-center ${stock.change >= 0 ? "text-green-400" : "text-red-400"}`}>
+                      {stock.change >= 0 ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
+                      {stock.change.toFixed(2)} ({stock.changePercent.toFixed(2)}%)
+                    </span>
+                  </div>
+                )}
+                <p className="text-sm text-aura-secondary-text">Last updated: {new Date().toLocaleString()}</p>
               </div>
               <div className="flex space-x-2">
+                <Button variant="outline" size="icon" onClick={refreshStockData} disabled={isLoading}>
+                  <Loader2 className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                </Button>
                 <Button variant="outline" size="icon" onClick={handleToggleWatchlist} className={isWatchlisted ? "text-aura-gold border-aura-gold" : ""}>
                   {isWatchlisted ? <BookmarkMinus className="h-4 w-4" /> : <BookmarkPlus className="h-4 w-4" />}
                 </Button>
@@ -178,6 +254,8 @@ const StockDetail = () => {
           </CardContent>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default StockDetail;

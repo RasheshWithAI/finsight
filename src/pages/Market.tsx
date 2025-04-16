@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { mockMarketIndices, mockStocks, Stock } from "@/utils/mockData";
+import { mockStocks, Stock } from "@/utils/mockData";
 import { 
   ArrowDownRight, 
   ArrowUpRight, 
@@ -23,19 +23,22 @@ import {
   TrendingDown, 
   RefreshCw, 
   BarChart4,
-  Globe
+  Globe,
+  AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
+import { useStockData } from "@/hooks/useStockData";
 
 const Market = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [stocks, setStocks] = useState(mockStocks);
+  const [stocks, setStocks] = useState<Stock[]>(mockStocks);
   const [watchlist, setWatchlist] = useState<Stock[]>([]);
   const [selectedExchange, setSelectedExchange] = useState("NYSE");
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
-
+  const { marketIndices, refetchMarketIndices, searchStocks, isLoading: isStockDataLoading } = useStockData();
+  
   // Define available stock exchanges
   const stockExchanges = [
     { id: "NYSE", name: "NYSE (New York Stock Exchange)" },
@@ -76,17 +79,49 @@ const Market = () => {
   };
 
   // Handle exchange selection change
-  const handleExchangeChange = (value: string) => {
+  const handleExchangeChange = async (value: string) => {
     setIsLoading(true);
     setSelectedExchange(value);
     
-    // Simulate API call to Alpha Vantage
-    setTimeout(() => {
-      // Here we would make actual API calls to Alpha Vantage based on the selected exchange
-      // For now, we'll use the mock data
+    try {
+      // Search for popular stocks on the selected exchange
+      const exchangeKeywords = {
+        "NYSE": "NYSE popular",
+        "NASDAQ": "NASDAQ tech",
+        "SSE": "Shanghai",
+        "TSE": "Tokyo",
+        "NSE": "India"
+      };
+      
+      const results = await searchStocks(exchangeKeywords[value as keyof typeof exchangeKeywords] || value);
+      
+      if (results && results.length > 0) {
+        // Convert API results to our stock format
+        const stocksData: Stock[] = results.map((item: any, index: number) => ({
+          id: item.symbol,
+          symbol: item.symbol,
+          name: item.name,
+          price: parseFloat((Math.random() * 500 + 10).toFixed(2)), // Placeholder until we fetch actual quotes
+          change: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Placeholder
+          changePercent: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Placeholder
+          marketCap: Math.floor(Math.random() * 1000000000000), // Placeholder
+          volume: Math.floor(Math.random() * 10000000), // Placeholder
+          isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
+        }));
+        
+        setStocks(stocksData);
+      } else {
+        // If no results, keep using mock data
+        toast.info(`No data available for ${value}. Using sample data instead.`);
+        setStocks(mockStocks);
+      }
+    } catch (error) {
+      console.error("Error fetching exchange data:", error);
+      toast.error(`Failed to load data for ${value}. Using sample data instead.`);
+      setStocks(mockStocks);
+    } finally {
       setIsLoading(false);
-      toast.success(`Switched to ${value} exchange data`);
-    }, 1000);
+    }
   };
 
   const toggleWatchlist = (stock: Stock) => {
@@ -109,11 +144,22 @@ const Market = () => {
   const handleCompareClick = () => {
     navigate('/market/compare');
   };
+  
+  const handleRefreshData = () => {
+    refetchMarketIndices();
+    handleExchangeChange(selectedExchange);
+    toast.success("Market data refreshed");
+  };
 
   const filteredStocks = stocks.filter(stock => 
     stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+  // Initialize market data when component mounts
+  useEffect(() => {
+    handleExchangeChange(selectedExchange);
+  }, []);
 
   return (
     <div className="container px-4 py-6 animate-fade-in bg-gray-900">
@@ -152,7 +198,7 @@ const Market = () => {
               ))}
             </SelectContent>
           </Select>
-          {isLoading && (
+          {(isLoading || isStockDataLoading) && (
             <div className="flex items-center">
               <RefreshCw className="h-4 w-4 animate-spin text-primary-text mr-2" />
               <span className="text-sm text-aura-primary-text">Loading data...</span>
@@ -163,22 +209,49 @@ const Market = () => {
 
       {/* Market Indices */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Market Indices</h2>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-semibold text-aura-primary-text">Market Indices</h2>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefreshData}
+            className="flex items-center gap-1 text-aura-medium-gray bg-transparent hover:bg-gray-800"
+          >
+            <RefreshCw className="h-3 w-3" />
+            <span>Refresh</span>
+          </Button>
+        </div>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {mockMarketIndices.map(index => (
-            <Card key={index.id} className="financial-card rounded-2xl bg-emerald-800">
-              <CardContent className="p-4">
-                <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-xl font-bold text-aura-primary-text">{index.value.toLocaleString()}</span>
-                  <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
-                    <span>{formatPercentage(index.changePercent)}</span>
+          {marketIndices && marketIndices.length > 0 ? 
+            marketIndices.map(index => (
+              <Card key={index.id} className="financial-card rounded-2xl bg-emerald-800">
+                <CardContent className="p-4">
+                  <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xl font-bold text-aura-primary-text">{index.value.toLocaleString()}</span>
+                    <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
+                      <span>{formatPercentage(index.changePercent)}</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )) : 
+            Array(4).fill(0).map((_, i) => (
+              <Card key={i} className="financial-card rounded-2xl bg-emerald-800">
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2">
+                    <AlertCircle className="h-4 w-4 text-yellow-300" />
+                    <h3 className="font-medium text-sm text-aura-primary-text">Loading index data...</h3>
+                  </div>
+                  <div className="animate-pulse mt-2">
+                    <div className="h-6 bg-emerald-700 rounded"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          }
         </div>
       </div>
 
@@ -193,7 +266,7 @@ const Market = () => {
             <Button variant="outline" size="icon" className="h-10 w-10 bg-purple-800 hover:bg-purple-700">
               <Filter className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10 bg-purple-800 hover:bg-purple-700">
+            <Button variant="outline" size="icon" className="h-10 w-10 bg-purple-800 hover:bg-purple-700" onClick={handleRefreshData}>
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
@@ -255,6 +328,7 @@ const Market = () => {
             </Card>
           </TabsContent>
           
+          {/* Watchlist Tab */}
           <TabsContent value="watchlist">
             <Card className="financial-card">
               {watchlist.length === 0 ? <CardContent className="p-8 text-center">
@@ -310,6 +384,7 @@ const Market = () => {
             </Card>
           </TabsContent>
           
+          {/* Sectors Tab */}
           <TabsContent value="sectors">
             <Card className="financial-card p-6 bg-sky-950 rounded-2xl">
               <h3 className="text-lg font-medium mb-4">Sectors Performance</h3>
@@ -384,7 +459,7 @@ const Market = () => {
             </CardHeader>
             <CardContent>
               <ul className="divide-y divide-gray-800">
-                {mockStocks.filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
+                {stocks.filter(s => s.change > 0).sort((a, b) => b.changePercent - a.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
                         <p className="text-xs text-aura-medium-gray text-slate-900">{stock.name}</p>
@@ -410,7 +485,7 @@ const Market = () => {
             </CardHeader>
             <CardContent>
               <ul className="divide-y divide-gray-800">
-                {mockStocks.filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
+                {stocks.filter(s => s.change < 0).sort((a, b) => a.changePercent - b.changePercent).slice(0, 4).map(stock => <li key={stock.id} className="py-2 flex justify-between items-center cursor-pointer" onClick={() => handleStockClick(stock.symbol)}>
                       <div>
                         <p className="font-medium text-aura-primary-text">{stock.symbol}</p>
                         <p className="text-xs text-aura-medium-gray text-slate-900">{stock.name}</p>
