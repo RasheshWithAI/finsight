@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,19 +8,16 @@ import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
 import { PricingModal } from "@/components/premium/PricingModal";
 import { GradientButton } from "@/components/ui/gradient-button";
-
 const Dashboard = () => {
   const {
     user,
     profile
   } = useAuth();
-  
   const [financialSummary, setFinancialSummary] = useState(calculateFinancialSummary());
   const [watchlist, setWatchlist] = useState(generateWatchlist());
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
-  
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -29,7 +25,6 @@ const Dashboard = () => {
       minimumFractionDigits: 2
     }).format(value);
   };
-  
   const formatPercentage = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'percent',
@@ -37,7 +32,6 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
-  
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
       sendAryaNotification("Your savings rate is on track! At 20.5%, you're above the recommended 20% target.", "success");
@@ -50,11 +44,9 @@ const Dashboard = () => {
       clearTimeout(premiumTimer);
     };
   }, []);
-  
   const handleLearnMoreClick = () => {
     setIsPricingModalOpen(true);
   };
-  
   return <>
       <div className="container px-4 py-6 animate-fade-in bg-gray-900">
         <header className="mb-6">
@@ -135,7 +127,7 @@ const Dashboard = () => {
           
           <div className="overflow-x-auto">
             <div className="flex space-x-4 pb-2">
-              {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-violet-900 rounded-xl px-0 py-[20px] my-[16px] mx-[19px]">
+              {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-violet-900 rounded-xl px-0 py-[20px] my-[16px] mx-[20px]">
                   <CardContent className="p-4">
                     <h3 className="font-medium text-sm">{index.name}</h3>
                     <div className="flex items-center justify-between mt-1">
@@ -241,5 +233,4 @@ const Dashboard = () => {
       <PricingModal isOpen={isPricingModalOpen} onClose={() => setIsPricingModalOpen(false)} />
     </>;
 };
-
 export default Dashboard;
