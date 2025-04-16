@@ -61,7 +61,7 @@ const Insights = () => {
             <CardContent className="p-4">
               <div className="flex">
                 <div className="bg-blue-900/30 p-3 rounded-full mr-4">
-                  <PiggyBank className="h-6 w-6 text-aura-chart-blue px-0" />
+                  <PiggyBank className="h-6 w-6 text-aura-chart-blue px-0 mx-0" />
                 </div>
                 <div>
                   <div className="flex items-center mb-1">
