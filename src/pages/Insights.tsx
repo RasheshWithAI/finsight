@@ -3,7 +3,7 @@ import { mockInsights, mockStocks } from "@/utils/mockData";
 import { AlertCircle, BarChart3, BookmarkPlus, ChevronRight, CircleDollarSign, DollarSign, Lightbulb, PiggyBank, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 const Insights = () => {
-  return <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">
           Insights
