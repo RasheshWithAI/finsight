@@ -10,13 +10,37 @@ import {
   Sector 
 } from "recharts";
 
-const data = [
+interface Transaction {
+  id: string;
+  date: string;
+  description: string;
+  category: string;
+  amount: number;
+  type: "income" | "expense";
+}
+
+// Default data if no transactions provided
+const defaultData = [
   { name: "Housing", value: 1200, color: "#88B0F4" }, // Light Blue
   { name: "Food", value: 500, color: "#8BC34A" },     // Muted Green 
   { name: "Transportation", value: 300, color: "#F48C06" }, // Vibrant Orange
   { name: "Entertainment", value: 200, color: "#D4AF37" }, // Rich Gold
   { name: "Utilities", value: 150, color: "#9575CD" }  // Purple
 ];
+
+// Category colors mapping
+const categoryColors: Record<string, string> = {
+  "Housing": "#88B0F4",
+  "Food & Dining": "#8BC34A",
+  "Transportation": "#F48C06",
+  "Entertainment": "#D4AF37",
+  "Utilities": "#9575CD",
+  "Education": "#FF5722",
+  "Gym memberships": "#009688",
+  "Debt": "#E91E63",
+  "Maintenance and repairs": "#3F51B5",
+  "Others": "#607D8B"
+};
 
 // Custom active shape for animation
 const renderActiveShape = (props: any) => {
@@ -83,8 +107,43 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const ExpensePieChart = () => {
+interface ExpensePieChartProps {
+  transactions?: Transaction[];
+}
+
+const ExpensePieChart = ({ transactions }: ExpensePieChartProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Process transactions data if provided
+  const processTransactionData = () => {
+    if (!transactions || transactions.length === 0) {
+      return defaultData;
+    }
+
+    // Only include expense transactions
+    const expenseTransactions = transactions.filter(t => t.type === "expense");
+    
+    if (expenseTransactions.length === 0) {
+      return defaultData;
+    }
+
+    // Group by category and sum amounts
+    const categoryMap = new Map<string, number>();
+    
+    expenseTransactions.forEach(transaction => {
+      const currentAmount = categoryMap.get(transaction.category) || 0;
+      categoryMap.set(transaction.category, currentAmount + transaction.amount);
+    });
+
+    // Convert to chart data format
+    return Array.from(categoryMap.entries()).map(([category, value]) => ({
+      name: category,
+      value,
+      color: categoryColors[category] || "#607D8B" // Default to gray if no color defined
+    }));
+  };
+
+  const chartData = processTransactionData();
 
   const onPieEnter = (_: any, index: number) => {
     setActiveIndex(index);
@@ -96,7 +155,7 @@ const ExpensePieChart = () => {
         <Pie
           activeIndex={activeIndex}
           activeShape={renderActiveShape}
-          data={data}
+          data={chartData}
           cx="50%"
           cy="50%"
           innerRadius={60}
@@ -106,7 +165,7 @@ const ExpensePieChart = () => {
           animationDuration={800}
           animationBegin={0}
         >
-          {data.map((entry, index) => (
+          {chartData.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>

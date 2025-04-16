@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,10 +9,13 @@ import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, 
 import { toast } from "sonner";
 import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import BudgetBarChart from "@/components/charts/BudgetBarChart";
+import AddTransactionForm from "@/components/finance/AddTransactionForm";
+
 const Finance = () => {
   const [transactions, setTransactions] = useState(mockTransactions);
   const [budgets, setBudgets] = useState(mockBudgets);
   const [selectedMonth, setSelectedMonth] = useState("April 2025");
+  const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
 
   // Format currency function
   const formatCurrency = (value: number) => {
@@ -30,12 +34,20 @@ const Finance = () => {
   const calculatePercentage = (spent: number, budgeted: number) => {
     return Math.min(Math.round(spent / budgeted * 100), 100);
   };
+
   const handleAddTransaction = () => {
-    toast.success("Transaction feature coming soon!");
+    setIsAddTransactionOpen(true);
   };
+
+  const handleSaveTransaction = (transaction: any) => {
+    setTransactions([transaction, ...transactions]);
+    toast.success("Transaction added successfully!");
+  };
+
   const handleNewBudget = () => {
     toast.success("Budget creation feature coming soon!");
   };
+
   return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="flex flex-wrap justify-between items-center mb-6">
         <div>
@@ -48,6 +60,13 @@ const Finance = () => {
           <Plus className="h-4 w-4 mr-2" /> Add Transaction
         </Button>
       </header>
+
+      {/* Add Transaction Dialog */}
+      <AddTransactionForm 
+        isOpen={isAddTransactionOpen} 
+        onClose={() => setIsAddTransactionOpen(false)} 
+        onSave={handleSaveTransaction} 
+      />
 
       {/* Financial Summary */}
       <section className="mb-8">
@@ -154,7 +173,7 @@ const Finance = () => {
             </CardHeader>
             <CardContent className="px-0 py-0">
               <div className="h-64">
-                <ExpensePieChart />
+                <ExpensePieChart transactions={transactions} />
               </div>
             </CardContent>
           </Card>
