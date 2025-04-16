@@ -36,7 +36,7 @@ const Finance = () => {
   const handleNewBudget = () => {
     toast.success("Budget creation feature coming soon!");
   };
-  return <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="flex flex-wrap justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-aura-primary-text">Finance</h1>
