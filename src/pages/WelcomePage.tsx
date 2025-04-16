@@ -64,19 +64,15 @@ const WelcomePage = () => {
         {/* Social Login Buttons */}
         <div className="flex justify-center space-x-6">
           {/* Google Button */}
-          <button className="w-12 h-12 rounded-xl bg-[#3A3A5B] flex items-center justify-center text-white">
+          <button className="w-12 h-12 rounded-xl bg-[#3A3A5B] flex items-center justify-center text-white px-[185px]">
             <span className="text-xl font-medium">G</span>
           </button>
           
           {/* Apple Button */}
-          <button className="w-12 h-12 rounded-xl bg-[#3A3A5B] flex items-center justify-center text-white">
-            <Apple size={22} />
-          </button>
+          
           
           {/* Twitter Button */}
-          <button className="w-12 h-12 rounded-xl bg-[#3A3A5B] flex items-center justify-center text-white">
-            <Twitter size={22} />
-          </button>
+          
         </div>
         
         {/* Footer Text */}
