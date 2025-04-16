@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -13,14 +12,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, User, Bell, Shield, CreditCard, Settings, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import AryaNotificationSettings from "@/components/arya/AryaNotificationSettings";
-
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const {
+    user,
+    logout
+  } = useAuth();
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
-
   const handleLogout = () => {
     logout();
     toast.success("You have been logged out");
@@ -30,16 +30,9 @@ const Profile = () => {
   // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!user?.name) return "U";
-    return user.name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
+    return user.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
   };
-
-  return (
-    <div className="container px-4 py-6 animate-fade-in pb-20">
+  return <div className="container px-4 py-6 animate-fade-in pb-20 bg-zinc-900">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">Profile</h1>
         <p className="text-aura-secondary-text">Manage your account and preferences</p>
@@ -91,22 +84,14 @@ const Profile = () => {
                     Use dark theme throughout the app
                   </p>
                 </div>
-                <Switch
-                  id="dark-mode"
-                  checked={darkMode}
-                  onCheckedChange={setDarkMode}
-                  disabled={true}
-                />
+                <Switch id="dark-mode" checked={darkMode} onCheckedChange={setDarkMode} disabled={true} />
               </div>
 
               <Separator className="my-4" />
 
               <div className="space-y-2">
                 <Label htmlFor="language" className="text-aura-primary-text">Language</Label>
-                <select
-                  id="language"
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2"
-                >
+                <select id="language" className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2">
                   <option value="en">English</option>
                   <option value="es">Spanish</option>
                   <option value="fr">French</option>
@@ -115,10 +100,7 @@ const Profile = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="currency" className="text-aura-primary-text">Currency</Label>
-                <select
-                  id="currency"
-                  className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2"
-                >
+                <select id="currency" className="w-full bg-gray-800 text-white border border-gray-700 rounded-md p-2">
                   <option value="usd">USD ($)</option>
                   <option value="eur">EUR (€)</option>
                   <option value="gbp">GBP (£)</option>
@@ -145,11 +127,7 @@ const Profile = () => {
                     Use fingerprint or Face ID to unlock the app
                   </p>
                 </div>
-                <Switch
-                  id="biometrics"
-                  checked={biometrics}
-                  onCheckedChange={setBiometrics}
-                />
+                <Switch id="biometrics" checked={biometrics} onCheckedChange={setBiometrics} />
               </div>
 
               <Separator className="my-4" />
@@ -158,36 +136,21 @@ const Profile = () => {
                 <Label htmlFor="current-password" className="text-aura-primary-text">
                   Current Password
                 </Label>
-                <Input
-                  id="current-password"
-                  type="password"
-                  placeholder="Enter current password"
-                  className="bg-gray-800"
-                />
+                <Input id="current-password" type="password" placeholder="Enter current password" className="bg-gray-800" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="new-password" className="text-aura-primary-text">
                   New Password
                 </Label>
-                <Input
-                  id="new-password"
-                  type="password"
-                  placeholder="Enter new password"
-                  className="bg-gray-800"
-                />
+                <Input id="new-password" type="password" placeholder="Enter new password" className="bg-gray-800" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirm-password" className="text-aura-primary-text">
                   Confirm New Password
                 </Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  placeholder="Confirm new password"
-                  className="bg-gray-800"
-                />
+                <Input id="confirm-password" type="password" placeholder="Confirm new password" className="bg-gray-800" />
               </div>
 
               <Button className="w-full mt-4">Update Password</Button>
@@ -216,11 +179,7 @@ const Profile = () => {
                       Receive updates, alerts, and important information
                     </p>
                   </div>
-                  <Switch
-                    id="notifications"
-                    checked={notifications}
-                    onCheckedChange={setNotifications}
-                  />
+                  <Switch id="notifications" checked={notifications} onCheckedChange={setNotifications} />
                 </div>
 
                 <Separator className="my-2" />
@@ -268,8 +227,6 @@ const Profile = () => {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
-  );
+    </div>;
 };
-
 export default Profile;
