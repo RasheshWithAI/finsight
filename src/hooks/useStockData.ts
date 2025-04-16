@@ -28,7 +28,7 @@ export const useStockData = () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('stock-data', {
-        query: { action: 'search', keywords }
+        params: { action: 'search', keywords }
       });
       
       if (error) throw error;
@@ -59,7 +59,7 @@ export const useStockData = () => {
   const getStockQuote = async (symbol: string): Promise<StockQuote | null> => {
     try {
       const { data, error } = await supabase.functions.invoke('stock-data', {
-        query: { action: 'quote', symbol }
+        params: { action: 'quote', symbol }
       });
       
       if (error) throw error;
@@ -85,7 +85,7 @@ export const useStockData = () => {
   const getStockHistory = async (symbol: string): Promise<any[]> => {
     try {
       const { data, error } = await supabase.functions.invoke('stock-data', {
-        query: { action: 'daily', symbol }
+        params: { action: 'daily', symbol }
       });
       
       if (error) throw error;
@@ -114,7 +114,7 @@ export const useStockData = () => {
     queryFn: async (): Promise<MarketIndex[]> => {
       try {
         const { data, error } = await supabase.functions.invoke('stock-data', {
-          query: { action: 'indices' }
+          params: { action: 'indices' }
         });
         
         if (error) throw error;

@@ -106,6 +106,8 @@ const Market = () => {
           changePercent: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Placeholder
           marketCap: Math.floor(Math.random() * 1000000000000), // Placeholder
           volume: Math.floor(Math.random() * 10000000), // Placeholder
+          pe: Math.random() * 30 + 5, // Adding missing required property
+          sector: "Technology", // Adding missing required property
           isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
         }));
         

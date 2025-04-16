@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import StockLineChart from "@/components/charts/StockLineChart";
 import { ArrowLeft, Search, X, Plus, PlusCircle, Loader2 } from "lucide-react";
 import { useStockData } from "@/hooks/useStockData";
 
-// Generate sample comparison data with slightly different values
 const generateComparisonData = (days: number) => {
   const data = [];
   let price = 180;
@@ -20,7 +18,6 @@ const generateComparisonData = (days: number) => {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() - i);
 
-    // Random price movement with some trend
     const change = price * (Math.random() * 0.025 - 0.01);
     price = Number((price + change).toFixed(2));
     data.push({
@@ -45,7 +42,6 @@ const StockCompare = () => {
   
   const { searchStocks, getStockQuote } = useStockData();
 
-  // Format currency function
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -54,7 +50,6 @@ const StockCompare = () => {
     }).format(value);
   };
 
-  // Format large numbers (e.g., market cap)
   const formatLargeNumber = (value: number) => {
     if (value >= 1e12) {
       return (value / 1e12).toFixed(2) + ' T';
@@ -66,7 +61,6 @@ const StockCompare = () => {
     return value.toString();
   };
   
-  // Handle search input
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm) {
@@ -74,7 +68,6 @@ const StockCompare = () => {
         try {
           const results = await searchStocks(searchTerm);
           
-          // Filter out stocks that are already added
           const filteredResults = results.filter((result: any) => 
             !stocks.some(s => s.symbol === result.symbol)
           );
@@ -108,7 +101,6 @@ const StockCompare = () => {
     }
     
     try {
-      // Get current stock data
       const quote = await getStockQuote(stock.symbol);
       
       let newStock: Stock;
@@ -121,27 +113,34 @@ const StockCompare = () => {
           change: quote.change,
           changePercent: quote.changePercent,
           volume: quote.volume,
-          marketCap: Math.floor(Math.random() * 1000000000000), // Placeholder
-          peRatio: Math.random() * 50, // Placeholder
-          dividend: Math.random() * 5, // Placeholder
-          high52: quote.price * 1.2, // Placeholder
-          low52: quote.price * 0.8, // Placeholder
-        };
-      } else {
-        // Fallback to default data if quote is unavailable
-        const mockStock = mockStocks.find(ms => ms.symbol === stock.symbol);
-        newStock = mockStock || {
-          id: stock.symbol,
-          symbol: stock.symbol,
-          name: stock.name || stock.symbol,
-          price: 100 + Math.random() * 200,
-          change: Math.random() * 10 - 5,
-          changePercent: Math.random() * 10 - 5,
-          volume: Math.floor(Math.random() * 10000000),
           marketCap: Math.floor(Math.random() * 1000000000000),
+          pe: Math.random() * 50,
+          sector: "Technology",
           peRatio: Math.random() * 50,
           dividend: Math.random() * 5,
+          high52: quote.price * 1.2,
+          low52: quote.price * 0.8,
         };
+      } else {
+        const mockStock = mockStocks.find(ms => ms.symbol === stock.symbol);
+        if (mockStock) {
+          newStock = mockStock;
+        } else {
+          newStock = {
+            id: stock.symbol,
+            symbol: stock.symbol,
+            name: stock.name || stock.symbol,
+            price: 100 + Math.random() * 200,
+            change: Math.random() * 10 - 5,
+            changePercent: Math.random() * 10 - 5,
+            volume: Math.floor(Math.random() * 10000000),
+            marketCap: Math.floor(Math.random() * 1000000000000),
+            pe: Math.random() * 50,
+            sector: "Technology",
+            peRatio: Math.random() * 50,
+            dividend: Math.random() * 5,
+          };
+        }
         toast.info(`Using sample data for ${stock.symbol}`);
       }
       
@@ -170,7 +169,6 @@ const StockCompare = () => {
         </h1>
       </div>
 
-      {/* Stock Selector */}
       <Card className="financial-card mb-6 bg-amber-500">
         <CardContent className="p-4">
           <div className="mb-4">
@@ -250,7 +248,6 @@ const StockCompare = () => {
         </CardContent>
       </Card>
       
-      {/* Performance Comparison Chart */}
       {stocks.length > 0 && (
         <Card className="financial-card mb-6">
           <CardHeader className="pb-2">
@@ -266,7 +263,6 @@ const StockCompare = () => {
         </Card>
       )}
 
-      {/* Side by Side Comparison */}
       {stocks.length > 1 && (
         <Card className="financial-card">
           <CardHeader className="pb-2">

@@ -16,8 +16,20 @@ serve(async (req) => {
   }
 
   try {
-    const url = new URL(req.url);
-    const action = url.searchParams.get('action');
+    // Get params from request depending on method
+    let params;
+    
+    if (req.method === 'POST') {
+      // If it's a POST request, get params from the request body
+      const body = await req.json();
+      params = body;
+    } else {
+      // For GET requests, get params from URL search params
+      const url = new URL(req.url);
+      params = Object.fromEntries(url.searchParams);
+    }
+    
+    const action = params.action;
     
     if (!action) {
       return new Response(JSON.stringify({ error: 'Action parameter is required' }), {
@@ -27,11 +39,10 @@ serve(async (req) => {
     }
     
     let apiUrl = '';
-    let params = {};
     
     switch (action) {
       case 'search':
-        const keywords = url.searchParams.get('keywords');
+        const keywords = params.keywords;
         if (!keywords) {
           return new Response(JSON.stringify({ error: 'Keywords parameter is required for search action' }), {
             status: 400,
@@ -42,7 +53,7 @@ serve(async (req) => {
         break;
         
       case 'quote':
-        const symbol = url.searchParams.get('symbol');
+        const symbol = params.symbol;
         if (!symbol) {
           return new Response(JSON.stringify({ error: 'Symbol parameter is required for quote action' }), {
             status: 400,
@@ -53,7 +64,7 @@ serve(async (req) => {
         break;
         
       case 'daily':
-        const dailySymbol = url.searchParams.get('symbol');
+        const dailySymbol = params.symbol;
         if (!dailySymbol) {
           return new Response(JSON.stringify({ error: 'Symbol parameter is required for daily action' }), {
             status: 400,
