@@ -4,14 +4,46 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 import { mockMarketIndices, mockStocks, Stock } from "@/utils/mockData";
-import { ArrowDownRight, ArrowUpRight, BookmarkPlus, BookmarkMinus, Search, Filter, TrendingUp, TrendingDown, RefreshCw, BarChart4 } from "lucide-react";
+import { 
+  ArrowDownRight, 
+  ArrowUpRight, 
+  BookmarkPlus, 
+  BookmarkMinus, 
+  Search, 
+  Filter, 
+  TrendingUp, 
+  TrendingDown, 
+  RefreshCw, 
+  BarChart4,
+  Globe
+} from "lucide-react";
 import { toast } from "sonner";
+
 const Market = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [stocks, setStocks] = useState(mockStocks);
   const [watchlist, setWatchlist] = useState<Stock[]>([]);
+  const [selectedExchange, setSelectedExchange] = useState("NYSE");
+  const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
+
+  // Define available stock exchanges
+  const stockExchanges = [
+    { id: "NYSE", name: "NYSE (New York Stock Exchange)" },
+    { id: "NASDAQ", name: "NASDAQ" },
+    { id: "SSE", name: "SSE (Shanghai Stock Exchange)" },
+    { id: "TSE", name: "Tokyo Stock Exchange" },
+    { id: "NSE", name: "NSE (National Stock Exchange of India)" }
+  ];
 
   // Format currency function
   const formatCurrency = (value: number) => {
@@ -42,6 +74,21 @@ const Market = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
+
+  // Handle exchange selection change
+  const handleExchangeChange = (value: string) => {
+    setIsLoading(true);
+    setSelectedExchange(value);
+    
+    // Simulate API call to Alpha Vantage
+    setTimeout(() => {
+      // Here we would make actual API calls to Alpha Vantage based on the selected exchange
+      // For now, we'll use the mock data
+      setIsLoading(false);
+      toast.success(`Switched to ${value} exchange data`);
+    }, 1000);
+  };
+
   const toggleWatchlist = (stock: Stock) => {
     if (watchlist.some(item => item.id === stock.id)) {
       setWatchlist(watchlist.filter(item => item.id !== stock.id));
@@ -54,14 +101,22 @@ const Market = () => {
       toast.success(`Added ${stock.symbol} to your watchlist`);
     }
   };
+
   const handleStockClick = (symbol: string) => {
     navigate(`/market/stock/${symbol}`);
   };
+
   const handleCompareClick = () => {
     navigate('/market/compare');
   };
-  const filteredStocks = stocks.filter(stock => stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()));
-  return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
+
+  const filteredStocks = stocks.filter(stock => 
+    stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="mb-6">
         <div className="flex justify-between items-center">
           <div>
@@ -78,11 +133,40 @@ const Market = () => {
         </div>
       </header>
 
+      {/* Stock Exchange Selection */}
+      <div className="mb-4">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center">
+            <Globe className="h-5 w-5 text-primary-text mr-2" />
+            <span className="text-sm font-medium text-aura-primary-text">Exchange:</span>
+          </div>
+          <Select value={selectedExchange} onValueChange={handleExchangeChange}>
+            <SelectTrigger className="w-[240px] bg-purple-800 rounded-lg border-none focus:ring-2 focus:ring-purple-500">
+              <SelectValue placeholder="Select Exchange" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-800 text-white border-gray-700">
+              {stockExchanges.map((exchange) => (
+                <SelectItem key={exchange.id} value={exchange.id} className="hover:bg-gray-700">
+                  {exchange.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {isLoading && (
+            <div className="flex items-center">
+              <RefreshCw className="h-4 w-4 animate-spin text-primary-text mr-2" />
+              <span className="text-sm text-aura-primary-text">Loading data...</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Market Indices */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Market Indices</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {mockMarketIndices.map(index => <Card key={index.id} className="financial-card rounded-2xl bg-emerald-800">
+          {mockMarketIndices.map(index => (
+            <Card key={index.id} className="financial-card rounded-2xl bg-emerald-800">
               <CardContent className="p-4">
                 <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
                 <div className="flex items-center justify-between mt-1">
@@ -93,7 +177,8 @@ const Market = () => {
                   </div>
                 </div>
               </CardContent>
-            </Card>)}
+            </Card>
+          ))}
         </div>
       </div>
 
@@ -289,6 +374,7 @@ const Market = () => {
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Trending Today</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
           <Card className="financial-card bg-green-700 rounded-2xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center">
@@ -342,6 +428,8 @@ const Market = () => {
           </Card>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Market;
