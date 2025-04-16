@@ -1,7 +1,7 @@
 
 import { useState, useCallback } from "react";
 import {
-  LineChart,
+  ComposedChart,
   Line,
   XAxis,
   YAxis,
@@ -10,26 +10,44 @@ import {
   ResponsiveContainer,
   ReferenceLine,
   ReferenceArea,
+  Bar,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { ChartBarIcon, TrendingUpIcon, ChartCandlestick } from "lucide-react";
 
-// Generate sample data
+// Generate sample data with OHLC values
 const generateMockData = (days: number, volatility: number = 0.02) => {
   const data = [];
   let price = 150;
+  let high, low, open, close;
   const baseDate = new Date(2024, 3, 7); // April 7, 2024
   
   for (let i = days; i >= 0; i--) {
     const date = new Date(baseDate);
     date.setDate(baseDate.getDate() - i);
     
-    // Random price movement with some trend
-    const change = price * (Math.random() * volatility * 2 - volatility);
-    price = Number((price + change).toFixed(2));
+    // Generate OHLC data
+    open = price;
+    high = price * (1 + Math.random() * volatility);
+    low = price * (1 - Math.random() * volatility);
+    
+    // 50% chance of up or down day
+    const isUpDay = Math.random() > 0.5;
+    if (isUpDay) {
+      close = low + Math.random() * (high - low);
+      price = close;
+    } else {
+      close = low + Math.random() * (high - low);
+      price = close;
+    }
     
     data.push({
       date: date.toISOString().split('T')[0],
-      price,
+      open: Number(open.toFixed(2)),
+      high: Number(high.toFixed(2)),
+      low: Number(low.toFixed(2)),
+      close: Number(close.toFixed(2)),
+      price: Number(close.toFixed(2)), // Maintain compatibility with previous data format
       volume: Math.floor(Math.random() * 1000000) + 500000,
     });
   }
@@ -48,9 +66,42 @@ interface StockLineChartProps {
   comparisonData?: any;
 }
 
+// Custom component to render candlestick
+const CandlestickBar = (props: any) => {
+  const { x, y, width, height, open, close } = props;
+  const isPositive = close >= open;
+  const color = isPositive ? "#8BC34A" : "#F44336";
+  const barWidth = Math.max(1, width * 0.5); // Make sure bar has at least 1px width
+  const barX = x - barWidth / 2;
+  
+  return (
+    <g>
+      {/* Wick (high to low) */}
+      <line
+        x1={x}
+        y1={y}
+        x2={x}
+        y2={y + height}
+        stroke={color}
+        strokeWidth={1}
+      />
+      {/* Body (open to close) */}
+      <rect
+        x={barX}
+        y={isPositive ? props.openY : props.closeY}
+        width={barWidth}
+        height={Math.abs(props.closeY - props.openY)}
+        fill={color}
+        stroke={color}
+      />
+    </g>
+  );
+};
+
 const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }: StockLineChartProps) => {
   const [timeframe, setTimeframe] = useState<"1D" | "1W" | "1M" | "6M" | "1Y">("1M");
   const [selectedPoint, setSelectedPoint] = useState<any>(null);
+  const [chartType, setChartType] = useState<"candlestick" | "line">("candlestick");
   
   let chartData;
   switch (timeframe) {
@@ -73,16 +124,16 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
       chartData = oneMonthData;
   }
 
-  const latestPrice = chartData[chartData.length - 1].price;
-  const startPrice = chartData[0].price;
+  const latestPrice = chartData[chartData.length - 1].close;
+  const startPrice = chartData[0].open;
   const priceChange = latestPrice - startPrice;
   const priceChangePercent = (priceChange / startPrice) * 100;
   
   const isPositive = priceChange >= 0;
   const domain = chartData.reduce(
     (acc: [number, number], item: any) => [
-      Math.min(acc[0], item.price * 0.99),
-      Math.max(acc[1], item.price * 1.01),
+      Math.min(acc[0], item.low * 0.99),
+      Math.max(acc[1], item.high * 1.01),
     ],
     [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
   );
@@ -97,27 +148,67 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
     setSelectedPoint(null);
   }, []);
 
-  // Custom tooltip
+  // Custom tooltip for OHLC data
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const data = payload[0].payload;
       return (
         <div className="p-3 bg-aura-dark-gray border border-gray-700 rounded-md shadow-lg">
           <p className="font-medium text-aura-primary-text">{label}</p>
-          <p className="text-aura-gold text-lg font-bold">
-            ${payload[0].value.toFixed(2)}
+          <div className="grid grid-cols-2 gap-2 mt-1">
+            <p className="text-aura-secondary-text">Open:</p>
+            <p className="text-aura-gold text-right">${data.open.toFixed(2)}</p>
+            
+            <p className="text-aura-secondary-text">High:</p>
+            <p className="text-aura-gold text-right">${data.high.toFixed(2)}</p>
+            
+            <p className="text-aura-secondary-text">Low:</p>
+            <p className="text-aura-gold text-right">${data.low.toFixed(2)}</p>
+            
+            <p className="text-aura-secondary-text">Close:</p>
+            <p className="text-aura-gold text-right">${data.close.toFixed(2)}</p>
+          </div>
+          <p className="text-xs text-aura-secondary-text mt-1">
+            Volume: {parseInt(data.volume).toLocaleString()}
           </p>
           {payload.length > 1 && (
-            <p className="text-aura-chart-blue text-lg font-bold">
+            <p className="text-aura-chart-blue text-lg font-bold mt-1">
               ${payload[1].value.toFixed(2)}
             </p>
           )}
-          <p className="text-xs text-aura-secondary-text mt-1">
-            Volume: {parseInt(payload[0].payload.volume).toLocaleString()}
-          </p>
         </div>
       );
     }
     return null;
+  };
+
+  // Function to render candlesticks
+  const renderCandlestick = (data: any[]) => {
+    return data.map((entry, index) => {
+      const { date, open, close, high, low } = entry;
+      // Calculate positions
+      const x = index; // X position scaled by recharts
+      const openY = open; // Y position scaled by recharts
+      const closeY = close; // Y position scaled by recharts
+      const highY = high; // Y position scaled by recharts
+      const lowY = low; // Y position scaled by recharts
+      
+      return (
+        <CandlestickBar 
+          key={`candle-${date}`} 
+          x={x} 
+          y={lowY} 
+          height={highY - lowY} 
+          width={0.8} 
+          open={open} 
+          close={close} 
+          openY={openY}
+          closeY={closeY}
+          high={high}
+          low={low}
+        />
+      );
+    });
   };
 
   return (
@@ -134,6 +225,20 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
         </div>
         
         <div className="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="icon"
+            onClick={() => setChartType(chartType === "candlestick" ? "line" : "candlestick")}
+            title={chartType === "candlestick" ? "Switch to line chart" : "Switch to candlestick chart"}
+            className="mr-2"
+          >
+            {chartType === "candlestick" ? (
+              <TrendingUpIcon className="h-4 w-4" />
+            ) : (
+              <ChartBarIcon className="h-4 w-4" />
+            )}
+          </Button>
+          
           <Button 
             variant={timeframe === "1D" ? "default" : "outline"} 
             size="sm"
@@ -174,7 +279,7 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
 
       <div style={{ width: '100%', height: 400 }}>
         <ResponsiveContainer>
-          <LineChart
+          <ComposedChart
             data={chartData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             onMouseMove={handleMouseMove}
@@ -211,38 +316,83 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
               strokeDasharray="3 3"
             />
             
-            {/* Price line */}
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke={isPositive ? "#8BC34A" : "#F44336"}
-              strokeWidth={2}
-              dot={false}
-              activeDot={{ 
-                r: 6, 
-                stroke: '#D4AF37', 
-                strokeWidth: 2, 
-                fill: isPositive ? "#8BC34A" : "#F44336"
-              }}
-              animationDuration={1000}
-            />
-            
-            {/* Comparison line if data is provided */}
-            {showOverlay && comparisonData && (
-              <Line
-                type="monotone"
-                data={comparisonData}
-                dataKey="price"
-                stroke="#88B0F4"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ 
-                  r: 6, 
-                  stroke: '#D4AF37', 
-                  strokeWidth: 2, 
-                  fill: "#88B0F4"
-                }}
-              />
+            {chartType === "line" ? (
+              <>
+                {/* Line chart */}
+                <Line
+                  type="monotone"
+                  dataKey="close"
+                  stroke={isPositive ? "#8BC34A" : "#F44336"}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ 
+                    r: 6, 
+                    stroke: '#D4AF37', 
+                    strokeWidth: 2, 
+                    fill: isPositive ? "#8BC34A" : "#F44336"
+                  }}
+                  animationDuration={1000}
+                />
+                
+                {/* Comparison line if data is provided */}
+                {showOverlay && comparisonData && (
+                  <Line
+                    type="monotone"
+                    data={comparisonData}
+                    dataKey="close"
+                    stroke="#88B0F4"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ 
+                      r: 6, 
+                      stroke: '#D4AF37', 
+                      strokeWidth: 2, 
+                      fill: "#88B0F4"
+                    }}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                {/* Candlestick chart */}
+                {/* We use a Bar component with custom rendering for candlesticks */}
+                <Bar
+                  dataKey="high"
+                  fill="transparent"
+                  stroke="transparent"
+                  barSize={8}
+                  shape={(props) => {
+                    const { x, y, width, height, payload } = props;
+                    const isPositive = payload.close >= payload.open;
+                    const color = isPositive ? "#8BC34A" : "#F44336";
+                    
+                    return (
+                      <g>
+                        {/* Wick (high to low) */}
+                        <line
+                          x1={x + width / 2}
+                          y1={y}
+                          x2={x + width / 2}
+                          y2={y + height}
+                          stroke={color}
+                        />
+                        {/* Body (open to close) */}
+                        <rect
+                          x={x}
+                          y={isPositive ? props.y + (1 - (payload.close - payload.low) / (payload.high - payload.low)) * height : 
+                                          props.y + (1 - (payload.open - payload.low) / (payload.high - payload.low)) * height}
+                          width={width}
+                          height={Math.abs(
+                            (props.y + (1 - (payload.close - payload.low) / (payload.high - payload.low)) * height) -
+                            (props.y + (1 - (payload.open - payload.low) / (payload.high - payload.low)) * height)
+                          ) || 1} // Ensure at least 1px height
+                          fill={color}
+                        />
+                      </g>
+                    );
+                  }}
+                />
+              </>
             )}
             
             {/* Highlight area for price change */}
@@ -263,7 +413,7 @@ const StockLineChart = ({ symbol = "AAPL", showOverlay = false, comparisonData }
                 strokeDasharray="3 3"
               />
             )}
-          </LineChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </div>
