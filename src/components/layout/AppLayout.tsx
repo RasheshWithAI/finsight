@@ -46,7 +46,7 @@ const AppLayout = ({
         <h1 className="text-lg font-bold aura-gradient-text">FinSight</h1>
       </header>
       
-      <main className="flex-1 overflow-auto pb-16 animate-fade-in bg-emerald-900">{children}</main>
+      <main className="flex-1 overflow-auto pb-16 animate-fade-in bg-gray-900">{children}</main>
       
       {/* Arya Chatbot FAB */}
       <AryaFAB />
