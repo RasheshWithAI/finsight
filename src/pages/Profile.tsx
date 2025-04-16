@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -12,15 +13,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, User, Bell, Shield, CreditCard, Settings, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import AryaNotificationSettings from "@/components/arya/AryaNotificationSettings";
+
 const Profile = () => {
   const {
     user,
+    profile,
     logout
   } = useAuth();
+  
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
+  
   const handleLogout = () => {
     logout();
     toast.success("You have been logged out");
@@ -29,9 +34,10 @@ const Profile = () => {
 
   // Get user initials for avatar fallback
   const getUserInitials = () => {
-    if (!user?.name) return "U";
-    return user.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
+    if (!profile?.full_name) return user?.email?.[0].toUpperCase() || "U";
+    return profile.full_name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
   };
+  
   return <div className="container px-4 py-6 animate-fade-in pb-20 bg-zinc-900">
       <header className="mb-6">
         <h1 className="text-2xl font-bold text-aura-primary-text">Profile</h1>
@@ -43,13 +49,13 @@ const Profile = () => {
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user?.photoURL || ""} alt={user?.name || "User"} />
+              <AvatarImage src={profile?.avatar_url || ""} alt={profile?.full_name || "User"} />
               <AvatarFallback className="text-xl bg-primary text-white">
                 {getUserInitials()}
               </AvatarFallback>
             </Avatar>
             <div className="text-center sm:text-left space-y-1 flex-1">
-              <h2 className="text-xl font-bold text-aura-primary-text">{user?.name || "User"}</h2>
+              <h2 className="text-xl font-bold text-aura-primary-text">{profile?.full_name || user?.email?.split('@')[0] || "User"}</h2>
               <p className="text-aura-secondary-text">{user?.email}</p>
               <p className="text-sm text-aura-gold">Premium Member</p>
             </div>
@@ -219,4 +225,5 @@ const Profile = () => {
       </Tabs>
     </div>;
 };
+
 export default Profile;

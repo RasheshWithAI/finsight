@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,15 +9,19 @@ import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
 import { PricingModal } from "@/components/premium/PricingModal";
 import { GradientButton } from "@/components/ui/gradient-button";
+
 const Dashboard = () => {
   const {
-    user
+    user,
+    profile
   } = useAuth();
+  
   const [financialSummary, setFinancialSummary] = useState(calculateFinancialSummary());
   const [watchlist, setWatchlist] = useState(generateWatchlist());
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+  
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -24,6 +29,7 @@ const Dashboard = () => {
       minimumFractionDigits: 2
     }).format(value);
   };
+  
   const formatPercentage = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'percent',
@@ -31,6 +37,7 @@ const Dashboard = () => {
       maximumFractionDigits: 2
     }).format(value / 100);
   };
+  
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
       sendAryaNotification("Your savings rate is on track! At 20.5%, you're above the recommended 20% target.", "success");
@@ -43,14 +50,16 @@ const Dashboard = () => {
       clearTimeout(premiumTimer);
     };
   }, []);
+  
   const handleLearnMoreClick = () => {
     setIsPricingModalOpen(true);
   };
+  
   return <>
       <div className="container px-4 py-6 animate-fade-in bg-gray-900">
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-aura-primary-text">
-            Welcome, {user?.name || 'Investor'}
+            Welcome, {profile?.full_name || user?.email?.split('@')[0] || 'Investor'}
           </h1>
           <p className="text-aura-secondary-text">
             Your financial overview for April 2025
@@ -232,4 +241,5 @@ const Dashboard = () => {
       <PricingModal isOpen={isPricingModalOpen} onClose={() => setIsPricingModalOpen(false)} />
     </>;
 };
+
 export default Dashboard;
