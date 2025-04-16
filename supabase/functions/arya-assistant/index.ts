@@ -51,7 +51,7 @@ serve(async (req) => {
       ...messages
     ];
 
-    // Call the Google API
+    // Call the Google AI API
     const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', {
       method: 'POST',
       headers: {

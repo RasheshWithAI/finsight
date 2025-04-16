@@ -60,7 +60,7 @@ export const getAryaResponse = async (
   userInput: string, 
   conversationHistory: Message[]
 ): Promise<string> => {
-  // Default to mock responses for users without premium or for quick responses
+  // Use mock responses for fallback or when random chance occurs
   if (Math.random() < 0.2) { // 20% chance to use mock responses for speed
     await new Promise(resolve => setTimeout(resolve, 300)); // Quick response time
     const input = userInput.toLowerCase();
