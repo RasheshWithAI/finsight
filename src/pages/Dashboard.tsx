@@ -94,7 +94,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="financial-card rounded-2xl bg-lime-400">
+            <Card className="financial-card rounded-2xl bg-lime-500">
               <CardContent className="p-4 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="stat-label text-zinc-950">Savings</span>
