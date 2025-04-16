@@ -47,7 +47,7 @@ const Dashboard = () => {
     setIsPricingModalOpen(true);
   };
   return <>
-      <div className="container px-4 py-6 animate-fade-in">
+      <div className="container px-4 py-6 animate-fade-in bg-gray-900">
         <header className="mb-6">
           <h1 className="text-2xl font-bold text-aura-primary-text">
             Welcome, {user?.name || 'Investor'}
