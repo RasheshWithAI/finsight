@@ -44,7 +44,7 @@ const Finance = () => {
             Track your income, expenses and budgets
           </p>
         </div>
-        <Button className="bg-accent-gradient hover:brightness-105 mt-2 sm:mt-0 text-aura-dark-gray" onClick={handleAddTransaction}>
+        <Button onClick={handleAddTransaction} className="bg-accent-gradient hover:brightness-105 mt-2 sm:mt-0 text-aura-dark-gray rounded-2xl">
           <Plus className="h-4 w-4 mr-2" /> Add Transaction
         </Button>
       </header>
@@ -53,17 +53,17 @@ const Finance = () => {
       <section className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Summary</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Card className="financial-card bg-green-600">
+          <Card className="financial-card bg-green-600 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label text-amber-400">Income</span>
+                <span className="stat-label text-yellow-400">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold text-amber-400">{formatCurrency(totalIncome)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-yellow-400">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
-          <Card className="financial-card bg-violet-800">
+          <Card className="financial-card bg-violet-800 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between bg-transparent">
                 <span className="stat-label bg-violet-900 hover:bg-violet-800 font-normal text-slate-50">Expenses</span>
@@ -73,7 +73,7 @@ const Finance = () => {
             </CardContent>
           </Card>
           
-          <Card className="financial-card bg-amber-500">
+          <Card className="financial-card bg-amber-500 rounded-2xl">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
                 <span className="stat-label text-base text-lime-50">Balance</span>
@@ -106,7 +106,7 @@ const Finance = () => {
             </Button>
           </div>
           
-          <Card className="financial-card overflow-hidden bg-gray-600">
+          <Card className="financial-card overflow-hidden bg-gray-600 rounded-2xl">
             {transactions.length === 0 ? <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
@@ -145,7 +145,7 @@ const Finance = () => {
           </Card>
 
           {/* Expense Breakdown Chart */}
-          <Card className="financial-card p-6 mt-6">
+          <Card className="financial-card p-6 mt-6 rounded-2xl">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-base flex items-center">
                 <PieChart className="h-4 w-4 mr-2 text-aura-gold" />
