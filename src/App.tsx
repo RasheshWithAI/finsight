@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import AppLayout from "@/components/layout/AppLayout";
 import PrivateRoute from "@/components/auth/PrivateRoute";
 import WelcomePage from "./pages/WelcomePage";
+import SignUpPage from "./pages/SignUpPage";
 import Dashboard from "./pages/Dashboard";
 import Market from "./pages/Market";
 import Finance from "./pages/Finance";
@@ -33,6 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/welcome" element={<WelcomePage />} />
+            <Route path="/signup" element={<SignUpPage />} />
             
             {/* Protected Routes with AppLayout */}
             <Route 
