@@ -55,37 +55,102 @@ const mockResponses = {
   ]
 };
 
-// Function to get response from Arya (mock implementation)
+// Function to get response from Arya using Google AI API
 export const getAryaResponse = async (
   userInput: string, 
   conversationHistory: Message[]
 ): Promise<string> => {
-  // In a real implementation, this would call the Gemini API
-  // For now, we'll simulate a response based on the user input
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
-  const input = userInput.toLowerCase();
-  
-  // Enhanced categorization of questions for premium-style responses
-  if (input.includes('portfolio') || input.includes('allocation') || input.includes('risk analysis') || input.includes('retirement') || input.includes('debt')) {
-    return getRandomResponse('advancedAnalysis');
-  } else if (input.includes('tax') || input.includes('harvest') || input.includes('deduction') || input.includes('credit')) {
-    return getRandomResponse('taxStrategies');
-  } else if (input.includes('fed') || input.includes('market') || input.includes('earnings') || input.includes('volatility') || input.includes('trend')) {
-    return getRandomResponse('marketInsights');
-  } else if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
-    return getRandomResponse('budgeting');
-  } else if (input.includes('invest') || input.includes('stock') || input.includes('etf')) {
-    return getRandomResponse('investing');
-  } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
-    return getRandomResponse('savings');
-  } else if (input.includes('app') || input.includes('feature') || input.includes('how do i')) {
-    return getRandomResponse('appFeatures');
-  } else {
-    // Default response
-    return "I'm focused on helping with finances, investments, tax strategies, and market insights. Could you ask something related to these topics?";
+  // Default to mock responses for users without premium or for quick responses
+  if (Math.random() < 0.2) { // 20% chance to use mock responses for speed
+    await new Promise(resolve => setTimeout(resolve, 300)); // Quick response time
+    const input = userInput.toLowerCase();
+    
+    // Enhanced categorization of questions for premium-style responses
+    if (input.includes('portfolio') || input.includes('allocation') || input.includes('risk analysis') || input.includes('retirement') || input.includes('debt')) {
+      return getRandomResponse('advancedAnalysis');
+    } else if (input.includes('tax') || input.includes('harvest') || input.includes('deduction') || input.includes('credit')) {
+      return getRandomResponse('taxStrategies');
+    } else if (input.includes('fed') || input.includes('market') || input.includes('earnings') || input.includes('volatility') || input.includes('trend')) {
+      return getRandomResponse('marketInsights');
+    } else if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
+      return getRandomResponse('budgeting');
+    } else if (input.includes('invest') || input.includes('stock') || input.includes('etf')) {
+      return getRandomResponse('investing');
+    } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
+      return getRandomResponse('savings');
+    } else if (input.includes('app') || input.includes('feature') || input.includes('how do i')) {
+      return getRandomResponse('appFeatures');
+    } else {
+      // Default mock response
+      return "I'm focused on helping with finances, investments, tax strategies, and market insights. Could you ask something related to these topics?";
+    }
+  }
+
+  try {
+    // Format conversation history for API
+    const formattedMessages = conversationHistory.slice(-5).map(msg => ({
+      role: msg.isUser ? "user" : "model",
+      content: msg.content
+    }));
+
+    // Add the latest user input
+    formattedMessages.push({
+      role: "user",
+      content: userInput
+    });
+
+    // Determine topic based on user input
+    let topic = "general";
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
+      topic = "budgeting";
+    } else if (input.includes('invest') || input.includes('stock') || input.includes('etf') || input.includes('portfolio')) {
+      topic = "investing";
+    } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
+      topic = "savings";
+    } else if (input.includes('market') || input.includes('index') || input.includes('trend')) {
+      topic = "market";
+    } else if (input.includes('tax') || input.includes('deduction')) {
+      topic = "tax";
+    }
+
+    // Call the Supabase Edge Function that interfaces with Google AI
+    const { data, error } = await supabase.functions.invoke('arya-assistant', {
+      body: { 
+        messages: formattedMessages,
+        topic 
+      }
+    });
+
+    if (error) {
+      console.error('Edge function error:', error);
+      throw new Error(error.message || "Failed to get response from assistant");
+    }
+
+    return data.response;
+
+  } catch (error) {
+    console.error('Error getting AI response:', error);
+    
+    // Fallback to mock responses if API call fails
+    const input = userInput.toLowerCase();
+    
+    if (input.includes('portfolio') || input.includes('allocation')) {
+      return getRandomResponse('advancedAnalysis');
+    } else if (input.includes('tax')) {
+      return getRandomResponse('taxStrategies');
+    } else if (input.includes('market')) {
+      return getRandomResponse('marketInsights');
+    } else if (input.includes('budget')) {
+      return getRandomResponse('budgeting');
+    } else if (input.includes('invest')) {
+      return getRandomResponse('investing');
+    } else if (input.includes('save')) {
+      return getRandomResponse('savings');
+    } else {
+      return "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.";
+    }
   }
 };
 
@@ -113,7 +178,7 @@ export const sendAryaNotification = (
   });
 };
 
-// New function to detect premium topics and suggest upgrade
+// Function to detect premium topics and suggest upgrade
 export const isPremiumTopic = (userInput: string): boolean => {
   const premiumKeywords = [
     'portfolio analysis', 
@@ -130,3 +195,6 @@ export const isPremiumTopic = (userInput: string): boolean => {
   
   return premiumKeywords.some(keyword => userInput.toLowerCase().includes(keyword));
 };
+
+// Import supabase client
+import { supabase } from "@/integrations/supabase/client";
