@@ -90,13 +90,13 @@ export const getAryaResponse = async (
     // Format conversation history for API
     const formattedMessages = conversationHistory.slice(-5).map(msg => ({
       role: msg.isUser ? "user" : "model",
-      content: msg.content
+      parts: [{ text: msg.content }]
     }));
 
     // Add the latest user input
     formattedMessages.push({
       role: "user",
-      content: userInput
+      parts: [{ text: userInput }]
     });
 
     // Determine topic based on user input
