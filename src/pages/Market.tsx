@@ -72,7 +72,7 @@ const Market = () => {
               Track stocks, indices, and market trends
             </p>
           </div>
-          <Button className="bg-accent-gradient text-aura-dark-gray hover:brightness-105" onClick={handleCompareClick}>
+          <Button onClick={handleCompareClick} className="bg-accent-gradient text-aura-dark-gray hover:brightness-105 rounded-2xl">
             <BarChart4 className="h-4 w-4 mr-2" /> Compare Stocks
           </Button>
         </div>
@@ -82,7 +82,7 @@ const Market = () => {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Market Indices</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {mockMarketIndices.map(index => <Card key={index.id} className="financial-card bg-emerald-700">
+          {mockMarketIndices.map(index => <Card key={index.id} className="financial-card rounded-2xl bg-emerald-800">
               <CardContent className="p-4">
                 <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
                 <div className="flex items-center justify-between mt-1">
