@@ -199,7 +199,7 @@ const Dashboard = () => {
           </div>
 
           <div className="grid gap-4">
-            {currentInsights.map(insight => <Card key={insight.id} className="financial-card bg-rose-700">
+            {currentInsights.map(insight => <Card key={insight.id} className="financial-card bg-cyan-800">
                 <CardContent className="p-4">
                   <div className="flex items-start">
                     <div className={`p-2 rounded-full mr-3 ${insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' : insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' : 'bg-yellow-900/30 text-yellow-500'}`}>
