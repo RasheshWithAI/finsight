@@ -126,7 +126,7 @@ const Dashboard = () => {
           
           <div className="overflow-x-auto">
             <div className="flex space-x-4 pb-2">
-              {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-violet-900 py-[20px] rounded-xl px-[8px] mx-[21px] my-[15px]">
+              {currentMarketIndices.map(index => <Card key={index.id} className="financial-card w-60 flex-shrink-0 bg-[rred-600] bg-violet-900 rounded-xl mx-[21px] my-[15px] px-0 py-[22px]">
                   <CardContent className="p-4">
                     <h3 className="font-medium text-sm">{index.name}</h3>
                     <div className="flex items-center justify-between mt-1">
@@ -199,7 +199,7 @@ const Dashboard = () => {
           </div>
 
           <div className="grid gap-4">
-            {currentInsights.map(insight => <Card key={insight.id} className="financial-card bg-cyan-800">
+            {currentInsights.map(insight => <Card key={insight.id} className="financial-card bg-indigo-900 rounded-2xl">
                 <CardContent className="p-4">
                   <div className="flex items-start">
                     <div className={`p-2 rounded-full mr-3 ${insight.type === 'cost-saving' ? 'bg-red-900/30 text-red-400' : insight.type === 'investment' ? 'bg-blue-900/30 text-aura-chart-blue' : 'bg-yellow-900/30 text-yellow-500'}`}>
