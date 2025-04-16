@@ -74,7 +74,7 @@ const Dashboard = () => {
         <section className="mb-8">
           <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Financial Summary</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="financial-card bg-amber-400 rounded-2xl">
+            <Card className="financial-card rounded-2xl bg-amber-400">
               <CardContent className="p-4 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="stat-label text-zinc-950">Income</span>
@@ -94,7 +94,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="financial-card bg-lime-500 rounded-2xl">
+            <Card className="financial-card rounded-2xl bg-lime-400">
               <CardContent className="p-4 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="stat-label text-zinc-950">Savings</span>
@@ -104,7 +104,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
             
-            <Card className="financial-card bg-blue-500 rounded-2xl">
+            <Card className="financial-card rounded-2xl bg-blue-600">
               <CardContent className="p-4 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="stat-label text-stone-950">Savings Rate</span>
