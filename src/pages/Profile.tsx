@@ -64,8 +64,8 @@ const Profile = () => {
       {/* Settings Tabs */}
       <Tabs defaultValue="preferences">
         <TabsList className="grid grid-cols-3 mb-6">
-          <TabsTrigger value="preferences" className="bg-purple-900 hover:bg-purple-800">Preferences</TabsTrigger>
-          <TabsTrigger value="security" className="bg-purple-900 hover:bg-purple-800">Security</TabsTrigger>
+          <TabsTrigger value="preferences" className="bg-transparent">Preferences</TabsTrigger>
+          <TabsTrigger value="security" className="bg-transparent">Security</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
         </TabsList>
 
