@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,15 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
+
 const WelcomePage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    login
-  } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -26,16 +27,13 @@ const WelcomePage = () => {
       await login(email, password);
       navigate("/dashboard");
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Invalid credentials");
-      }
-    } finally {
+      // Error is handled in the login function and toast is already shown
       setIsLoading(false);
     }
   };
-  return <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#1E1E2F] to-[#3A3A5B] px-4">
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#1E1E2F] to-[#3A3A5B] px-4">
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center mb-4">
           <img src="/lovable-uploads/40ddd2e1-237b-497c-a073-39fe0af7b02a.png" alt="FinSight Logo" className="h-12 w-12 object-contain" />
@@ -53,19 +51,41 @@ const WelcomePage = () => {
             <div className="space-y-2">
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input type="email" placeholder="Email Address" required value={email} onChange={e => setEmail(e.target.value)} className="pl-10 bg-[#2C3036] border-gray-700 rounded-2xl" />
+                <Input 
+                  type="email" 
+                  placeholder="Email Address" 
+                  required 
+                  value={email} 
+                  onChange={e => setEmail(e.target.value)} 
+                  className="pl-10 bg-[#2C3036] border-gray-700 rounded-2xl" 
+                />
               </div>
             </div>
             <div className="space-y-2">
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input type={showPassword ? "text" : "password"} placeholder="Password" required value={password} onChange={e => setPassword(e.target.value)} className="pl-10 bg-[#2C3036] border-gray-700 rounded-2xl" />
-                <button type="button" className="absolute right-3 top-3 text-gray-400 hover:text-white" onClick={() => setShowPassword(!showPassword)}>
+                <Input 
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Password" 
+                  required 
+                  value={password} 
+                  onChange={e => setPassword(e.target.value)} 
+                  className="pl-10 bg-[#2C3036] border-gray-700 rounded-2xl" 
+                />
+                <button 
+                  type="button" 
+                  className="absolute right-3 top-3 text-gray-400 hover:text-white" 
+                  onClick={() => setShowPassword(!showPassword)}
+                >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-            <Button type="submit" disabled={isLoading} className="w-full gradient-button-primary font-medium rounded-2xl">
+            <Button 
+              type="submit" 
+              disabled={isLoading} 
+              className="w-full gradient-button-primary font-medium rounded-2xl"
+            >
               {isLoading ? "Signing In..." : "Sign In"}
             </Button>
           </CardContent>
@@ -76,7 +96,14 @@ const WelcomePage = () => {
               <hr className="flex-grow border-gray-700" />
             </div>
             
-            <Button type="button" variant="outline" className="w-full bg-transparent border-[#2C3036] hover:bg-[#2C3036]/30 rounded-2xl">
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="w-full bg-transparent border-[#2C3036] hover:bg-[#2C3036]/30 rounded-2xl"
+              onClick={() => {
+                toast.info("Google authentication coming soon");
+              }}
+            >
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -95,6 +122,8 @@ const WelcomePage = () => {
           </CardFooter>
         </form>
       </Card>
-    </div>;
+    </div>
+  );
 };
+
 export default WelcomePage;

@@ -22,7 +22,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/welcome" replace />;
   }
 
   return <>{children}</>;
