@@ -64,9 +64,9 @@ const Profile = () => {
       {/* Settings Tabs */}
       <Tabs defaultValue="preferences">
         <TabsList className="grid grid-cols-3 mb-6">
-          <TabsTrigger value="preferences" className="bg-transparent">Preferences</TabsTrigger>
-          <TabsTrigger value="security" className="bg-transparent">Security</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="preferences" className="bg-transparent rounded-2xl">Preferences</TabsTrigger>
+          <TabsTrigger value="security" className="bg-transparent rounded-2xl">Security</TabsTrigger>
+          <TabsTrigger value="notifications" className="rounded-2xl">Notifications</TabsTrigger>
         </TabsList>
 
         {/* Preferences Tab */}
@@ -114,21 +114,11 @@ const Profile = () => {
         <TabsContent value="security">
           <Card>
             <CardHeader>
-              <CardTitle>Security Settings</CardTitle>
+              <CardTitle className="text-2xl">Security Settings</CardTitle>
               <CardDescription>Manage your account security preferences</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="biometrics" className="text-aura-primary-text">
-                    Biometric Authentication
-                  </Label>
-                  <p className="text-sm text-aura-secondary-text">
-                    Use fingerprint or Face ID to unlock the app
-                  </p>
-                </div>
-                <Switch id="biometrics" checked={biometrics} onCheckedChange={setBiometrics} />
-              </div>
+            <CardContent className="space-y-4 my-0 py-0 px-[5px]">
+              
 
               <Separator className="my-4" />
 
@@ -136,24 +126,24 @@ const Profile = () => {
                 <Label htmlFor="current-password" className="text-aura-primary-text">
                   Current Password
                 </Label>
-                <Input id="current-password" type="password" placeholder="Enter current password" className="bg-gray-800" />
+                <Input id="current-password" type="password" placeholder="Enter current password" className="bg-gray-800 rounded-2xl" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="new-password" className="text-aura-primary-text">
                   New Password
                 </Label>
-                <Input id="new-password" type="password" placeholder="Enter new password" className="bg-gray-800" />
+                <Input id="new-password" type="password" placeholder="Enter new password" className="bg-gray-800 rounded-2xl" />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirm-password" className="text-aura-primary-text">
                   Confirm New Password
                 </Label>
-                <Input id="confirm-password" type="password" placeholder="Confirm new password" className="bg-gray-800" />
+                <Input id="confirm-password" type="password" placeholder="Confirm new password" className="bg-gray-800 rounded-2xl" />
               </div>
 
-              <Button className="w-full mt-4">Update Password</Button>
+              <Button className="w-full mt-4 rounded-2xl">Update Password</Button>
             </CardContent>
           </Card>
         </TabsContent>
