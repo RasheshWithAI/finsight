@@ -19,7 +19,7 @@ const Insights = () => {
         
         <div className="space-y-4">
           {/* Cost Saving Insight */}
-          <Card className="financial-card bg-amber-300">
+          <Card className="financial-card bg-amber-300 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="p-3 rounded-full mr-4 bg-red-900">
@@ -57,7 +57,7 @@ const Insights = () => {
           </Card>
 
           {/* Investment Opportunity */}
-          <Card className="financial-card bg-sky-200">
+          <Card className="financial-card bg-sky-200 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="bg-blue-900/30 p-3 rounded-full mr-4">
@@ -65,7 +65,7 @@ const Insights = () => {
                 </div>
                 <div>
                   <div className="flex items-center mb-1">
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-aura-chart-blue rounded-full mr-2">
+                    <span className="px-2 py-1 bg-blue-900/30 text-aura-chart-blue rounded-full mr-2 text-xs">
                       Investment
                     </span>
                     <span className="text-xs text-aura-medium-gray text-gray-950">April 6, 2025</span>
@@ -108,7 +108,7 @@ const Insights = () => {
           </Card>
 
           {/* Market Alert */}
-          <Card className="financial-card bg-yellow-600">
+          <Card className="financial-card bg-yellow-600 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="p-3 rounded-full mr-4 bg-yellow-900">
@@ -167,7 +167,7 @@ const Insights = () => {
           </Card>
 
           {/* Financial Health */}
-          <Card className="financial-card bg-green-400">
+          <Card className="financial-card bg-green-400 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="p-3 rounded-full mr-4 bg-green-900">
@@ -230,7 +230,7 @@ const Insights = () => {
           </Card>
 
           {/* Educational Tip */}
-          <Card className="financial-card bg-violet-500">
+          <Card className="financial-card bg-violet-500 rounded-2xl">
             <CardContent className="p-4">
               <div className="flex">
                 <div className="p-3 rounded-full mr-4 bg-purple-900">
@@ -274,7 +274,7 @@ const Insights = () => {
       </section>
 
       {/* Disclaimer */}
-      <div className="bg-yellow-900/30 border border-yellow-800/50 rounded-lg p-4 text-sm flex items-start">
+      <div className="bg-yellow-900/30 border border-yellow-800/50 p-4 text-sm flex items-start rounded-2xl">
         <AlertCircle className="h-5 w-5 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" />
         <div>
           <p className="font-medium text-yellow-400 mb-1">Important Disclaimer</p>
