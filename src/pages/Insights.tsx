@@ -38,7 +38,7 @@ const Insights = () => {
                     Your food spending is trending 15% higher than last month. Consider meal planning to reduce costs.
                   </p>
                   
-                  <div className="flex items-center text-aura-gold font-medium mb-4 bg-[aura-chart-green] bg-green-600">
+                  <div className="flex items-center text-aura-gold font-medium mb-4 bg-[aura-chart-green] bg-green-600 px-0 rounded-none">
                     <DollarSign className="h-4 w-4 mr-1" />
                     Potential savings: $90/month
                   </div>
@@ -95,7 +95,7 @@ const Insights = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-2xl">
                       Learn More <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                     <Button variant="ghost" size="sm">
@@ -151,10 +151,10 @@ const Insights = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-2xl">
                       View Sector <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
-                    <Button size="sm" className="flex items-center" variant="outline">
+                    <Button size="sm" variant="outline" className="flex items-center rounded-2xl">
                       <BookmarkPlus className="h-4 w-4 mr-1" /> Watch Tech Stocks
                     </Button>
                     <Button variant="ghost" size="sm">
@@ -217,7 +217,7 @@ const Insights = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-2xl">
                       View Full Report <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                     <Button variant="ghost" size="sm">
@@ -259,7 +259,7 @@ const Insights = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="rounded-2xl">
                       Learn More <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                     <Button variant="ghost" size="sm">
