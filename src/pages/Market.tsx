@@ -61,7 +61,7 @@ const Market = () => {
     navigate('/market/compare');
   };
   const filteredStocks = stocks.filter(stock => stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()));
-  return <div className="container px-4 py-6 animate-fade-in">
+  return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="mb-6">
         <div className="flex justify-between items-center">
           <div>
