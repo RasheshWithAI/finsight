@@ -59,14 +59,14 @@ const Finance = () => {
                 <span className="stat-label text-amber-400">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold">{formatCurrency(totalIncome)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-amber-400">{formatCurrency(totalIncome)}</span>
             </CardContent>
           </Card>
           
           <Card className="financial-card bg-violet-800">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between bg-transparent">
-                <span className="stat-label bg-violet-900 hover:bg-violet-800 text-slate-50 font-normal">Expenses</span>
+                <span className="stat-label bg-violet-900 hover:bg-violet-800 font-normal text-slate-50">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
               <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
@@ -76,10 +76,10 @@ const Finance = () => {
           <Card className="financial-card bg-amber-500">
             <CardContent className="p-4 flex flex-col">
               <div className="flex items-center justify-between">
-                <span className="stat-label text-base text-yellow-950">Balance</span>
+                <span className="stat-label text-base text-lime-50">Balance</span>
                 <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold text-slate-50">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-lime-50">{formatCurrency(totalIncome - totalExpenses)}</span>
             </CardContent>
           </Card>
         </div>
@@ -163,17 +163,17 @@ const Finance = () => {
         {/* Budgets Tab */}
         <TabsContent value="budgets">
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <Button variant="outline" className="flex items-center">
+            <Button variant="outline" className="flex items-center rounded-2xl">
               <Calendar className="h-4 w-4 mr-2" /> {selectedMonth}
             </Button>
             <div className="grow"></div>
-            <Button className="bg-accent-gradient hover:brightness-105 text-aura-dark-gray" onClick={handleNewBudget}>
+            <Button onClick={handleNewBudget} className="bg-accent-gradient hover:brightness-105 text-aura-dark-gray rounded-2xl">
               <Plus className="h-4 w-4 mr-2" /> New Budget
             </Button>
           </div>
           
           <div className="grid md:grid-cols-2 gap-4">
-            {budgets.map(budget => <Card key={budget.id} className="financial-card p-4">
+            {budgets.map(budget => <Card key={budget.id} className="financial-card p-4 rounded-2xl">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
                   <span className="text-sm text-aura-medium-gray">{budget.period}</span>
@@ -197,7 +197,7 @@ const Finance = () => {
           </div>
           
           {/* Budget Comparison Chart */}
-          <Card className="financial-card p-6 mt-6 bg-green-50">
+          <Card className="financial-card p-6 mt-6 rounded-2xl bg-fuchsia-200">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-base flex items-center text-gray-950">
                 <BarChart3 className="h-4 w-4 mr-2 text-aura-gold" />
