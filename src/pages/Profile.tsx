@@ -53,7 +53,7 @@ const Profile = () => {
               <p className="text-aura-secondary-text">{user?.email}</p>
               <p className="text-sm text-aura-gold">Premium Member</p>
             </div>
-            <Button variant="outline" onClick={handleLogout} className="mt-2 sm:mt-0">
+            <Button variant="outline" onClick={handleLogout} className="mt-2 sm:mt-0 bg-red-700 hover:bg-red-600">
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out
             </Button>
