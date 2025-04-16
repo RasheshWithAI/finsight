@@ -62,7 +62,7 @@ const Dashboard = () => {
             <CardContent className="p-4 flex items-center justify-between">
               <div className="flex items-center">
                 <Sparkles className="h-5 w-5 mr-2 text-amber-300" />
-                <span className="font-medium text-white">Unlock Premium Financial Insights</span>
+                <span className="font-medium text-white text-sm">Unlock Premium Financial Insights</span>
               </div>
               <GradientButton onClick={handleLearnMoreClick} className="px-4 py-2 text-sm">
                 Learn More
