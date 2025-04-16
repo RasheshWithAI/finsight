@@ -75,7 +75,7 @@ const StockDetail = () => {
 
       {/* Stock Overview */}
       <div className="flex flex-wrap gap-4 mb-6">
-        <Card className="financial-card flex-grow">
+        <Card className="financial-card flex-grow rounded-2xl">
           <CardContent className="p-4 flex flex-col">
             <div className="flex items-center justify-between">
               <div>
@@ -105,7 +105,7 @@ const StockDetail = () => {
       </div>
       
       {/* Stock Chart */}
-      <Card className="financial-card mb-6">
+      <Card className="financial-card mb-6 rounded-2xl">
         <CardContent className="p-6">
           <StockLineChart symbol={stock.symbol} />
         </CardContent>
@@ -114,7 +114,7 @@ const StockDetail = () => {
       {/* Stock Details */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Key Statistics */}
-        <Card className="financial-card">
+        <Card className="financial-card rounded-2xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center">
               <TrendingUp className="h-4 w-4 mr-2 text-aura-gold" />
@@ -152,7 +152,7 @@ const StockDetail = () => {
         </Card>
 
         {/* Company Overview */}
-        <Card className="financial-card lg:col-span-2">
+        <Card className="financial-card lg:col-span-2 rounded-2xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Company Overview</CardTitle>
           </CardHeader>
