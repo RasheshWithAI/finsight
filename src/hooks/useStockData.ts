@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 export type StockQuote = {
   symbol: string;
@@ -50,6 +51,7 @@ export const useStockData = () => {
       return [];
     } catch (error) {
       console.error('Error searching stocks:', error);
+      toast.error("Failed to search stocks. The API may be unavailable.");
       return [];
     } finally {
       setIsLoading(false);
@@ -75,9 +77,11 @@ export const useStockData = () => {
           volume: parseInt(quote['06. volume']),
         };
       }
+      toast.error(`No quote data found for ${symbol}. The API may have limited your requests.`);
       return null;
     } catch (error) {
       console.error('Error getting stock quote:', error);
+      toast.error("Failed to get stock quote. The API may be unavailable.");
       return null;
     }
   };
@@ -102,9 +106,11 @@ export const useStockData = () => {
           volume: parseInt(values['5. volume']),
         }));
       }
+      toast.error(`No historical data found for ${symbol}. The API may have limited your requests.`);
       return [];
     } catch (error) {
       console.error('Error getting stock history:', error);
+      toast.error("Failed to get stock history. The API may be unavailable.");
       return [];
     }
   };
@@ -128,21 +134,32 @@ export const useStockData = () => {
             const names = ['Dow Jones', 'S&P 500', 'NASDAQ', 'Russell 2000'];
             const ids = ['DJI', 'SPX', 'IXIC', 'RUT'];
             
+            let changePercent = 0;
+            // Fix for the error with undefined .replace() method
+            if (quote['10. change percent']) {
+              changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+            } else {
+              changePercent = 0;
+              console.warn(`Missing change percent for index ${i}`);
+            }
+            
             return {
               id: ids[i],
               name: names[i],
               value: parseFloat(quote['05. price']),
               change: parseFloat(quote['09. change']),
-              changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
+              changePercent: changePercent,
             };
           }).filter(Boolean);
           
           return indices;
         }
         
+        console.warn('No indices data received from API');
         return [];
       } catch (error) {
         console.error('Error fetching market indices:', error);
+        toast.error("Failed to fetch market data. The API may be temporarily unavailable.");
         return [];
       }
     },

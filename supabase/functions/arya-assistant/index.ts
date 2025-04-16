@@ -17,6 +17,18 @@ serve(async (req) => {
   }
 
   try {
+    // Check if API key is available
+    if (!GOOGLE_API_KEY) {
+      console.error('GOOGLE_API_KEY environment variable is not set');
+      return new Response(JSON.stringify({ 
+        error: 'API configuration error', 
+        message: 'The Google API key is not configured properly'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { messages, topic } = await req.json();
     
     // Define system prompts based on financial topics
@@ -51,55 +63,79 @@ serve(async (req) => {
       ...messages
     ];
 
-    // Call the Google AI API
-    const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': GOOGLE_API_KEY,
-      },
-      body: JSON.stringify({
-        contents: formattedMessages,
-        generationConfig: {
-          temperature: 0.4,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 2048,
+    console.log('Calling Google Gemini API with messages:', JSON.stringify(formattedMessages.slice(0, 1)));
+
+    try {
+      // Call the Google AI API
+      const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': GOOGLE_API_KEY,
         },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      }),
-    });
+        body: JSON.stringify({
+          contents: formattedMessages,
+          generationConfig: {
+            temperature: 0.4,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2048,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
+        }),
+      });
 
-    // Process the API response
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error.message || "Error from Google API");
-    }
-    
-    let responseText = "";
-    
-    if (data.candidates && data.candidates.length > 0 && 
-        data.candidates[0].content && 
-        data.candidates[0].content.parts && 
-        data.candidates[0].content.parts.length > 0) {
-      responseText = data.candidates[0].content.parts[0].text;
-    } else {
-      responseText = "I'm sorry, but I couldn't generate a helpful response at the moment.";
-    }
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Gemini API error:', response.status, errorData);
+        throw new Error(`Gemini API error: ${response.status} ${errorData}`);
+      }
+      
+      // Process the API response
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error.message || "Error from Google API");
+      }
+      
+      let responseText = "";
+      
+      if (data.candidates && data.candidates.length > 0 && 
+          data.candidates[0].content && 
+          data.candidates[0].content.parts && 
+          data.candidates[0].content.parts.length > 0) {
+        responseText = data.candidates[0].content.parts[0].text;
+      } else {
+        responseText = "I'm sorry, but I couldn't generate a helpful response at the moment.";
+      }
 
-    return new Response(JSON.stringify({ 
-      response: responseText, 
-      topic: topic || "general"
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-    
+      console.log('Gemini API response received successfully');
+
+      return new Response(JSON.stringify({ 
+        response: responseText, 
+        topic: topic || "general"
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    } catch (apiError) {
+      console.error('Error calling Gemini API:', apiError);
+      
+      // Fallback to using mock responses
+      const mockResponse = "I apologize, but I'm currently unable to access my knowledge base due to connectivity issues. Please try again later for personalized financial advice. In the meantime, consider reviewing your budget allocation and ensuring you have an emergency fund covering 3-6 months of expenses.";
+      
+      return new Response(JSON.stringify({ 
+        response: mockResponse, 
+        topic: topic || "general",
+        fallback: true
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
   } catch (error) {
     console.error('Error in arya-assistant function:', error);
     
