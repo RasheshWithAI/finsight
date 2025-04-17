@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { StockQuote, MarketIndex, StockSearchResult, StockHistoryPoint } from '@/types/stockTypes';
@@ -65,8 +64,8 @@ export const useStockData = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     retry: 3,
-    onSettled: (_, error) => {
-      if (error) {
+    meta: {
+      onError: (error: Error) => {
         console.error('Error fetching market indices:', error);
         toast.error('Failed to fetch market indices. Using cached data.');
       }
