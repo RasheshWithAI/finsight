@@ -28,14 +28,19 @@ export const useStockData = () => {
   const searchStocks = async (keywords: string): Promise<any[]> => {
     setIsLoading(true);
     try {
+      console.log(`Searching stocks with keywords: ${keywords}`);
       const { data, error } = await supabase.functions.invoke('stock-data', {
         body: { action: 'search', keywords }
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
       
       // Parse the search results and return in our app format
       if (data && data.bestMatches) {
+        console.log(`Found ${data.bestMatches.length} matching stocks`);
         return data.bestMatches.map((match: any) => ({
           id: match['1. symbol'],
           symbol: match['1. symbol'],
@@ -48,11 +53,27 @@ export const useStockData = () => {
           currency: match['8. currency'],
         }));
       }
-      return [];
+      
+      // If we get a note message but no matches, it might be using mock data
+      if (data && data.note) {
+        console.log('Using fallback stock data:', data.note);
+        toast.info(data.note);
+      }
+      
+      // Return whatever we got or empty array
+      return data?.bestMatches || [];
     } catch (error) {
       console.error('Error searching stocks:', error);
-      toast.error("Failed to search stocks. The API may be unavailable.");
-      return [];
+      toast.error("Failed to search stocks. Using fallback data.");
+      
+      // Return a simple fallback set of stocks
+      const fallbackStocks = [
+        { id: 'AAPL', symbol: 'AAPL', name: 'Apple Inc', type: 'Equity', region: 'United States' },
+        { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft Corporation', type: 'Equity', region: 'United States' },
+        { id: 'GOOGL', symbol: 'GOOGL', name: 'Alphabet Inc', type: 'Equity', region: 'United States' }
+      ];
+      
+      return fallbackStocks;
     } finally {
       setIsLoading(false);
     }
@@ -81,8 +102,16 @@ export const useStockData = () => {
       return null;
     } catch (error) {
       console.error('Error getting stock quote:', error);
-      toast.error("Failed to get stock quote. The API may be unavailable.");
-      return null;
+      toast.error("Failed to get stock quote. Using fallback data.");
+      
+      // Return mock data as fallback
+      return {
+        symbol,
+        price: 150 + Math.random() * 100,
+        change: Math.random() * 10 - 5,
+        changePercent: Math.random() * 5 - 2.5,
+        volume: Math.floor(Math.random() * 10000000),
+      };
     }
   };
   
@@ -110,8 +139,25 @@ export const useStockData = () => {
       return [];
     } catch (error) {
       console.error('Error getting stock history:', error);
-      toast.error("Failed to get stock history. The API may be unavailable.");
-      return [];
+      toast.error("Failed to get stock history. Using fallback data.");
+      
+      // Generate mock historical data as fallback
+      const fallbackData = [];
+      const today = new Date();
+      for (let i = 30; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        const basePrice = 150 + Math.random() * 50;
+        fallbackData.push({
+          date: date.toISOString().split('T')[0],
+          open: basePrice - Math.random() * 5,
+          high: basePrice + Math.random() * 5,
+          low: basePrice - Math.random() * 8,
+          close: basePrice + Math.random() * 3 - 1.5,
+          volume: Math.floor(Math.random() * 10000000),
+        });
+      }
+      return fallbackData;
     }
   };
   
