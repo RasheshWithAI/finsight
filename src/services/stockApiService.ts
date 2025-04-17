@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { StockQuote, MarketIndex, StockSearchResult, StockHistoryPoint } from "@/types/stockTypes";
@@ -18,31 +17,19 @@ export const searchStocks = async (keywords: string): Promise<StockSearchResult[
       throw error;
     }
     
-    // Parse the search results and return in our app format
-    if (data && data.bestMatches) {
-      console.log(`Found ${data.bestMatches.length} matching stocks`);
-      return data.bestMatches.map((match: any) => ({
-        id: match['1. symbol'],
-        symbol: match['1. symbol'],
-        name: match['2. name'],
-        type: match['3. type'],
-        region: match['4. region'],
-        marketOpen: match['5. marketOpen'],
-        marketClose: match['6. marketClose'],
-        timezone: match['7. timezone'],
-        currency: match['8. currency'],
+    if (data && data.results) {
+      console.log(`Found ${data.results.length} matching stocks`);
+      return data.results.map((match: any) => ({
+        id: match.symbol,
+        symbol: match.symbol,
+        name: match.shortname || match.longname || match.symbol,
+        type: match.quoteType || 'Equity',
+        region: match.exchange || 'United States',
+        currency: match.currency || 'USD',
       }));
     }
     
-    // If we get a note message but no matches, it might be using mock data
-    if (data && data.note) {
-      console.log('Using fallback stock data:', data.note);
-      // Showing mock data message as info instead of error
-      toast.info(data.note);
-    }
-    
-    // Return whatever we got or empty array
-    return data?.bestMatches || [];
+    return data?.results || [];
   } catch (error) {
     console.error('Error searching stocks:', error);
     toast.info("Using cached stock data for search results.");
@@ -65,19 +52,20 @@ export const getStockQuote = async (symbol: string): Promise<StockQuote | null> 
     if (error) throw error;
     
     // Parse the quote data
-    if (data && data['Global Quote']) {
-      const quote = data['Global Quote'];
+    if (data && data.quote) {
+      const quote = data.quote;
       return {
-        symbol: quote['01. symbol'],
-        price: parseFloat(quote['05. price']),
-        change: parseFloat(quote['09. change']),
-        changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
-        volume: parseInt(quote['06. volume']),
+        symbol: quote.symbol,
+        name: quote.shortName || quote.longName || quote.symbol,
+        price: parseFloat(quote.regularMarketPrice),
+        change: parseFloat(quote.regularMarketChange),
+        changePercent: parseFloat(quote.regularMarketChangePercent),
+        volume: parseInt(quote.regularMarketVolume),
+        marketCap: quote.marketCap ? parseInt(quote.marketCap) : undefined
       };
     }
     
-    // Only inform user about API limits if there's no data
-    if (!data || !data['Global Quote']) {
+    if (!data || !data.quote) {
       toast.info(`Using cached data for ${symbol}. Live data will update when available.`);
     }
     
@@ -96,21 +84,20 @@ export const getStockQuote = async (symbol: string): Promise<StockQuote | null> 
 export const getStockHistory = async (symbol: string): Promise<StockHistoryPoint[]> => {
   try {
     const { data, error } = await supabase.functions.invoke('stock-data', {
-      body: { action: 'daily', symbol }
+      body: { action: 'history', symbol }
     });
     
     if (error) throw error;
     
     // Parse the historical data
-    if (data && data['Time Series (Daily)']) {
-      const timeSeriesDaily = data['Time Series (Daily)'];
-      return Object.entries(timeSeriesDaily).map(([date, values]: [string, any]) => ({
-        date,
-        open: parseFloat(values['1. open']),
-        high: parseFloat(values['2. high']),
-        low: parseFloat(values['3. low']),
-        close: parseFloat(values['4. close']),
-        volume: parseInt(values['5. volume']),
+    if (data && data.history && data.history.length > 0) {
+      return data.history.map((item: any) => ({
+        date: item.date,
+        open: parseFloat(item.open),
+        high: parseFloat(item.high),
+        low: parseFloat(item.low),
+        close: parseFloat(item.close),
+        volume: parseInt(item.volume),
       }));
     }
     
@@ -148,42 +135,26 @@ export const fetchMarketIndices = async (): Promise<MarketIndex[]> => {
     
     // Transform the raw indices data into our format
     const indices = data.indices
-      .map((indexData: any, i: number) => {
-        const quote = indexData['Global Quote'] || {};
-        if (!quote || Object.keys(quote).length === 0) {
-          console.warn(`Missing or empty quote data for index ${i}`);
+      .map((indexData: any) => {
+        if (!indexData || !indexData.quote) {
+          console.warn(`Missing or empty quote data for index`);
           return null;
         }
         
-        const names = ['Dow Jones', 'S&P 500', 'NASDAQ', 'Russell 2000'];
-        const ids = ['^DJI', '^GSPC', '^IXIC', '^RUT'];
+        const quote = indexData.quote;
         
         // Check all required fields exist before processing
-        if (!quote['05. price'] || !quote['09. change']) {
-          console.warn(`Missing price or change data for index ${i}:`, quote);
+        if (!quote.regularMarketPrice || !quote.regularMarketChange) {
+          console.warn(`Missing price or change data for index:`, quote);
           return null;
-        }
-        
-        let changePercent = 0;
-        // Fix for the error with undefined .replace() method
-        if (quote['10. change percent']) {
-          changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
-        } else {
-          // If change percent is missing, calculate it from price and change
-          const price = parseFloat(quote['05. price']);
-          const change = parseFloat(quote['09. change']);
-          if (price && change) {
-            changePercent = (change / (price - change)) * 100;
-          }
-          console.warn(`Calculated change percent for index ${i}: ${changePercent}`);
         }
         
         return {
-          id: ids[i],
-          name: names[i],
-          value: parseFloat(quote['05. price']) || 0,
-          change: parseFloat(quote['09. change']) || 0,
-          changePercent: changePercent,
+          id: quote.symbol,
+          name: quote.shortName || quote.longName || quote.symbol,
+          value: parseFloat(quote.regularMarketPrice),
+          change: parseFloat(quote.regularMarketChange),
+          changePercent: parseFloat(quote.regularMarketChangePercent),
         };
       })
       .filter(Boolean) as MarketIndex[];

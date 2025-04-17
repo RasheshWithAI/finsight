@@ -5,10 +5,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Get the API key from environment variable
-const ALPHA_VANTAGE_API_KEY = Deno.env.get('ALPHA_VANTAGE_API_KEY');
-const BASE_URL = 'https://www.alphavantage.co/query';
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -16,14 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // Check if API key is available, but continue with mock data if not
-    if (!ALPHA_VANTAGE_API_KEY) {
-      console.error('ALPHA_VANTAGE_API_KEY environment variable is not set, using mock data');
-      return handleMockData('unavailable', { action: 'unavailable' }, corsHeaders);
-    } else {
-      console.log(`Alpha Vantage API Key is configured: ${ALPHA_VANTAGE_API_KEY.substring(0, 3)}...`);
-    }
-
     // Get params from request depending on method
     let params;
     
@@ -48,7 +36,8 @@ serve(async (req) => {
       });
     }
     
-    let apiUrl = '';
+    // YFinance API URL
+    const YFINANCE_API_URL = "https://query1.finance.yahoo.com/v1/finance";
     
     switch (action) {
       case 'search':
@@ -59,50 +48,34 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-        apiUrl = `${BASE_URL}?function=SYMBOL_SEARCH&keywords=${encodeURIComponent(keywords)}&apikey=${ALPHA_VANTAGE_API_KEY}`;
         
         try {
-          console.log(`Fetching search data from Alpha Vantage API for keywords: ${keywords}`);
-          const response = await fetch(apiUrl);
+          console.log(`Fetching search data from Yahoo Finance API for keywords: ${keywords}`);
+          const searchUrl = `${YFINANCE_API_URL}/search?q=${encodeURIComponent(keywords)}&quotesCount=10&newsCount=0&enableFuzzyQuery=false&quotesQueryId=tss_match_phrase_query`;
+          
+          const response = await fetch(searchUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+          });
           
           if (!response.ok) {
             console.error(`Search API error: ${response.status} ${response.statusText}`);
             throw new Error(`Search API error: ${response.status} ${response.statusText}`);
           }
           
-          const responseText = await response.text();
-          console.log(`Raw API response: ${responseText.substring(0, 200)}...`);
-          
-          let data;
-          try {
-            data = JSON.parse(responseText);
-          } catch (parseError) {
-            console.error(`Error parsing JSON response: ${parseError}`);
-            throw new Error(`Error parsing API response: ${parseError.message}`);
-          }
-          
-          // Check if we got an API error response or rate limit message
-          if (data && data.Note) {
-            console.warn('Alpha Vantage API usage limit message:', data.Note);
-            throw new Error('API rate limit reached');
-          }
-          
-          if (data && data.Error) {
-            console.error('Alpha Vantage API error:', data.Error);
-            throw new Error(data.Error);
-          }
+          const data = await response.json();
           
           // Check if data is empty or invalid
-          if (!data || !data.bestMatches || !Array.isArray(data.bestMatches)) {
+          if (!data || !data.quotes || !Array.isArray(data.quotes)) {
             console.warn('Invalid or empty search results format', data);
             throw new Error('Invalid API response format');
           }
           
-          console.log(`Found ${data.bestMatches.length} matching stocks`);
-          return new Response(JSON.stringify(data), {
+          console.log(`Found ${data.quotes.length} matching stocks`);
+          return new Response(JSON.stringify({ results: data.quotes }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
-          
         } catch (searchError) {
           console.error(`Error in stock search: ${searchError}`);
           return generateMockSearchResults(keywords, corsHeaders);
@@ -117,124 +90,121 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-        apiUrl = `${BASE_URL}?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(symbol)}&apikey=${ALPHA_VANTAGE_API_KEY}`;
         
         try {
-          console.log(`Fetching quote data from Alpha Vantage API for symbol: ${symbol}`);
-          const response = await fetch(apiUrl);
+          console.log(`Fetching quote data from Yahoo Finance API for symbol: ${symbol}`);
+          const quoteUrl = `${YFINANCE_API_URL}/quoteSummary/${encodeURIComponent(symbol)}?modules=price`;
+          
+          const response = await fetch(quoteUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+          });
           
           if (!response.ok) {
             console.error(`Quote API error: ${response.status} ${response.statusText}`);
             throw new Error(`Quote API error: ${response.status} ${response.statusText}`);
           }
           
-          const responseText = await response.text();
-          console.log(`Raw API response: ${responseText.substring(0, 200)}...`);
-          
-          let data;
-          try {
-            data = JSON.parse(responseText);
-          } catch (parseError) {
-            console.error(`Error parsing JSON response: ${parseError}`);
-            throw new Error(`Error parsing API response: ${parseError.message}`);
-          }
-          
-          if (data && data.Note) {
-            console.warn('Alpha Vantage API usage limit message:', data.Note);
-            throw new Error('API rate limit reached');
-          }
-          
-          if (data && data.Error) {
-            console.error('Alpha Vantage API error:', data.Error);
-            throw new Error(data.Error);
-          }
+          const data = await response.json();
           
           // Check if the response has valid data
-          if (!data['Global Quote'] || Object.keys(data['Global Quote']).length === 0) {
+          if (!data || !data.quoteSummary || !data.quoteSummary.result || !data.quoteSummary.result[0]) {
             console.warn(`No quote data found for symbol: ${symbol}`);
             throw new Error('No quote data found');
           }
           
+          const priceData = data.quoteSummary.result[0].price;
+          
           console.log('Quote data received successfully');
-          return new Response(JSON.stringify(data), {
+          return new Response(JSON.stringify({ quote: priceData }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
-          
         } catch (quoteError) {
           console.error(`Error in stock quote: ${quoteError}`);
           return generateMockQuoteData(symbol, corsHeaders);
         }
         break;
         
-      case 'daily':
-        const dailySymbol = params.symbol;
-        if (!dailySymbol) {
-          return new Response(JSON.stringify({ error: 'Symbol parameter is required for daily action' }), {
+      case 'history':
+        const historySymbol = params.symbol;
+        if (!historySymbol) {
+          return new Response(JSON.stringify({ error: 'Symbol parameter is required for history action' }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-        apiUrl = `${BASE_URL}?function=TIME_SERIES_DAILY&symbol=${encodeURIComponent(dailySymbol)}&outputsize=compact&apikey=${ALPHA_VANTAGE_API_KEY}`;
         
         try {
-          console.log(`Fetching daily data from Alpha Vantage API for symbol: ${dailySymbol}`);
-          const response = await fetch(apiUrl);
+          console.log(`Fetching history data from Yahoo Finance API for symbol: ${historySymbol}`);
+          // Get historical data for the past year with daily interval
+          const endDate = Math.floor(Date.now() / 1000);
+          const startDate = endDate - 60 * 60 * 24 * 365; // 1 year ago
           
-          if (!response.ok) {
-            console.error(`Daily API error: ${response.status} ${response.statusText}`);
-            throw new Error(`Daily API error: ${response.status} ${response.statusText}`);
-          }
+          const historyUrl = `${YFINANCE_API_URL}/chart/${encodeURIComponent(historySymbol)}?period1=${startDate}&period2=${endDate}&interval=1d`;
           
-          const responseText = await response.text();
-          console.log(`Raw API response: ${responseText.substring(0, 200)}...`);
-          
-          let data;
-          try {
-            data = JSON.parse(responseText);
-          } catch (parseError) {
-            console.error(`Error parsing JSON response: ${parseError}`);
-            throw new Error(`Error parsing API response: ${parseError.message}`);
-          }
-          
-          if (data && data.Note) {
-            console.warn('Alpha Vantage API usage limit message:', data.Note);
-            throw new Error('API rate limit reached');
-          }
-          
-          if (data && data.Error) {
-            console.error('Alpha Vantage API error:', data.Error);
-            throw new Error(data.Error);
-          }
-          
-          // Check if the response has valid data
-          if (!data['Time Series (Daily)'] || Object.keys(data['Time Series (Daily)']).length === 0) {
-            console.warn(`No daily data found for symbol: ${dailySymbol}`);
-            throw new Error('No daily data found');
-          }
-          
-          console.log('Daily data received successfully');
-          return new Response(JSON.stringify(data), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          const response = await fetch(historyUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
           });
           
-        } catch (dailyError) {
-          console.error(`Error in daily data: ${dailyError}`);
-          return generateMockHistoricalData(dailySymbol, corsHeaders);
+          if (!response.ok) {
+            console.error(`History API error: ${response.status} ${response.statusText}`);
+            throw new Error(`History API error: ${response.status} ${response.statusText}`);
+          }
+          
+          const data = await response.json();
+          
+          // Check if the response has valid data
+          if (!data || !data.chart || !data.chart.result || !data.chart.result[0]) {
+            console.warn(`No history data found for symbol: ${historySymbol}`);
+            throw new Error('No history data found');
+          }
+          
+          const chartData = data.chart.result[0];
+          const timestamps = chartData.timestamp;
+          const quoteData = chartData.indicators.quote[0];
+          
+          // Process historical data into a format our app expects
+          const history = timestamps.map((timestamp: number, index: number) => {
+            const date = new Date(timestamp * 1000).toISOString().split('T')[0];
+            return {
+              date,
+              open: quoteData.open[index],
+              high: quoteData.high[index],
+              low: quoteData.low[index],
+              close: quoteData.close[index],
+              volume: quoteData.volume[index],
+            };
+          }).filter((item: any) => item.open !== null && item.close !== null);
+          
+          console.log('History data received successfully');
+          return new Response(JSON.stringify({ history }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        } catch (historyError) {
+          console.error(`Error in history data: ${historyError}`);
+          return generateMockHistoricalData(historySymbol, corsHeaders);
         }
         break;
         
       case 'indices':
         try {
-          console.log('Fetching market indices data from Alpha Vantage API');
+          console.log('Fetching market indices data from Yahoo Finance API');
           
           // We need to fetch data for multiple indices
           const indices = ['^DJI', '^GSPC', '^IXIC', '^RUT'];
           const promises = indices.map(async (symbol) => {
-            const url = `${BASE_URL}?function=GLOBAL_QUOTE&symbol=${encodeURIComponent(symbol)}&apikey=${ALPHA_VANTAGE_API_KEY}`;
-            console.log(`Fetching index data for ${symbol} from: ${url}`);
+            const url = `${YFINANCE_API_URL}/quoteSummary/${encodeURIComponent(symbol)}?modules=price`;
+            console.log(`Fetching index data for ${symbol}`);
             
             try {
-              const response = await fetch(url);
+              const response = await fetch(url, {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                }
+              });
               
               if (!response.ok) {
                 console.warn(`Index API error for ${symbol}: ${response.status}`);
@@ -242,14 +212,14 @@ serve(async (req) => {
               }
               
               const data = await response.json();
-              console.log(`Received data for ${symbol}: ${JSON.stringify(data).substring(0, 100)}...`);
+              console.log(`Received data for ${symbol}`);
               
-              if (data.Note || !data['Global Quote'] || Object.keys(data['Global Quote']).length === 0) {
+              if (!data || !data.quoteSummary || !data.quoteSummary.result || !data.quoteSummary.result[0]) {
                 console.warn(`Invalid or limited data for ${symbol}`);
                 return null;
               }
               
-              return data;
+              return { quote: data.quoteSummary.result[0].price };
             } catch (err) {
               console.error(`Error fetching index ${symbol}: ${err}`);
               return null;
@@ -268,7 +238,6 @@ serve(async (req) => {
           return new Response(JSON.stringify({ indices: validResults }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
-          
         } catch (indicesError) {
           console.error(`Error fetching market indices: ${indicesError}`);
           return generateMockIndicesData(corsHeaders);
@@ -296,35 +265,6 @@ serve(async (req) => {
     });
   }
 });
-
-// Helper function to handle mock data based on action type
-function handleMockData(action: string, params: any, corsHeaders: any) {
-  console.log(`Using mock data for action: ${action}`);
-  switch (action) {
-    case 'search':
-      return generateMockSearchResults(params.keywords, corsHeaders);
-    case 'quote':
-      return generateMockQuoteData(params.symbol, corsHeaders);
-    case 'daily':
-      return generateMockHistoricalData(params.symbol, corsHeaders);
-    case 'indices':
-      return generateMockIndicesData(corsHeaders);
-    case 'unavailable':
-      return new Response(JSON.stringify({ 
-        error: 'API key unavailable',
-        message: 'Alpha Vantage API key is not configured. Using mock data instead.',
-        note: 'Using mock data as fallback. Configure API key for live data.'
-      }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    default:
-      return new Response(JSON.stringify({ error: 'Invalid action parameter' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-  }
-}
 
 // Generate mock search results based on keywords
 function generateMockSearchResults(keywords: string, corsHeaders: any) {
@@ -662,7 +602,7 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   
   console.log(`Generated mock search data with ${mockResults.length} results`);
   return new Response(JSON.stringify({ 
-    bestMatches: mockResults,
+    results: mockResults,
     note: "Using cached search results. Live data will update when available."
   }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
