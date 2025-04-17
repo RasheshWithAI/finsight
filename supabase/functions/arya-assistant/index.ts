@@ -77,9 +77,20 @@ serve(async (req) => {
 
     try {
       // Prepare the formatted messages for Gemini API
-      const formattedMessages = [
-        { role: "user", parts: [{ text: systemPrompt }] }
-      ];
+      // Updated to use the latest Gemini API format
+      const formattedMessages = [];
+      
+      // Add system prompt as a user message first (this is the Gemini convention)
+      formattedMessages.push({
+        role: "user",
+        parts: [{ text: systemPrompt }]
+      });
+      
+      // Add model response acknowledging system prompt
+      formattedMessages.push({
+        role: "model",
+        parts: [{ text: "I'll act as Arya, a financial assistant providing educational content with specific examples and disclaimers." }]
+      });
       
       // Add user-bot conversation history
       messages.forEach(msg => {
@@ -90,7 +101,8 @@ serve(async (req) => {
       });
       
       // Call the Google AI API with additional logging
-      const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
+      // Updated to use the correct API endpoint and model name for Gemini
+      const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
       console.log(`Calling Gemini API at: ${apiUrl}`);
       
       const payload = {
