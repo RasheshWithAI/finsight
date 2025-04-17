@@ -59,22 +59,29 @@ serve(async (req) => {
     // Add financial expertise details to make responses more credible
     systemPrompt += " Provide specific, actionable advice based on financial best practices. Use numbers, percentages, and concrete examples when appropriate. Always include a brief disclaimer that you're providing educational content, not financial advice.";
 
-    // Prepare the conversation history including system prompt
-    const formattedMessages = [
-      { role: "system", content: systemPrompt },
-      ...messages
-    ];
-
-    console.log('Calling Google Gemini API with messages:', JSON.stringify(formattedMessages.slice(0, 1)));
+    console.log('Calling Google Gemini API with messages:', JSON.stringify(messages.slice(0, 1)));
 
     try {
+      // Prepare the formatted messages for Gemini API
+      const formattedMessages = [
+        { role: "user", content: systemPrompt }
+      ];
+      
+      // Add user-bot conversation history
+      messages.forEach(msg => {
+        formattedMessages.push({
+          role: msg.role === "model" ? "model" : "user",
+          content: msg.content
+        });
+      });
+      
       // Call the Google AI API with additional logging
       const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
       console.log(`Calling Gemini API at: ${apiUrl}`);
       
       const payload = {
         contents: formattedMessages.map(msg => ({
-          role: msg.role,
+          role: msg.role === "model" ? "model" : "user",
           parts: [{ text: msg.content }]
         })),
         generationConfig: {
@@ -144,7 +151,7 @@ serve(async (req) => {
       console.error('Error calling Gemini API:', apiError);
       
       // Fallback to using mock responses
-      const mockResponse = "I apologize, but I'm currently unable to access my knowledge base due to connectivity issues. Please try again later for personalized financial advice. In the meantime, consider reviewing your budget allocation and ensuring you have an emergency fund covering 3-6 months of expenses.";
+      const mockResponse = "I apologize for the connectivity issue. Based on financial best practices, I recommend allocating 50-30-20 of your income to needs, wants, and savings respectively. Consider automating your savings to build an emergency fund covering 3-6 months of expenses. Note: This is educational content, not personalized financial advice.";
       
       return new Response(JSON.stringify({ 
         response: mockResponse, 
