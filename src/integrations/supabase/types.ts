@@ -9,6 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      bookmarks: {
+        Row: {
+          bookmarked_at: string
+          id: string
+          notes: string | null
+          stock_symbol: string
+          user_id: string
+        }
+        Insert: {
+          bookmarked_at?: string
+          id?: string
+          notes?: string | null
+          stock_symbol: string
+          user_id: string
+        }
+        Update: {
+          bookmarked_at?: string
+          id?: string
+          notes?: string | null
+          stock_symbol?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      personal_finances: {
+        Row: {
+          created_at: string
+          financial_goals: string | null
+          id: string
+          net_worth: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          financial_goals?: string | null
+          id?: string
+          net_worth?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          financial_goals?: string | null
+          id?: string
+          net_worth?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -36,6 +87,129 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_budgets: {
+        Row: {
+          budget_amount: number
+          budget_period: string
+          category: string
+          created_at: string
+          end_date: string
+          id: string
+          start_date: string
+          user_id: string
+        }
+        Insert: {
+          budget_amount: number
+          budget_period: string
+          category: string
+          created_at?: string
+          end_date: string
+          id?: string
+          start_date: string
+          user_id: string
+        }
+        Update: {
+          budget_amount?: number
+          budget_period?: string
+          category?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          start_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_plans: {
+        Row: {
+          id: string
+          payment_status: string | null
+          plan_type: string
+          subscription_end_date: string | null
+          subscription_start_date: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          payment_status?: string | null
+          plan_type: string
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          payment_status?: string | null
+          plan_type?: string
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          currency: string
+          id: string
+          language: string | null
+          notification_preferences: Json | null
+          theme: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          currency?: string
+          id?: string
+          language?: string | null
+          notification_preferences?: Json | null
+          theme?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          currency?: string
+          id?: string
+          language?: string | null
+          notification_preferences?: Json | null
+          theme?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

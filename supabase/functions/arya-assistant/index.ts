@@ -22,9 +22,10 @@ serve(async (req) => {
       console.error('GOOGLE_API_KEY environment variable is not set');
       return new Response(JSON.stringify({ 
         error: 'API configuration error', 
-        message: 'The Google API key is not configured properly'
+        message: 'The Google API key is not configured properly',
+        fallback: true
       }), {
-        status: 500,
+        status: 200, // Using 200 to prevent client-side errors
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -32,6 +33,19 @@ serve(async (req) => {
     console.log('Google API Key is configured:', GOOGLE_API_KEY.substring(0, 3) + '...');
 
     const { messages, topic } = await req.json();
+    
+    if (!messages || !Array.isArray(messages)) {
+      console.error('Invalid or missing messages array in request');
+      return new Response(JSON.stringify({ 
+        error: 'Invalid request format', 
+        message: 'Messages must be provided as an array'
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    console.log(`Received ${messages.length} messages with topic: ${topic || 'general'}`);
     
     // Define system prompts based on financial topics
     let systemPrompt = "You are Arya, an AI financial assistant. You help users understand finance, investments, budgeting, and provide insights about the stock market.";
@@ -59,19 +73,19 @@ serve(async (req) => {
     // Add financial expertise details to make responses more credible
     systemPrompt += " Provide specific, actionable advice based on financial best practices. Use numbers, percentages, and concrete examples when appropriate. Always include a brief disclaimer that you're providing educational content, not financial advice.";
 
-    console.log('Calling Google Gemini API with messages:', JSON.stringify(messages.slice(0, 1)));
+    console.log('System prompt:', systemPrompt.substring(0, 100) + '...');
 
     try {
       // Prepare the formatted messages for Gemini API
       const formattedMessages = [
-        { role: "user", content: systemPrompt }
+        { role: "user", parts: [{ text: systemPrompt }] }
       ];
       
       // Add user-bot conversation history
       messages.forEach(msg => {
         formattedMessages.push({
           role: msg.role === "model" ? "model" : "user",
-          content: msg.content
+          parts: [{ text: msg.content }]
         });
       });
       
@@ -80,10 +94,7 @@ serve(async (req) => {
       console.log(`Calling Gemini API at: ${apiUrl}`);
       
       const payload = {
-        contents: formattedMessages.map(msg => ({
-          role: msg.role === "model" ? "model" : "user",
-          parts: [{ text: msg.content }]
-        })),
+        contents: formattedMessages,
         generationConfig: {
           temperature: 0.4,
           topK: 40,
@@ -111,38 +122,45 @@ serve(async (req) => {
 
       console.log('Gemini API response status:', response.status);
       
+      const responseText = await response.text();
+      console.log('Gemini API raw response:', responseText.substring(0, 200) + '...');
+      
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Gemini API error:', response.status, errorData);
-        throw new Error(`Gemini API error: ${response.status} ${errorData}`);
+        console.error('Gemini API error:', response.status, responseText);
+        throw new Error(`Gemini API error: ${response.status} ${responseText}`);
       }
       
       // Process the API response
-      const data = await response.json();
-      console.log('Gemini API response received, processing...');
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Error parsing Gemini API response:', parseError);
+        throw new Error('Failed to parse Gemini API response');
+      }
       
       if (data.error) {
         console.error('Error in Gemini API response:', data.error);
         throw new Error(data.error.message || "Error from Google API");
       }
       
-      let responseText = "";
+      let responseContent = "";
       
       if (data.candidates && data.candidates.length > 0 && 
           data.candidates[0].content && 
           data.candidates[0].content.parts && 
           data.candidates[0].content.parts.length > 0) {
-        responseText = data.candidates[0].content.parts[0].text;
+        responseContent = data.candidates[0].content.parts[0].text;
         console.log('Successfully extracted response text');
       } else {
         console.warn('Unexpected response format from Gemini API:', JSON.stringify(data).substring(0, 300));
-        responseText = "I'm sorry, but I couldn't generate a helpful response at the moment.";
+        throw new Error('Unexpected response format from Gemini API');
       }
 
       console.log('Gemini API response received successfully');
 
       return new Response(JSON.stringify({ 
-        response: responseText, 
+        response: responseContent, 
         topic: topic || "general"
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -166,9 +184,10 @@ serve(async (req) => {
     
     return new Response(JSON.stringify({ 
       error: error.message || "An error occurred while processing your request.",
-      success: false
+      fallback: true,
+      response: "I apologize for the technical difficulty. As a financial assistant, I recommend reviewing your budget regularly and ensuring you have an emergency fund of 3-6 months of expenses. This is educational content, not financial advice."
     }), {
-      status: 500,
+      status: 200, // Using 200 to prevent client-side errors
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }

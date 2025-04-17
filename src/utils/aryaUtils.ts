@@ -1,5 +1,6 @@
 
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -102,20 +103,8 @@ export const getAryaResponse = async (
     });
 
     // Determine topic based on user input
-    let topic = "general";
-    const input = userInput.toLowerCase();
-    
-    if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
-      topic = "budgeting";
-    } else if (input.includes('invest') || input.includes('stock') || input.includes('etf') || input.includes('portfolio')) {
-      topic = "investing";
-    } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
-      topic = "savings";
-    } else if (input.includes('market') || input.includes('index') || input.includes('trend')) {
-      topic = "market";
-    } else if (input.includes('tax') || input.includes('deduction')) {
-      topic = "tax";
-    }
+    let topic = determineTopic(userInput);
+    console.log(`Determined topic: ${topic} for input: ${userInput.substring(0, 30)}...`);
 
     console.log(`Calling arya-assistant with topic: ${topic} and ${formattedMessages.length} messages`);
 
@@ -127,7 +116,7 @@ export const getAryaResponse = async (
       }
     });
 
-    console.log('Response received from arya-assistant function');
+    console.log('Response received from arya-assistant function:', data ? Object.keys(data).join(', ') : 'No data');
 
     if (error) {
       console.error('Edge function error:', error);
@@ -152,26 +141,50 @@ export const getAryaResponse = async (
     console.error('Error getting AI response:', error);
     toast.error("Failed to get AI response. Falling back to generic advice.");
     
-    // Fallback to mock responses if API call fails
-    const input = userInput.toLowerCase();
-    
-    if (input.includes('portfolio') || input.includes('allocation')) {
-      return "I notice you're asking about portfolio allocation. A well-diversified portfolio typically includes a mix of stocks, bonds, and other assets based on your risk tolerance and time horizon. For example, a moderate risk profile might include 60% stocks and 40% bonds. This is educational content, not personalized financial advice.";
-    } else if (input.includes('tax')) {
-      return "Regarding tax strategies, consider tax-advantaged accounts like 401(k)s and IRAs to reduce your taxable income. Tax-loss harvesting can also offset capital gains. Remember that this is general educational content, not personalized tax advice.";
-    } else if (input.includes('market')) {
-      return "Market analysis suggests diversification across sectors is crucial. Consider dollar-cost averaging to reduce timing risk when investing. Economic indicators like interest rates and inflation trends can help inform investment decisions. This is educational content, not personalized investment advice.";
-    } else if (input.includes('budget')) {
-      return "For effective budgeting, consider the 50/30/20 rule: allocate 50% of income to necessities, 30% to discretionary spending, and 20% to savings and debt repayment. Tracking expenses can help identify areas to optimize. This is educational content, not personalized financial advice.";
-    } else if (input.includes('invest')) {
-      return "For investing strategies, consider your time horizon and risk tolerance. Long-term investors might favor low-cost index funds, while those seeking income might consider dividend stocks or bonds. Always diversify to manage risk. This is educational content, not personalized investment advice.";
-    } else if (input.includes('save')) {
-      return "For savings goals, aim to build an emergency fund covering 3-6 months of expenses in a high-yield savings account. Once established, consider additional savings for specific goals like home purchase or retirement. This is educational content, not personalized financial advice.";
-    } else {
-      return "I'm here to help with financial topics including budgeting, investing, saving, taxes, and market insights. Please ask a question in these areas, and I'll provide educational information to assist you. Note that all information is educational and not personalized financial advice.";
-    }
+    // Determine the best fallback response based on the user's input
+    return generateFallbackResponse(userInput);
   }
 };
+
+// Helper function to determine topic from user input
+function determineTopic(userInput: string): string {
+  const input = userInput.toLowerCase();
+  
+  if (input.includes('budget') || input.includes('spend') || input.includes('expense')) {
+    return "budgeting";
+  } else if (input.includes('invest') || input.includes('stock') || input.includes('etf') || input.includes('portfolio')) {
+    return "investing";
+  } else if (input.includes('save') || input.includes('saving') || input.includes('emergency fund')) {
+    return "savings";
+  } else if (input.includes('market') || input.includes('index') || input.includes('trend')) {
+    return "market";
+  } else if (input.includes('tax') || input.includes('deduction')) {
+    return "tax";
+  }
+  
+  return "general";
+}
+
+// Generate context-aware fallback responses based on user input
+function generateFallbackResponse(userInput: string): string {
+  const input = userInput.toLowerCase();
+  
+  if (input.includes('portfolio') || input.includes('allocation')) {
+    return "I notice you're asking about portfolio allocation. A well-diversified portfolio typically includes a mix of stocks, bonds, and other assets based on your risk tolerance and time horizon. For example, a moderate risk profile might include 60% stocks and 40% bonds. This is educational content, not personalized financial advice.";
+  } else if (input.includes('tax')) {
+    return "Regarding tax strategies, consider tax-advantaged accounts like 401(k)s and IRAs to reduce your taxable income. Tax-loss harvesting can also offset capital gains. Remember that this is general educational content, not personalized tax advice.";
+  } else if (input.includes('market')) {
+    return "Market analysis suggests diversification across sectors is crucial. Consider dollar-cost averaging to reduce timing risk when investing. Economic indicators like interest rates and inflation trends can help inform investment decisions. This is educational content, not personalized investment advice.";
+  } else if (input.includes('budget')) {
+    return "For effective budgeting, consider the 50/30/20 rule: allocate 50% of income to necessities, 30% to discretionary spending, and 20% to savings and debt repayment. Tracking expenses can help identify areas to optimize. This is educational content, not personalized financial advice.";
+  } else if (input.includes('invest')) {
+    return "For investing strategies, consider your time horizon and risk tolerance. Long-term investors might favor low-cost index funds, while those seeking income might consider dividend stocks or bonds. Always diversify to manage risk. This is educational content, not personalized investment advice.";
+  } else if (input.includes('save')) {
+    return "For savings goals, aim to build an emergency fund covering 3-6 months of expenses in a high-yield savings account. Once established, consider additional savings for specific goals like home purchase or retirement. This is educational content, not personalized financial advice.";
+  } else {
+    return "I'm here to help with financial topics including budgeting, investing, saving, taxes, and market insights. Please ask a question in these areas, and I'll provide educational information to assist you. Note that all information is educational and not personalized financial advice.";
+  }
+}
 
 // Helper function to get a random response from a category
 const getRandomResponse = (category: 'budgeting' | 'investing' | 'savings' | 'appFeatures' | 'advancedAnalysis' | 'taxStrategies' | 'marketInsights'): string => {
@@ -214,6 +227,3 @@ export const isPremiumTopic = (userInput: string): boolean => {
   
   return premiumKeywords.some(keyword => userInput.toLowerCase().includes(keyword));
 };
-
-// Import supabase client
-import { supabase } from "@/integrations/supabase/client";
