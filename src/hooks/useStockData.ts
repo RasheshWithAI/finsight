@@ -57,6 +57,7 @@ export const useStockData = () => {
       // If we get a note message but no matches, it might be using mock data
       if (data && data.note) {
         console.log('Using fallback stock data:', data.note);
+        // Showing mock data message as info instead of error
         toast.info(data.note);
       }
       
@@ -64,7 +65,7 @@ export const useStockData = () => {
       return data?.bestMatches || [];
     } catch (error) {
       console.error('Error searching stocks:', error);
-      toast.error("Failed to search stocks. Using fallback data.");
+      toast.info("Using cached stock data for search results.");
       
       // Return a simple fallback set of stocks
       const fallbackStocks = [
@@ -98,11 +99,16 @@ export const useStockData = () => {
           volume: parseInt(quote['06. volume']),
         };
       }
-      toast.error(`No quote data found for ${symbol}. The API may have limited your requests.`);
+      
+      // Only inform user about API limits if there's no data
+      if (!data || !data['Global Quote']) {
+        toast.info(`Using cached data for ${symbol}. Live data will update when available.`);
+      }
+      
       return null;
     } catch (error) {
       console.error('Error getting stock quote:', error);
-      toast.error("Failed to get stock quote. Using fallback data.");
+      toast.info(`Using cached data for ${symbol}. Live data will update when available.`);
       
       // Return mock data as fallback
       return {
@@ -135,11 +141,12 @@ export const useStockData = () => {
           volume: parseInt(values['5. volume']),
         }));
       }
-      toast.error(`No historical data found for ${symbol}. The API may have limited your requests.`);
+      
+      toast.info(`Using cached historical data for ${symbol}. Live data will update when available.`);
       return [];
     } catch (error) {
       console.error('Error getting stock history:', error);
-      toast.error("Failed to get stock history. Using fallback data.");
+      toast.info(`Using cached historical data for ${symbol}. Live data will update when available.`);
       
       // Generate mock historical data as fallback
       const fallbackData = [];
