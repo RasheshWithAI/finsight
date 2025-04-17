@@ -824,3 +824,12 @@ function generateMockIndicesData(corsHeaders: any) {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
+
+// Detailed logging for better debugging
+function logDetailedError(action: string, error: any) {
+  console.error(`Error in ${action} action:`, {
+    errorName: error.name,
+    errorMessage: error.message,
+    errorStack: error.stack
+  });
+}
