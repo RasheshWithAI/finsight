@@ -65,9 +65,11 @@ export const useStockData = () => {
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     retry: 3,
-    onError: (error) => {
-      console.error('Error fetching market indices:', error);
-      toast.error('Failed to fetch market indices. Using cached data.');
+    onSettled: (_, error) => {
+      if (error) {
+        console.error('Error fetching market indices:', error);
+        toast.error('Failed to fetch market indices. Using cached data.');
+      }
     }
   });
   
