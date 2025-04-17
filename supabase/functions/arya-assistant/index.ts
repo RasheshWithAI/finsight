@@ -29,6 +29,8 @@ serve(async (req) => {
       });
     }
 
+    console.log('Google API Key is configured:', GOOGLE_API_KEY.substring(0, 3) + '...');
+
     const { messages, topic } = await req.json();
     
     // Define system prompts based on financial topics
@@ -66,30 +68,42 @@ serve(async (req) => {
     console.log('Calling Google Gemini API with messages:', JSON.stringify(formattedMessages.slice(0, 1)));
 
     try {
-      // Call the Google AI API
-      const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', {
+      // Call the Google AI API with additional logging
+      const apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent';
+      console.log(`Calling Gemini API at: ${apiUrl}`);
+      
+      const payload = {
+        contents: formattedMessages.map(msg => ({
+          role: msg.role,
+          parts: [{ text: msg.content }]
+        })),
+        generationConfig: {
+          temperature: 0.4,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
+        ]
+      };
+      
+      console.log('Request payload (first part):', JSON.stringify(payload).substring(0, 200) + '...');
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-goog-api-key': GOOGLE_API_KEY,
         },
-        body: JSON.stringify({
-          contents: formattedMessages,
-          generationConfig: {
-            temperature: 0.4,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
-          },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-          ]
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log('Gemini API response status:', response.status);
+      
       if (!response.ok) {
         const errorData = await response.text();
         console.error('Gemini API error:', response.status, errorData);
@@ -98,8 +112,10 @@ serve(async (req) => {
       
       // Process the API response
       const data = await response.json();
+      console.log('Gemini API response received, processing...');
       
       if (data.error) {
+        console.error('Error in Gemini API response:', data.error);
         throw new Error(data.error.message || "Error from Google API");
       }
       
@@ -110,7 +126,9 @@ serve(async (req) => {
           data.candidates[0].content.parts && 
           data.candidates[0].content.parts.length > 0) {
         responseText = data.candidates[0].content.parts[0].text;
+        console.log('Successfully extracted response text');
       } else {
+        console.warn('Unexpected response format from Gemini API:', JSON.stringify(data).substring(0, 300));
         responseText = "I'm sorry, but I couldn't generate a helpful response at the moment.";
       }
 

@@ -60,8 +60,8 @@ export const getAryaResponse = async (
   userInput: string, 
   conversationHistory: Message[]
 ): Promise<string> => {
-  // Use mock responses for fallback or when random chance occurs
-  if (Math.random() < 0.2) { // 20% chance to use mock responses for speed
+  // Lower the fallback chance for testing, so we call the API more often
+  if (Math.random() < 0.05) { // 5% chance to use mock responses for speed
     await new Promise(resolve => setTimeout(resolve, 300)); // Quick response time
     const input = userInput.toLowerCase();
     
@@ -87,16 +87,18 @@ export const getAryaResponse = async (
   }
 
   try {
+    console.log('Preparing to call Arya Assistant API...');
+    
     // Format conversation history for API
     const formattedMessages = conversationHistory.slice(-5).map(msg => ({
       role: msg.isUser ? "user" : "model",
-      parts: [{ text: msg.content }]
+      content: msg.content
     }));
 
     // Add the latest user input
     formattedMessages.push({
       role: "user",
-      parts: [{ text: userInput }]
+      content: userInput
     });
 
     // Determine topic based on user input
@@ -115,6 +117,8 @@ export const getAryaResponse = async (
       topic = "tax";
     }
 
+    console.log(`Calling arya-assistant with topic: ${topic} and ${formattedMessages.length} messages`);
+
     // Call the Supabase Edge Function that interfaces with Google AI
     const { data, error } = await supabase.functions.invoke('arya-assistant', {
       body: { 
@@ -123,15 +127,30 @@ export const getAryaResponse = async (
       }
     });
 
+    console.log('Response received from arya-assistant function');
+
     if (error) {
       console.error('Edge function error:', error);
       throw new Error(error.message || "Failed to get response from assistant");
+    }
+
+    if (data.fallback) {
+      console.warn('Received fallback response from API');
+      toast.warning("Using AI fallback response due to connection issues.", {
+        description: "Some features may be limited."
+      });
+    }
+
+    if (!data.response) {
+      console.error('Missing response in API data:', data);
+      throw new Error("Missing response from assistant");
     }
 
     return data.response;
 
   } catch (error) {
     console.error('Error getting AI response:', error);
+    toast.error("Failed to get AI response. Falling back to generic advice.");
     
     // Fallback to mock responses if API call fails
     const input = userInput.toLowerCase();

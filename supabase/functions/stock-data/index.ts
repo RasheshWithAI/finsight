@@ -29,6 +29,8 @@ serve(async (req) => {
       });
     }
 
+    console.log('Alpha Vantage API Key is configured:', ALPHA_VANTAGE_API_KEY.substring(0, 3) + '...');
+
     // Get params from request depending on method
     let params;
     
@@ -90,7 +92,7 @@ serve(async (req) => {
       case 'indices':
         // For market indices, we'll fetch a few key indices
         // We'll call the API multiple times in parallel to get data for different indices
-        const indicesSymbols = ['DJI', 'SPX', 'IXIC', 'RUT'];
+        const indicesSymbols = ['^DJI', '^GSPC', '^IXIC', '^RUT'];
         
         try {
           console.log('Fetching indices data...');
@@ -167,6 +169,10 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+    
+    // Added more debugging to help identify issues
+    console.log('API Response received, response type:', typeof data);
+    console.log('First few keys in response:', Object.keys(data).slice(0, 5));
     
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

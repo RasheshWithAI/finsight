@@ -123,40 +123,68 @@ export const useStockData = () => {
           body: { action: 'indices' }
         });
         
-        if (error) throw error;
+        if (error) {
+          console.error('Error from stock-data function:', error);
+          throw error;
+        }
         
-        if (data && data.indices) {
-          // Transform the raw indices data into our format
-          const indices = data.indices.map((indexData: any, i: number) => {
-            const quote = indexData['Global Quote'];
-            if (!quote) return null;
+        if (!data || !data.indices) {
+          console.error('Invalid response format from indices API:', data);
+          throw new Error('Invalid response format from indices API');
+        }
+        
+        console.log('Raw indices data received:', JSON.stringify(data).substring(0, 300));
+        
+        // Transform the raw indices data into our format
+        const indices = data.indices
+          .map((indexData: any, i: number) => {
+            const quote = indexData['Global Quote'] || {};
+            if (!quote || Object.keys(quote).length === 0) {
+              console.warn(`Missing or empty quote data for index ${i}`);
+              return null;
+            }
             
             const names = ['Dow Jones', 'S&P 500', 'NASDAQ', 'Russell 2000'];
-            const ids = ['DJI', 'SPX', 'IXIC', 'RUT'];
+            const ids = ['^DJI', '^GSPC', '^IXIC', '^RUT'];
+            
+            // Check all required fields exist before processing
+            if (!quote['05. price'] || !quote['09. change']) {
+              console.warn(`Missing price or change data for index ${i}:`, quote);
+              return null;
+            }
             
             let changePercent = 0;
             // Fix for the error with undefined .replace() method
             if (quote['10. change percent']) {
               changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
             } else {
-              changePercent = 0;
-              console.warn(`Missing change percent for index ${i}`);
+              // If change percent is missing, calculate it from price and change
+              const price = parseFloat(quote['05. price']);
+              const change = parseFloat(quote['09. change']);
+              if (price && change) {
+                changePercent = (change / (price - change)) * 100;
+              }
+              console.warn(`Calculated change percent for index ${i}: ${changePercent}`);
             }
             
             return {
               id: ids[i],
               name: names[i],
-              value: parseFloat(quote['05. price']),
-              change: parseFloat(quote['09. change']),
+              value: parseFloat(quote['05. price']) || 0,
+              change: parseFloat(quote['09. change']) || 0,
               changePercent: changePercent,
             };
-          }).filter(Boolean);
-          
-          return indices;
+          })
+          .filter(Boolean);
+        
+        console.log('Processed indices data:', indices);
+        
+        if (indices.length === 0) {
+          console.warn('No valid indices data after processing');
+          toast.error("Market data may be unavailable. Please try again later.");
         }
         
-        console.warn('No indices data received from API');
-        return [];
+        return indices;
       } catch (error) {
         console.error('Error fetching market indices:', error);
         toast.error("Failed to fetch market data. The API may be temporarily unavailable.");
