@@ -1,1 +1,8 @@
+
 project_id = "qiolmyiilwzrmjisjdfc"
+
+[functions.stock-data]
+verify_jwt = false
+
+[functions.arya-assistant]
+verify_jwt = false
