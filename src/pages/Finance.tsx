@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +10,13 @@ import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import BudgetBarChart from "@/components/charts/BudgetBarChart";
 import AddTransactionForm from "@/components/finance/AddTransactionForm";
 import { formatCurrency } from "@/utils/currencyUtils";
+
+// Helper function to calculate percentage for progress bar
+const calculatePercentage = (spent: number, budgeted: number): number => {
+  if (budgeted === 0) return 0;
+  const percentage = (spent / budgeted) * 100;
+  return Math.min(percentage, 100); // Cap at 100% for progress bar display
+};
 
 const Finance = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -141,7 +149,8 @@ const Finance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map(transaction => <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
+                    {transactions.map(transaction => (
+                      <tr key={transaction.id} className="border-b border-gray-800 hover:bg-gray-900/30">
                         <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.date}</td>
                         <td className="px-4 py-3 text-sm text-aura-primary-text">{transaction.description}</td>
                         <td className="px-4 py-3 text-sm">
@@ -152,7 +161,8 @@ const Finance = () => {
                         <td className={`px-4 py-3 text-sm font-medium text-right ${transaction.type === 'income' ? 'text-green-400' : 'text-red-400'}`}>
                           {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                         </td>
-                      </tr>)}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -206,27 +216,29 @@ const Finance = () => {
                 <Button onClick={handleNewBudget}>Create First Budget</Button>
               </Card>
             ) : (
-              budgets.map(budget => <Card key={budget.id} className="financial-card p-4 rounded-2xl">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
-                  <span className="text-sm text-aura-medium-gray">{budget.period}</span>
-                </div>
-                
-                <div className="space-y-1 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-aura-primary-text">Spent: {formatCurrency(budget.spent)}</span>
-                    <span className="text-aura-primary-text">Budgeted: {formatCurrency(budget.budgeted)}</span>
+              budgets.map(budget => (
+                <Card key={budget.id} className="financial-card p-4 rounded-2xl">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
+                    <span className="text-sm text-aura-medium-gray">{budget.period}</span>
                   </div>
-                  <Progress value={calculatePercentage(budget.spent, budget.budgeted)} className={`h-2 ${budget.spent > budget.budgeted ? 'bg-red-400' : ''}`} />
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-aura-medium-gray">
-                    {formatCurrency(budget.budgeted - budget.spent)} left
-                  </span>
-                  <Button variant="outline" size="sm">Edit</Button>
-                </div>
-              </Card>))
+                  
+                  <div className="space-y-1 mb-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-aura-primary-text">Spent: {formatCurrency(budget.spent)}</span>
+                      <span className="text-aura-primary-text">Budgeted: {formatCurrency(budget.budgeted)}</span>
+                    </div>
+                    <Progress value={calculatePercentage(budget.spent, budget.budgeted)} className={`h-2 ${budget.spent > budget.budgeted ? 'bg-red-400' : ''}`} />
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-aura-medium-gray">
+                      {formatCurrency(budget.budgeted - budget.spent)} left
+                    </span>
+                    <Button variant="outline" size="sm">Edit</Button>
+                  </div>
+                </Card>
+              ))
             )}
           </div>
           
