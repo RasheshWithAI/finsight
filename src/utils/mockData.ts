@@ -44,12 +44,29 @@ export interface Budget {
   period: "weekly" | "monthly" | "yearly";
 }
 
-// Helper function to generate watchlist of stocks
+export interface Insight {
+  id: string;
+  title: string;
+  description: string;
+  type: "cost-saving" | "investment" | "market";
+  potentialSavings?: string;
+  potentialReturn?: string;
+  relatedStocks?: string[];
+}
+
+// Empty arrays for mockData as per user's request
+export const mockStocks: Stock[] = [];
+
+export const mockMarketIndices: MarketIndex[] = [];
+
+export const mockInsights: Insight[] = [];
+
+// Helper function to generate watchlist of stocks - returning empty array
 export const generateWatchlist = () => {
   return [];
 };
 
-// Helper function to calculate financial summary
+// Helper function to calculate financial summary - returning zeros
 export const calculateFinancialSummary = () => {
   return {
     income: 0,
