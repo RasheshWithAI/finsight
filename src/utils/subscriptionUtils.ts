@@ -31,5 +31,5 @@ export const FEATURE_ACCESS = {
 
 export function hasFeatureAccess(subscription: string, feature: keyof typeof FEATURE_ACCESS): boolean {
   if (!FEATURE_ACCESS[feature]) return true;
-  return FEATURE_ACCESS[feature].includes(subscription);
+  return FEATURE_ACCESS[feature].includes(subscription as SubscriptionTier['code']);
 }
