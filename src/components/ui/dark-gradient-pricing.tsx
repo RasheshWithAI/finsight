@@ -1,16 +1,20 @@
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { initiateSubscriptionCheckout } from "@/utils/subscriptionUtils";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 interface BenefitProps {
   text: string;
   checked: boolean;
 }
-const Benefit = ({
-  text,
-  checked
-}: BenefitProps) => {
+
+const Benefit = ({ text, checked }: BenefitProps) => {
   return <div className="flex items-center gap-3">
       {checked ? <span className="grid size-4 place-content-center rounded-full bg-primary text-sm text-primary-foreground">
           <Check className="size-3" />
@@ -20,6 +24,7 @@ const Benefit = ({
       <span className="text-sm dark:text-zinc-300 text-zinc-600">{text}</span>
     </div>;
 };
+
 interface PricingCardProps {
   tier: string;
   price: string;
@@ -31,6 +36,7 @@ interface PricingCardProps {
   }>;
   className?: string;
 }
+
 export const PricingCard = ({
   tier,
   price,
@@ -39,16 +45,63 @@ export const PricingCard = ({
   benefits,
   className
 }: PricingCardProps) => {
-  return <motion.div initial={{
-    filter: "blur(2px)"
-  }} whileInView={{
-    filter: "blur(0px)"
-  }} transition={{
-    duration: 0.5,
-    ease: "easeInOut",
-    delay: 0.25
-  }}>
-      <Card className={cn("relative h-full w-full overflow-hidden border", "dark:border-zinc-700 dark:bg-gradient-to-br dark:from-zinc-950/50 dark:to-zinc-900/80", "border-zinc-200 bg-gradient-to-br from-zinc-50/50 to-zinc-100/80", "p-6", className)}>
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      navigate("/welcome");
+      toast.info("Please sign in to subscribe");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const tierCodeMap: Record<string, 'free' | 'pro' | 'enterprise'> = {
+        'Basic': 'free',
+        'Pro': 'pro',
+        'Enterprise': 'enterprise'
+      };
+
+      const tierCode = tierCodeMap[tier];
+      if (!tierCode) {
+        throw new Error('Invalid subscription tier');
+      }
+
+      const result = await initiateSubscriptionCheckout(tierCode);
+      
+      if (!result.success) {
+        throw new Error(result.message || "Failed to initiate checkout");
+      }
+
+      if (result.url) {
+        window.location.href = result.url;
+      }
+    } catch (error) {
+      console.error('Subscription error:', error);
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error("Failed to start subscription process", {
+        description: errorMessage
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <motion.div 
+      initial={{ filter: "blur(2px)" }} 
+      whileInView={{ filter: "blur(0px)" }}
+      transition={{ duration: 0.5, ease: "easeInOut", delay: 0.25 }}
+    >
+      <Card className={cn(
+        "relative h-full w-full overflow-hidden border",
+        "dark:border-zinc-700 dark:bg-gradient-to-br dark:from-zinc-950/50 dark:to-zinc-900/80",
+        "border-zinc-200 bg-gradient-to-br from-zinc-50/50 to-zinc-100/80",
+        "p-6",
+        className
+      )}>
         <div className="flex flex-col items-center border-b pb-6 dark:border-zinc-700 border-zinc-200">
           <span className="mb-6 inline-block dark:text-zinc-50 text-zinc-900">
             {tier}
@@ -60,12 +113,27 @@ export const PricingCard = ({
             {bestFor}
           </span>
         </div>
+        
         <div className="space-y-4 py-9">
-          {benefits.map((benefit, index) => <Benefit key={index} {...benefit} />)}
+          {benefits.map((benefit, index) => (
+            <Benefit key={index} {...benefit} />
+          ))}
         </div>
-        <Button variant={tier === "Pro" ? "default" : "ghost"} className="w-full rounded-full">
-          {CTA}
+
+        <Button
+          variant={tier === "Pro" ? "default" : "ghost"}
+          className="w-full rounded-full"
+          onClick={handleSubscribe}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </span>
+          ) : CTA}
         </Button>
       </Card>
-    </motion.div>;
+    </motion.div>
+  );
 };
