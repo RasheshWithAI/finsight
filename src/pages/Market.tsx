@@ -33,7 +33,7 @@ import { formatCurrency, formatPercentage, formatLargeNumber, convertUsdToInr, u
 
 const Market = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [stocks, setStocks] = useState<Stock[]>(mockStocks);
+  const [stocks, setStocks] = useState<Stock[]>([]);
   const [watchlist, setWatchlist] = useState<Stock[]>([]);
   const [selectedExchange, setSelectedExchange] = useState("NYSE");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,6 @@ const Market = () => {
   const { marketIndices, refetchMarketIndices, searchStocks, isLoading: isStockDataLoading } = useStockData();
   const { rate: exchangeRate } = useExchangeRate();
 
-  // Define available stock exchanges
   const stockExchanges = [
     { id: "NYSE", name: "NYSE (New York Stock Exchange)" },
     { id: "NASDAQ", name: "NASDAQ" },
@@ -51,13 +50,11 @@ const Market = () => {
     { id: "NSE", name: "NSE (National Stock Exchange of India)" }
   ];
 
-  // Handle exchange selection change
   const handleExchangeChange = async (value: string) => {
     setIsLoading(true);
     setSelectedExchange(value);
     
     try {
-      // Search for popular stocks on the selected exchange
       const exchangeKeywords = {
         "NYSE": "NYSE popular",
         "NASDAQ": "NASDAQ tech",
@@ -69,42 +66,34 @@ const Market = () => {
       const results = await searchStocks(exchangeKeywords[value as keyof typeof exchangeKeywords] || value);
       
       if (results && results.length > 0) {
-        // Convert API results to our stock format with INR conversion
-        const stocksData: Stock[] = results.map((item: any, index: number) => {
-          const price = parseFloat((Math.random() * 500 + 10).toFixed(2));
-          const change = parseFloat((Math.random() * 10 - 5).toFixed(2));
-          
-          return {
-            id: item.symbol,
-            symbol: item.symbol,
-            name: item.name,
-            price: convertUsdToInr(price, exchangeRate),
-            change: convertUsdToInr(change, exchangeRate),
-            changePercent: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Percentage remains the same
-            marketCap: convertUsdToInr(Math.floor(Math.random() * 1000000000000), exchangeRate),
-            volume: Math.floor(Math.random() * 10000000),
-            pe: Math.random() * 30 + 5,
-            sector: "Technology",
-            isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
-          };
-        });
+        const stocksData: Stock[] = results.map((item: any) => ({
+          id: item.symbol,
+          symbol: item.symbol,
+          name: item.name,
+          price: convertUsdToInr(item.price || 0, exchangeRate),
+          change: convertUsdToInr(item.change || 0, exchangeRate),
+          changePercent: item.changePercent || 0,
+          marketCap: convertUsdToInr(item.marketCap || 0, exchangeRate),
+          volume: item.volume || 0,
+          pe: item.pe || 0,
+          sector: item.sector || "Unknown",
+          isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
+        }));
         
         setStocks(stocksData);
       } else {
-        // If no results, convert mock data to INR
-        toast.info(`No data available for ${value}. Using sample data instead.`);
+        console.log('No real-time data available, using mock data as fallback');
         const convertedStocks = mockStocks.map(stock => ({
           ...stock,
           price: convertUsdToInr(stock.price, exchangeRate),
           change: convertUsdToInr(stock.change, exchangeRate),
           marketCap: convertUsdToInr(stock.marketCap, exchangeRate),
-          // changePercent stays the same as it's a percentage
         }));
         setStocks(convertedStocks);
       }
     } catch (error) {
       console.error("Error fetching exchange data:", error);
-      toast.error(`Failed to load data for ${value}. Using sample data instead.`);
+      console.log('Error fetching real-time data, using mock data as fallback');
       const convertedStocks = mockStocks.map(stock => ({
         ...stock,
         price: convertUsdToInr(stock.price, exchangeRate),
@@ -117,18 +106,9 @@ const Market = () => {
     }
   };
 
-  // Convert stocks to INR when exchange rate changes
   useEffect(() => {
-    if (stocks && stocks.length > 0) {
-      const convertedStocks = stocks.map(stock => ({
-        ...stock,
-        price: convertUsdToInr(stock.price / exchangeRate, exchangeRate), // Fix double conversion
-        change: convertUsdToInr(stock.change / exchangeRate, exchangeRate), // Fix double conversion
-        marketCap: convertUsdToInr(stock.marketCap / exchangeRate, exchangeRate), // Fix double conversion
-      }));
-      setStocks(convertedStocks);
-    }
-  }, [exchangeRate]);
+    handleExchangeChange(selectedExchange);
+  }, []);
 
   const toggleWatchlist = (stock: Stock) => {
     if (watchlist.some(item => item.id === stock.id)) {
@@ -161,11 +141,6 @@ const Market = () => {
     stock.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  // Initialize market data when component mounts
-  useEffect(() => {
-    handleExchangeChange(selectedExchange);
-  }, []);
 
   return (
     <div className="container px-4 py-6 animate-fade-in bg-gray-900">
