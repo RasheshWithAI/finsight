@@ -52,15 +52,37 @@ const Dashboard = () => {
     setCurrentMarketIndices(updatedIndices);
 
     // Convert insights monetary values to INR if applicable
-    const updatedInsights = mockInsights.slice(0, 2).map(insight => ({
-      ...insight,
-      potentialSavings: insight.potentialSavings ? 
-        formatCurrency(convertUsdToInr(parseFloat(insight.potentialSavings.replace(/[^0-9.-]+/g, '')), exchangeRate)) : 
-        undefined,
-      potentialReturn: insight.potentialReturn ? 
-        formatCurrency(convertUsdToInr(parseFloat(insight.potentialReturn.replace(/[^0-9.-]+/g, '')), exchangeRate)) : 
-        undefined
-    }));
+    const baseInsights = mockInsights.slice(0, 2);
+    const updatedInsights = baseInsights.map(insight => {
+      const result = { ...insight };
+      
+      // Handle potential savings if present
+      if (insight.potentialSavings) {
+        const numValue = parseFloat(insight.potentialSavings.replace(/[^0-9.-]+/g, ''));
+        const convertedValue = convertUsdToInr(numValue, exchangeRate);
+        result.potentialSavings = formatCurrency(convertedValue);
+        
+        // If original doesn't have potentialReturn, ensure it's not present in result
+        if (!insight.potentialReturn) {
+          result.potentialReturn = undefined;
+        }
+      }
+      
+      // Handle potential return if present
+      if (insight.potentialReturn) {
+        const numValue = parseFloat(insight.potentialReturn.replace(/[^0-9.-]+/g, ''));
+        const convertedValue = convertUsdToInr(numValue, exchangeRate);
+        result.potentialReturn = formatCurrency(convertedValue);
+        
+        // If original doesn't have potentialSavings, ensure it's not present in result
+        if (!insight.potentialSavings) {
+          result.potentialSavings = undefined;
+        }
+      }
+      
+      return result;
+    });
+    
     setCurrentInsights(updatedInsights);
   }, [exchangeRate]);
 
