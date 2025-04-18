@@ -1,7 +1,10 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
+import { initiateSubscriptionCheckout } from "@/utils/subscriptionUtils";
+import { toast } from "@/components/ui/use-toast";
+import type { SubscriptionTier } from "@/utils/subscriptionUtils";
 
 interface SubscriptionCardProps {
   name: string;
@@ -20,6 +23,48 @@ export function SubscriptionCard({
   isCurrentPlan,
   onSelect
 }: SubscriptionCardProps) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (isCurrentPlan) return;
+    
+    setIsLoading(true);
+    
+    try {
+      const tierCodeMap: Record<string, SubscriptionTier> = {
+        'Free': 'free',
+        'Pro': 'pro',
+        'Enterprise': 'enterprise'
+      };
+      
+      const tierCode = tierCodeMap[name] as SubscriptionTier;
+      if (!tierCode) {
+        throw new Error(`Invalid subscription plan: ${name}`);
+      }
+      
+      const result = await initiateSubscriptionCheckout(tierCode);
+      
+      if (!result.success) {
+        throw new Error(result.message || "Failed to process subscription");
+      }
+      
+      if (!result.url) {
+        onSelect();
+      }
+    } catch (error) {
+      console.error("Subscription error:", error);
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      
+      toast({
+        title: "Subscription Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
   return (
     <Card className={`w-full max-w-sm transition-all duration-300 ${isCurrentPlan ? 'border-primary shadow-lg scale-105' : 'hover:border-primary/50'}`}>
       <CardHeader>
@@ -49,15 +94,26 @@ export function SubscriptionCard({
           ))}
         </ul>
         <button
-          onClick={onSelect}
+          onClick={handleSubscribe}
           className={`w-full mt-6 py-2 px-4 rounded-lg transition-colors ${
             isCurrentPlan
               ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-              : 'bg-primary text-white hover:bg-primary/90'
+              : isLoading
+                ? 'bg-primary/70 text-white cursor-wait' 
+                : 'bg-primary text-white hover:bg-primary/90'
           }`}
-          disabled={isCurrentPlan}
+          disabled={isCurrentPlan || isLoading}
         >
-          {isCurrentPlan ? 'Current Plan' : 'Upgrade Now'}
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              Processing...
+            </span>
+          ) : isCurrentPlan ? (
+            'Current Plan'
+          ) : (
+            'Upgrade Now'
+          )}
         </button>
       </CardContent>
     </Card>
