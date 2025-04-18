@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { StockQuote, MarketIndex, StockSearchResult, StockHistoryPoint } from "@/types/stockTypes";
@@ -25,7 +26,7 @@ export const searchStocks = async (keywords: string): Promise<StockSearchResult[
         name: match.shortname || match.longname || match.symbol,
         type: match.quoteType || 'Equity',
         region: match.exchange || 'United States',
-        currency: match.currency || 'USD',
+        currency: 'INR', // Changed from 'USD' to 'INR'
       }));
     }
     
@@ -247,33 +248,33 @@ export const getFallbackSearchResults = (keywords: string): StockSearchResult[] 
   
   // Default fallback stocks
   let fallbackStocks = [
-    { id: 'AAPL', symbol: 'AAPL', name: 'Apple Inc', type: 'Equity', region: 'United States' },
-    { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft Corporation', type: 'Equity', region: 'United States' },
-    { id: 'GOOGL', symbol: 'GOOGL', name: 'Alphabet Inc', type: 'Equity', region: 'United States' }
+    { id: 'AAPL', symbol: 'AAPL', name: 'Apple Inc', type: 'Equity', region: 'United States', currency: 'INR' },
+    { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft Corporation', type: 'Equity', region: 'United States', currency: 'INR' },
+    { id: 'GOOGL', symbol: 'GOOGL', name: 'Alphabet Inc', type: 'Equity', region: 'United States', currency: 'INR' }
   ];
   
   // Specific fallbacks based on search keywords
   if (lowercaseKeywords.includes('tech')) {
     fallbackStocks = [
-      { id: 'AAPL', symbol: 'AAPL', name: 'Apple Inc', type: 'Equity', region: 'United States' },
-      { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft Corporation', type: 'Equity', region: 'United States' },
-      { id: 'GOOGL', symbol: 'GOOGL', name: 'Alphabet Inc', type: 'Equity', region: 'United States' },
-      { id: 'NVDA', symbol: 'NVDA', name: 'NVIDIA Corporation', type: 'Equity', region: 'United States' },
-      { id: 'AMZN', symbol: 'AMZN', name: 'Amazon.com Inc', type: 'Equity', region: 'United States' }
+      { id: 'AAPL', symbol: 'AAPL', name: 'Apple Inc', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'MSFT', symbol: 'MSFT', name: 'Microsoft Corporation', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'GOOGL', symbol: 'GOOGL', name: 'Alphabet Inc', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'NVDA', symbol: 'NVDA', name: 'NVIDIA Corporation', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'AMZN', symbol: 'AMZN', name: 'Amazon.com Inc', type: 'Equity', region: 'United States', currency: 'INR' }
     ];
   } else if (lowercaseKeywords.includes('bank') || lowercaseKeywords.includes('financ')) {
     fallbackStocks = [
-      { id: 'JPM', symbol: 'JPM', name: 'JPMorgan Chase & Co', type: 'Equity', region: 'United States' },
-      { id: 'BAC', symbol: 'BAC', name: 'Bank of America Corp', type: 'Equity', region: 'United States' },
-      { id: 'WFC', symbol: 'WFC', name: 'Wells Fargo & Co', type: 'Equity', region: 'United States' },
-      { id: 'C', symbol: 'C', name: 'Citigroup Inc', type: 'Equity', region: 'United States' }
+      { id: 'JPM', symbol: 'JPM', name: 'JPMorgan Chase & Co', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'BAC', symbol: 'BAC', name: 'Bank of America Corp', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'WFC', symbol: 'WFC', name: 'Wells Fargo & Co', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'C', symbol: 'C', name: 'Citigroup Inc', type: 'Equity', region: 'United States', currency: 'INR' }
     ];
   } else if (lowercaseKeywords.includes('health') || lowercaseKeywords.includes('pharma')) {
     fallbackStocks = [
-      { id: 'JNJ', symbol: 'JNJ', name: 'Johnson & Johnson', type: 'Equity', region: 'United States' },
-      { id: 'PFE', symbol: 'PFE', name: 'Pfizer Inc', type: 'Equity', region: 'United States' },
-      { id: 'MRK', symbol: 'MRK', name: 'Merck & Co Inc', type: 'Equity', region: 'United States' },
-      { id: 'UNH', symbol: 'UNH', name: 'UnitedHealth Group Inc', type: 'Equity', region: 'United States' }
+      { id: 'JNJ', symbol: 'JNJ', name: 'Johnson & Johnson', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'PFE', symbol: 'PFE', name: 'Pfizer Inc', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'MRK', symbol: 'MRK', name: 'Merck & Co Inc', type: 'Equity', region: 'United States', currency: 'INR' },
+      { id: 'UNH', symbol: 'UNH', name: 'UnitedHealth Group Inc', type: 'Equity', region: 'United States', currency: 'INR' }
     ];
   }
   

@@ -1,37 +1,73 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { calculateFinancialSummary, generateWatchlist, mockInsights, mockMarketIndices } from "@/utils/mockData";
-import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, Lightbulb, Percent, PiggyBank, Sparkles } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, BarChart3, ChevronRight, DollarSign, Eye, Lightbulb, Percent, PiggyBank, Sparkles, IndianRupee } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { sendAryaNotification } from "@/utils/aryaUtils";
 import { PricingModal } from "@/components/premium/PricingModal";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { useExchangeRate, convertUsdToInr, formatCurrency, formatPercentage } from "@/utils/currencyUtils";
+
 const Dashboard = () => {
   const {
     user,
     profile
   } = useAuth();
+  const { rate: exchangeRate } = useExchangeRate();
   const [financialSummary, setFinancialSummary] = useState(calculateFinancialSummary());
   const [watchlist, setWatchlist] = useState(generateWatchlist());
   const [currentMarketIndices, setCurrentMarketIndices] = useState(mockMarketIndices);
   const [currentInsights, setCurrentInsights] = useState(mockInsights.slice(0, 2));
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(value);
+
+  useEffect(() => {
+    // Convert USD values to INR for financial summary
+    const summary = calculateFinancialSummary();
+    setFinancialSummary({
+      income: convertUsdToInr(summary.income, exchangeRate),
+      expenses: convertUsdToInr(summary.expenses, exchangeRate),
+      savings: convertUsdToInr(summary.savings, exchangeRate),
+      savingsRate: summary.savingsRate // Percentage stays the same
+    });
+
+    // Convert watchlist stock prices to INR
+    const updatedWatchlist = generateWatchlist().map(stock => ({
+      ...stock,
+      price: convertUsdToInr(stock.price, exchangeRate),
+      change: convertUsdToInr(stock.change, exchangeRate)
+      // changePercent stays the same as it's a percentage
+    }));
+    setWatchlist(updatedWatchlist);
+
+    // Convert market indices values to INR
+    const updatedIndices = mockMarketIndices.map(index => ({
+      ...index,
+      value: convertUsdToInr(index.value, exchangeRate),
+      change: convertUsdToInr(index.change, exchangeRate)
+      // changePercent stays the same as it's a percentage
+    }));
+    setCurrentMarketIndices(updatedIndices);
+
+    // Convert insights monetary values to INR if applicable
+    const updatedInsights = mockInsights.slice(0, 2).map(insight => ({
+      ...insight,
+      potentialSavings: insight.potentialSavings ? 
+        formatCurrency(convertUsdToInr(parseFloat(insight.potentialSavings.replace(/[^0-9.-]+/g, '')), exchangeRate)) : 
+        undefined,
+      potentialReturn: insight.potentialReturn ? 
+        formatCurrency(convertUsdToInr(parseFloat(insight.potentialReturn.replace(/[^0-9.-]+/g, '')), exchangeRate)) : 
+        undefined
+    }));
+    setCurrentInsights(updatedInsights);
+  }, [exchangeRate]);
+
+  const handleLearnMoreClick = () => {
+    setIsPricingModalOpen(true);
   };
-  const formatPercentage = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'percent',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value / 100);
-  };
+
   useEffect(() => {
     const notificationTimer = setTimeout(() => {
       sendAryaNotification("Your savings rate is on track! At 20.5%, you're above the recommended 20% target.", "success");
@@ -44,9 +80,7 @@ const Dashboard = () => {
       clearTimeout(premiumTimer);
     };
   }, []);
-  const handleLearnMoreClick = () => {
-    setIsPricingModalOpen(true);
-  };
+
   return <>
       <div className="container px-4 py-6 animate-fade-in bg-gray-900">
         <header className="mb-6">
@@ -79,7 +113,7 @@ const Dashboard = () => {
               <CardContent className="p-4 flex flex-col">
                 <div className="flex items-center justify-between">
                   <span className="stat-label text-zinc-950">Income</span>
-                  <DollarSign className="h-4 w-4 text-aura-gold" />
+                  <IndianRupee className="h-4 w-4 text-aura-gold" />
                 </div>
                 <span className="stat-value mt-2">{formatCurrency(financialSummary.income)}</span>
               </CardContent>
@@ -131,7 +165,7 @@ const Dashboard = () => {
                   <CardContent className="p-4">
                     <h3 className="font-medium text-sm">{index.name}</h3>
                     <div className="flex items-center justify-between mt-1">
-                      <span className="text-xl font-bold">{index.value.toLocaleString()}</span>
+                      <span className="text-xl font-bold">{formatCurrency(index.value)}</span>
                       <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
                         <span>{formatPercentage(index.changePercent)}</span>

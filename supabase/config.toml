@@ -1,8 +1,7 @@
 
-project_id = "qiolmyiilwzrmjisjdfc"
-
-[functions.stock-data]
+project_id = "your_supabase_project_id"
+[functions."stock-data"]
 verify_jwt = false
 
-[functions.arya-assistant]
+[functions."currency-exchange"]
 verify_jwt = false

@@ -24,10 +24,12 @@ import {
   RefreshCw, 
   BarChart4,
   Globe,
-  AlertCircle
+  AlertCircle,
+  IndianRupee
 } from "lucide-react";
 import { toast } from "sonner";
 import { useStockData } from "@/hooks/useStockData";
+import { formatCurrency, formatPercentage, formatLargeNumber, convertUsdToInr, useExchangeRate } from "@/utils/currencyUtils";
 
 const Market = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -38,7 +40,8 @@ const Market = () => {
   
   const navigate = useNavigate();
   const { marketIndices, refetchMarketIndices, searchStocks, isLoading: isStockDataLoading } = useStockData();
-  
+  const { rate: exchangeRate } = useExchangeRate();
+
   // Define available stock exchanges
   const stockExchanges = [
     { id: "NYSE", name: "NYSE (New York Stock Exchange)" },
@@ -47,36 +50,6 @@ const Market = () => {
     { id: "TSE", name: "Tokyo Stock Exchange" },
     { id: "NSE", name: "NSE (National Stock Exchange of India)" }
   ];
-
-  // Format currency function
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(value);
-  };
-
-  // Format large numbers (e.g., market cap)
-  const formatLargeNumber = (value: number) => {
-    if (value >= 1e12) {
-      return (value / 1e12).toFixed(2) + ' T';
-    } else if (value >= 1e9) {
-      return (value / 1e9).toFixed(2) + ' B';
-    } else if (value >= 1e6) {
-      return (value / 1e6).toFixed(2) + ' M';
-    }
-    return value.toString();
-  };
-
-  // Format percentage function
-  const formatPercentage = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'percent',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(value / 100);
-  };
 
   // Handle exchange selection change
   const handleExchangeChange = async (value: string) => {
@@ -96,35 +69,66 @@ const Market = () => {
       const results = await searchStocks(exchangeKeywords[value as keyof typeof exchangeKeywords] || value);
       
       if (results && results.length > 0) {
-        // Convert API results to our stock format
-        const stocksData: Stock[] = results.map((item: any, index: number) => ({
-          id: item.symbol,
-          symbol: item.symbol,
-          name: item.name,
-          price: parseFloat((Math.random() * 500 + 10).toFixed(2)), // Placeholder until we fetch actual quotes
-          change: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Placeholder
-          changePercent: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Placeholder
-          marketCap: Math.floor(Math.random() * 1000000000000), // Placeholder
-          volume: Math.floor(Math.random() * 10000000), // Placeholder
-          pe: Math.random() * 30 + 5, // Adding missing required property
-          sector: "Technology", // Adding missing required property
-          isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
-        }));
+        // Convert API results to our stock format with INR conversion
+        const stocksData: Stock[] = results.map((item: any, index: number) => {
+          const price = parseFloat((Math.random() * 500 + 10).toFixed(2));
+          const change = parseFloat((Math.random() * 10 - 5).toFixed(2));
+          
+          return {
+            id: item.symbol,
+            symbol: item.symbol,
+            name: item.name,
+            price: convertUsdToInr(price, exchangeRate),
+            change: convertUsdToInr(change, exchangeRate),
+            changePercent: parseFloat((Math.random() * 10 - 5).toFixed(2)), // Percentage remains the same
+            marketCap: convertUsdToInr(Math.floor(Math.random() * 1000000000000), exchangeRate),
+            volume: Math.floor(Math.random() * 10000000),
+            pe: Math.random() * 30 + 5,
+            sector: "Technology",
+            isWatchlisted: watchlist.some(w => w.symbol === item.symbol),
+          };
+        });
         
         setStocks(stocksData);
       } else {
-        // If no results, keep using mock data
+        // If no results, convert mock data to INR
         toast.info(`No data available for ${value}. Using sample data instead.`);
-        setStocks(mockStocks);
+        const convertedStocks = mockStocks.map(stock => ({
+          ...stock,
+          price: convertUsdToInr(stock.price, exchangeRate),
+          change: convertUsdToInr(stock.change, exchangeRate),
+          marketCap: convertUsdToInr(stock.marketCap, exchangeRate),
+          // changePercent stays the same as it's a percentage
+        }));
+        setStocks(convertedStocks);
       }
     } catch (error) {
       console.error("Error fetching exchange data:", error);
       toast.error(`Failed to load data for ${value}. Using sample data instead.`);
-      setStocks(mockStocks);
+      const convertedStocks = mockStocks.map(stock => ({
+        ...stock,
+        price: convertUsdToInr(stock.price, exchangeRate),
+        change: convertUsdToInr(stock.change, exchangeRate),
+        marketCap: convertUsdToInr(stock.marketCap, exchangeRate),
+      }));
+      setStocks(convertedStocks);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Convert stocks to INR when exchange rate changes
+  useEffect(() => {
+    if (stocks && stocks.length > 0) {
+      const convertedStocks = stocks.map(stock => ({
+        ...stock,
+        price: convertUsdToInr(stock.price / exchangeRate, exchangeRate), // Fix double conversion
+        change: convertUsdToInr(stock.change / exchangeRate, exchangeRate), // Fix double conversion
+        marketCap: convertUsdToInr(stock.marketCap / exchangeRate, exchangeRate), // Fix double conversion
+      }));
+      setStocks(convertedStocks);
+    }
+  }, [exchangeRate]);
 
   const toggleWatchlist = (stock: Stock) => {
     if (watchlist.some(item => item.id === stock.id)) {
@@ -181,7 +185,6 @@ const Market = () => {
         </div>
       </header>
 
-      {/* Stock Exchange Selection */}
       <div className="mb-4">
         <div className="flex items-center gap-4">
           <div className="flex items-center">
@@ -209,7 +212,6 @@ const Market = () => {
         </div>
       </div>
 
-      {/* Market Indices */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-lg font-semibold text-aura-primary-text">Market Indices</h2>
@@ -231,7 +233,7 @@ const Market = () => {
                 <CardContent className="p-4">
                   <h3 className="font-medium text-sm text-aura-primary-text">{index.name}</h3>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-xl font-bold text-aura-primary-text">{index.value.toLocaleString()}</span>
+                    <span className="text-xl font-bold text-aura-primary-text">{formatCurrency(index.value)}</span>
                     <div className={`flex items-center ${index.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {index.change >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
                       <span>{formatPercentage(index.changePercent)}</span>
@@ -257,7 +259,6 @@ const Market = () => {
         </div>
       </div>
 
-      {/* Stock Search and Tabs */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
           <div className="relative flex-grow">
@@ -281,7 +282,6 @@ const Market = () => {
             <TabsTrigger value="sectors" className="text-slate-50 rounded-3xl bg-amber-500 hover:bg-amber-400">Sectors</TabsTrigger>
           </TabsList>
           
-          {/* Tabs content */}
           <TabsContent value="all">
             <Card className="financial-card overflow-hidden bg-sky-950">
               <div className="overflow-x-auto">
@@ -300,7 +300,6 @@ const Market = () => {
                     {filteredStocks.map(stock => {
                     const isWatchlisted = watchlist.some(item => item.id === stock.id);
                     return <tr key={stock.id} className="border-b border-gray-800 hover:bg-gray-900/30 cursor-pointer" onClick={e => {
-                      // Don't navigate when clicking on the watchlist button
                       if ((e.target as HTMLElement).closest('button')) return;
                       handleStockClick(stock.symbol);
                     }}>
@@ -330,7 +329,6 @@ const Market = () => {
             </Card>
           </TabsContent>
           
-          {/* Watchlist Tab */}
           <TabsContent value="watchlist">
             <Card className="financial-card">
               {watchlist.length === 0 ? <CardContent className="p-8 text-center">
@@ -386,7 +384,6 @@ const Market = () => {
             </Card>
           </TabsContent>
           
-          {/* Sectors Tab */}
           <TabsContent value="sectors">
             <Card className="financial-card p-6 bg-sky-950 rounded-2xl">
               <h3 className="text-lg font-medium mb-4">Sectors Performance</h3>
@@ -447,7 +444,6 @@ const Market = () => {
         </Tabs>
       </div>
 
-      {/* Trending Section */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-3 text-aura-primary-text">Trending Today</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

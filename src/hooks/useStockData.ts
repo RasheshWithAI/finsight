@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { StockQuote, MarketIndex, StockSearchResult, StockHistoryPoint } from '@/types/stockTypes';
@@ -9,11 +8,13 @@ import {
   fetchMarketIndices
 } from '@/services/stockApiService';
 import { toast } from 'sonner';
+import { useExchangeRate, convertUsdToInr } from '@/utils/currencyUtils';
 
 export type { StockQuote, MarketIndex, StockSearchResult, StockHistoryPoint };
 
 export const useStockData = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { rate: exchangeRate, isLoading: isExchangeRateLoading } = useExchangeRate();
   
   const searchStocks = async (keywords: string): Promise<StockSearchResult[]> => {
     setIsLoading(true);
@@ -34,6 +35,17 @@ export const useStockData = () => {
     try {
       console.log(`Fetching stock quote for: ${symbol}`);
       const quote = await apiGetStockQuote(symbol);
+      
+      // Convert USD prices to INR
+      if (quote) {
+        return {
+          ...quote,
+          price: convertUsdToInr(quote.price, exchangeRate),
+          change: convertUsdToInr(quote.change, exchangeRate),
+          marketCap: quote.marketCap ? convertUsdToInr(quote.marketCap, exchangeRate) : undefined,
+          // Note: changePercent is a percentage and should not be converted
+        };
+      }
       return quote;
     } catch (error) {
       console.error('Error getting stock quote:', error);
@@ -46,7 +58,16 @@ export const useStockData = () => {
     try {
       console.log(`Fetching stock history for: ${symbol}`);
       const history = await apiGetStockHistory(symbol);
-      return history;
+      
+      // Convert all USD prices to INR
+      return history.map(point => ({
+        ...point,
+        open: convertUsdToInr(point.open, exchangeRate),
+        high: convertUsdToInr(point.high, exchangeRate),
+        low: convertUsdToInr(point.low, exchangeRate),
+        close: convertUsdToInr(point.close, exchangeRate),
+        // Volume remains unchanged
+      }));
     } catch (error) {
       console.error('Error getting stock history:', error);
       toast.error(`Failed to get history for ${symbol}. Using fallback data.`);
@@ -61,7 +82,17 @@ export const useStockData = () => {
     isError: isIndicesError
   } = useQuery({
     queryKey: ['marketIndices'],
-    queryFn: fetchMarketIndices,
+    queryFn: async () => {
+      const indices = await fetchMarketIndices();
+      
+      // Convert USD values to INR
+      return indices.map(index => ({
+        ...index,
+        value: convertUsdToInr(index.value, exchangeRate),
+        change: convertUsdToInr(index.change, exchangeRate),
+        // Note: changePercent is a percentage and should not be converted
+      }));
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     retry: 3,
@@ -79,7 +110,8 @@ export const useStockData = () => {
     getStockHistory,
     marketIndices,
     refetchMarketIndices,
-    isLoading: isLoading || isIndicesLoading,
+    exchangeRate,
+    isLoading: isLoading || isIndicesLoading || isExchangeRateLoading,
     isError: isIndicesError
   };
 };

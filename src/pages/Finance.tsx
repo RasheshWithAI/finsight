@@ -5,26 +5,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { mockTransactions, mockBudgets } from "@/utils/mockData";
-import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, Plus, RefreshCw } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, Plus, RefreshCw, IndianRupee } from "lucide-react";
 import { toast } from "sonner";
 import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import BudgetBarChart from "@/components/charts/BudgetBarChart";
 import AddTransactionForm from "@/components/finance/AddTransactionForm";
+import { formatCurrency } from "@/utils/currencyUtils";
+import { useExchangeRate, convertUsdToInr } from "@/utils/currencyUtils";
+import { useEffect } from "react";
 
 const Finance = () => {
+  const { rate: exchangeRate } = useExchangeRate();
   const [transactions, setTransactions] = useState(mockTransactions);
   const [budgets, setBudgets] = useState(mockBudgets);
   const [selectedMonth, setSelectedMonth] = useState("April 2025");
   const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
 
-  // Format currency function
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(value);
-  };
+  // Convert USD values to INR on component mount and when exchange rate changes
+  useEffect(() => {
+    // Convert transaction amounts to INR
+    const convertedTransactions = mockTransactions.map(t => ({
+      ...t,
+      amount: convertUsdToInr(t.amount, exchangeRate)
+    }));
+    setTransactions(convertedTransactions);
+
+    // Convert budget values to INR
+    const convertedBudgets = mockBudgets.map(b => ({
+      ...b,
+      spent: convertUsdToInr(b.spent, exchangeRate),
+      budgeted: convertUsdToInr(b.budgeted, exchangeRate)
+    }));
+    setBudgets(convertedBudgets);
+  }, [exchangeRate]);
 
   // Calculate totals
   const totalIncome = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
@@ -40,7 +53,14 @@ const Finance = () => {
   };
 
   const handleSaveTransaction = (transaction: any) => {
-    setTransactions([transaction, ...transactions]);
+    // Convert the amount to INR before saving if needed
+    const newTransaction = {
+      ...transaction,
+      amount: transaction.currency === 'USD' ? 
+        convertUsdToInr(transaction.amount, exchangeRate) : transaction.amount
+    };
+    
+    setTransactions([newTransaction, ...transactions]);
     toast.success("Transaction added successfully!");
   };
 
