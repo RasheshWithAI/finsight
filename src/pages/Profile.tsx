@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LogOut, User, Bell, Shield, CreditCard, Settings, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import AryaNotificationSettings from "@/components/arya/AryaNotificationSettings";
+import { SubscriptionSection } from "@/components/subscription/SubscriptionSection";
+import { getUserSubscription } from "@/utils/subscriptionUtils";
 
 const Profile = () => {
   const {
@@ -25,14 +26,20 @@ const Profile = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [biometrics, setBiometrics] = useState(false);
-  
+  const [subscription, setSubscription] = useState<string>('free');
+
+  useEffect(() => {
+    if (user?.id) {
+      getUserSubscription(user.id).then(setSubscription);
+    }
+  }, [user?.id]);
+
   const handleLogout = () => {
     logout();
     toast.success("You have been logged out");
     navigate("/");
   };
 
-  // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!profile?.full_name) return user?.email?.[0].toUpperCase() || "U";
     return profile.full_name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
@@ -69,10 +76,11 @@ const Profile = () => {
 
       {/* Settings Tabs */}
       <Tabs defaultValue="preferences">
-        <TabsList className="grid grid-cols-3 mb-6">
+        <TabsList className="grid grid-cols-4 mb-6">
           <TabsTrigger value="preferences" className="rounded-2xl bg-transparent">Preferences</TabsTrigger>
           <TabsTrigger value="security" className="bg-transparent rounded-2xl">Security</TabsTrigger>
           <TabsTrigger value="notifications" className="rounded-2xl">Notifications</TabsTrigger>
+          <TabsTrigger value="subscription" className="rounded-2xl">Subscription</TabsTrigger>
         </TabsList>
 
         {/* Preferences Tab */}
@@ -221,6 +229,11 @@ const Profile = () => {
             {/* Arya Notification Settings */}
             <AryaNotificationSettings />
           </div>
+        </TabsContent>
+
+        {/* Subscription Tab */}
+        <TabsContent value="subscription">
+          <SubscriptionSection currentSubscription={subscription} />
         </TabsContent>
       </Tabs>
     </div>;
