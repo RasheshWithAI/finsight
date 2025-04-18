@@ -27,6 +27,17 @@ export interface Stock {
   industry?: string;
 }
 
+export interface Insight {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  date?: string;
+  potentialSavings?: string;
+  potentialReturn?: string;
+  relatedStocks?: string[];
+}
+
 // Empty arrays for all mock data (will only use market mocks when needed)
 export const mockStocks: Stock[] = [
   {
@@ -159,3 +170,4 @@ export const calculateFinancialSummary = () => {
     savingsRate: 0
   };
 };
+
