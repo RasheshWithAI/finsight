@@ -1,66 +1,31 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { mockTransactions, mockBudgets } from "@/utils/mockData";
-import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, Plus, RefreshCw, IndianRupee } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, BarChart3, Calendar, Filter, PieChart, Plus, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import ExpensePieChart from "@/components/charts/ExpensePieChart";
 import BudgetBarChart from "@/components/charts/BudgetBarChart";
 import AddTransactionForm from "@/components/finance/AddTransactionForm";
 import { formatCurrency } from "@/utils/currencyUtils";
-import { useExchangeRate, convertUsdToInr } from "@/utils/currencyUtils";
-import { useEffect } from "react";
 
 const Finance = () => {
-  const { rate: exchangeRate } = useExchangeRate();
-  const [transactions, setTransactions] = useState(mockTransactions);
-  const [budgets, setBudgets] = useState(mockBudgets);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [budgets, setBudgets] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState("April 2025");
   const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
 
-  // Convert USD values to INR on component mount and when exchange rate changes
-  useEffect(() => {
-    // Convert transaction amounts to INR
-    const convertedTransactions = mockTransactions.map(t => ({
-      ...t,
-      amount: convertUsdToInr(t.amount, exchangeRate)
-    }));
-    setTransactions(convertedTransactions);
-
-    // Convert budget values to INR
-    const convertedBudgets = mockBudgets.map(b => ({
-      ...b,
-      spent: convertUsdToInr(b.spent, exchangeRate),
-      budgeted: convertUsdToInr(b.budgeted, exchangeRate)
-    }));
-    setBudgets(convertedBudgets);
-  }, [exchangeRate]);
-
-  // Calculate totals
+  // Calculate totals from actual transactions
   const totalIncome = transactions.filter(t => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = transactions.filter(t => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
-
-  // Calculate percentage for budget progress bars
-  const calculatePercentage = (spent: number, budgeted: number) => {
-    return Math.min(Math.round(spent / budgeted * 100), 100);
-  };
 
   const handleAddTransaction = () => {
     setIsAddTransactionOpen(true);
   };
 
   const handleSaveTransaction = (transaction: any) => {
-    // Convert the amount to INR before saving if needed
-    const newTransaction = {
-      ...transaction,
-      amount: transaction.currency === 'USD' ? 
-        convertUsdToInr(transaction.amount, exchangeRate) : transaction.amount
-    };
-    
-    setTransactions([newTransaction, ...transactions]);
+    setTransactions([transaction, ...transactions]);
     toast.success("Transaction added successfully!");
   };
 
@@ -68,7 +33,8 @@ const Finance = () => {
     toast.success("Budget creation feature coming soon!");
   };
 
-  return <div className="container px-4 py-6 animate-fade-in bg-gray-900">
+  return (
+    <div className="container px-4 py-6 animate-fade-in bg-gray-900">
       <header className="flex flex-wrap justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-aura-primary-text">Finance</h1>
@@ -98,7 +64,9 @@ const Finance = () => {
                 <span className="stat-label text-yellow-400">Income</span>
                 <ArrowUpCircle className="h-4 w-4 text-green-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold text-yellow-400">{formatCurrency(totalIncome)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-yellow-400">
+                {transactions.length > 0 ? formatCurrency(totalIncome) : "No income recorded"}
+              </span>
             </CardContent>
           </Card>
           
@@ -108,7 +76,9 @@ const Finance = () => {
                 <span className="stat-label bg-violet-900 hover:bg-violet-800 font-normal text-slate-50">Expenses</span>
                 <ArrowDownCircle className="h-4 w-4 text-red-400" />
               </div>
-              <span className="stat-value mt-2 text-aura-primary-text">{formatCurrency(totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-primary-text">
+                {transactions.length > 0 ? formatCurrency(totalExpenses) : "No expenses recorded"}
+              </span>
             </CardContent>
           </Card>
           
@@ -118,7 +88,9 @@ const Finance = () => {
                 <span className="stat-label text-base text-lime-50">Balance</span>
                 <BarChart3 className="h-4 w-4 text-aura-chart-blue" />
               </div>
-              <span className="stat-value mt-2 text-aura-gold text-lime-50">{formatCurrency(totalIncome - totalExpenses)}</span>
+              <span className="stat-value mt-2 text-aura-gold text-lime-50">
+                {transactions.length > 0 ? formatCurrency(totalIncome - totalExpenses) : "No transactions recorded"}
+              </span>
             </CardContent>
           </Card>
         </div>
@@ -146,7 +118,8 @@ const Finance = () => {
           </div>
           
           <Card className="financial-card overflow-hidden bg-gray-600 rounded-2xl">
-            {transactions.length === 0 ? <CardContent className="p-8 text-center">
+            {transactions.length === 0 ? (
+              <CardContent className="p-8 text-center">
                 <div className="flex justify-center mb-4">
                   <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
                 </div>
@@ -155,7 +128,9 @@ const Finance = () => {
                   Start by adding your income and expenses
                 </p>
                 <Button onClick={handleAddTransaction}>Add First Transaction</Button>
-              </CardContent> : <div className="overflow-x-auto">
+              </CardContent>
+            ) : (
+              <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-800">
@@ -180,7 +155,8 @@ const Finance = () => {
                       </tr>)}
                   </tbody>
                 </table>
-              </div>}
+              </div>
+            )}
           </Card>
 
           {/* Expense Breakdown Chart */}
@@ -192,9 +168,15 @@ const Finance = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="px-0 py-0">
-              <div className="h-64">
-                <ExpensePieChart transactions={transactions} />
-              </div>
+              {transactions.length > 0 ? (
+                <div className="h-64">
+                  <ExpensePieChart transactions={transactions} />
+                </div>
+              ) : (
+                <div className="text-center py-8 text-aura-secondary-text">
+                  No expense data available
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -212,7 +194,19 @@ const Finance = () => {
           </div>
           
           <div className="grid md:grid-cols-2 gap-4">
-            {budgets.map(budget => <Card key={budget.id} className="financial-card p-4 rounded-2xl">
+            {budgets.length === 0 ? (
+              <Card className="financial-card p-8 text-center col-span-2">
+                <div className="flex justify-center mb-4">
+                  <BarChart3 className="h-12 w-12 text-aura-medium-gray" />
+                </div>
+                <h3 className="text-lg font-medium mb-2 text-aura-primary-text">No budgets set</h3>
+                <p className="text-aura-secondary-text mb-4">
+                  Create your first budget to start tracking your spending
+                </p>
+                <Button onClick={handleNewBudget}>Create First Budget</Button>
+              </Card>
+            ) : (
+              budgets.map(budget => <Card key={budget.id} className="financial-card p-4 rounded-2xl">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-medium text-aura-primary-text">{budget.category}</h3>
                   <span className="text-sm text-aura-medium-gray">{budget.period}</span>
@@ -232,7 +226,8 @@ const Finance = () => {
                   </span>
                   <Button variant="outline" size="sm">Edit</Button>
                 </div>
-              </Card>)}
+              </Card>))
+            )}
           </div>
           
           {/* Budget Comparison Chart */}
@@ -244,13 +239,21 @@ const Finance = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="px-0 py-0">
-              <div className="h-64">
-                <BudgetBarChart />
-              </div>
+              {budgets.length > 0 ? (
+                <div className="h-64">
+                  <BudgetBarChart />
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-600">
+                  No budget data available
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </div>;
+    </div>
+  );
 };
+
 export default Finance;
