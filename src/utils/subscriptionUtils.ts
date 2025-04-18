@@ -22,14 +22,18 @@ export async function getUserSubscription(userId: string): Promise<string> {
 }
 
 export const FEATURE_ACCESS = {
-  REAL_TIME_DATA: ['pro', 'enterprise'],
-  ADVANCED_CHARTS: ['pro', 'enterprise'],
-  PORTFOLIO_ANALYSIS: ['enterprise'],
-  AI_INSIGHTS: ['pro', 'enterprise'],
-  EXPORT: ['enterprise']
+  REAL_TIME_DATA: ['pro', 'enterprise'] as const,
+  ADVANCED_CHARTS: ['pro', 'enterprise'] as const,
+  PORTFOLIO_ANALYSIS: ['enterprise'] as const,
+  AI_INSIGHTS: ['pro', 'enterprise'] as const,
+  EXPORT: ['enterprise'] as const
 } as const;
 
-export function hasFeatureAccess(subscription: string, feature: keyof typeof FEATURE_ACCESS): boolean {
+type FeatureAccessMap = typeof FEATURE_ACCESS;
+type Feature = keyof FeatureAccessMap;
+type AllowedTiers = FeatureAccessMap[Feature][number];
+
+export function hasFeatureAccess(subscription: string, feature: Feature): boolean {
   if (!FEATURE_ACCESS[feature]) return true;
-  return FEATURE_ACCESS[feature].includes(subscription as SubscriptionTier['code']);
+  return FEATURE_ACCESS[feature].includes(subscription as AllowedTiers);
 }
