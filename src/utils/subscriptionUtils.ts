@@ -14,7 +14,8 @@ export async function getUserSubscription(userId: string): Promise<SubscriptionT
     return 'free';
   }
   
-  return data || 'free';
+  // Add type assertion to ensure the returned value is of type SubscriptionTier
+  return (data as SubscriptionTier) || 'free';
 }
 
 // Define subscription tiers as const arrays with type assertion
