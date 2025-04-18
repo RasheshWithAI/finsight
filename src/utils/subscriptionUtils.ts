@@ -21,6 +21,7 @@ export async function getUserSubscription(userId: string): Promise<string> {
   return data || 'free';
 }
 
+// Define subscription tiers as const arrays
 export const FEATURE_ACCESS = {
   REAL_TIME_DATA: ['pro', 'enterprise'] as const,
   ADVANCED_CHARTS: ['pro', 'enterprise'] as const,
@@ -31,9 +32,11 @@ export const FEATURE_ACCESS = {
 
 type FeatureAccessMap = typeof FEATURE_ACCESS;
 type Feature = keyof FeatureAccessMap;
-type AllowedTiers = FeatureAccessMap[Feature][number];
 
+// Fix the type issue by using a generic function that preserves the array literal types
 export function hasFeatureAccess(subscription: string, feature: Feature): boolean {
   if (!FEATURE_ACCESS[feature]) return true;
-  return FEATURE_ACCESS[feature].includes(subscription as AllowedTiers);
+  
+  const allowedTiers = FEATURE_ACCESS[feature];
+  return (allowedTiers as readonly string[]).includes(subscription);
 }
