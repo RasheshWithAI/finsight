@@ -193,49 +193,55 @@ serve(async (req) => {
         try {
           console.log('Fetching market indices data from Yahoo Finance API');
           
-          // We need to fetch data for multiple indices
+          // Define the indices we want to fetch
           const indices = ['^DJI', '^GSPC', '^IXIC', '^RUT'];
-          const promises = indices.map(async (symbol) => {
-            const url = `${YFINANCE_API_URL}/quoteSummary/${encodeURIComponent(symbol)}?modules=price`;
-            console.log(`Fetching index data for ${symbol}`);
-            
-            try {
-              const response = await fetch(url, {
-                headers: {
-                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-                }
-              });
-              
-              if (!response.ok) {
-                console.warn(`Index API error for ${symbol}: ${response.status}`);
-                return null;
-              }
-              
-              const data = await response.json();
-              console.log(`Received data for ${symbol}`);
-              
-              if (!data || !data.quoteSummary || !data.quoteSummary.result || !data.quoteSummary.result[0]) {
-                console.warn(`Invalid or limited data for ${symbol}`);
-                return null;
-              }
-              
-              return { quote: data.quoteSummary.result[0].price };
-            } catch (err) {
-              console.error(`Error fetching index ${symbol}: ${err}`);
-              return null;
+          
+          // Improved approach: Use single URL to get all indices at once
+          const symbols = indices.join(',');
+          const indicesUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}`;
+          
+          console.log(`Fetching all indices with URL: ${indicesUrl}`);
+          
+          const response = await fetch(indicesUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             }
           });
           
-          const results = await Promise.all(promises);
-          const validResults = results.filter(Boolean);
-          
-          if (validResults.length === 0) {
-            console.warn('No valid index data received, using mock data');
-            throw new Error('Failed to fetch any valid index data');
+          if (!response.ok) {
+            console.error(`Indices API error: ${response.status} ${response.statusText}`);
+            throw new Error(`Indices API error: ${response.status} ${response.statusText}`);
           }
           
-          console.log(`Successfully fetched ${validResults.length} indices`);
-          return new Response(JSON.stringify({ indices: validResults }), {
+          const data = await response.json();
+          
+          if (!data || !data.quoteResponse || !data.quoteResponse.result) {
+            console.error('Invalid response format from Yahoo Finance', data);
+            throw new Error('Invalid response format from indices API');
+          }
+          
+          const indicesData = data.quoteResponse.result;
+          console.log(`Received data for ${indicesData.length} indices`);
+          
+          // Transform data to the format our frontend expects
+          const processedIndices = indicesData.map((quote: any) => {
+            return {
+              id: quote.symbol,
+              name: quote.shortName || quote.longName || quote.symbol,
+              value: parseFloat(quote.regularMarketPrice),
+              change: parseFloat(quote.regularMarketChange),
+              changePercent: parseFloat(quote.regularMarketChangePercent),
+            };
+          });
+          
+          console.log('Successfully processed indices data:', processedIndices);
+          
+          if (processedIndices.length === 0) {
+            console.warn('No valid indices data after processing');
+            throw new Error("No valid market indices data available");
+          }
+          
+          return new Response(JSON.stringify({ indices: processedIndices }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         } catch (indicesError) {
@@ -259,7 +265,6 @@ serve(async (req) => {
       details: error.message,
       note: 'Using mock data as fallback. Live data will update when available.'
     }), {
-      // Returning 200 instead of 500 to prevent client-side errors
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -276,85 +281,55 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   
   if (lowercaseKeywords.includes('app') || lowercaseKeywords.includes('aapl')) {
     mockResults.push({
-      '1. symbol': 'AAPL',
-      '2. name': 'Apple Inc',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9876'
+      symbol: 'AAPL',
+      shortname: 'Apple Inc',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
   if (lowercaseKeywords.includes('micro') || lowercaseKeywords.includes('msft')) {
     mockResults.push({
-      '1. symbol': 'MSFT',
-      '2. name': 'Microsoft Corporation',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9752'
+      symbol: 'MSFT',
+      shortname: 'Microsoft Corporation',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
   if (lowercaseKeywords.includes('goog') || lowercaseKeywords.includes('alpha')) {
     mockResults.push({
-      '1. symbol': 'GOOGL',
-      '2. name': 'Alphabet Inc',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9641'
+      symbol: 'GOOGL',
+      shortname: 'Alphabet Inc',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
   if (lowercaseKeywords.includes('amaz') || lowercaseKeywords.includes('amzn')) {
     mockResults.push({
-      '1. symbol': 'AMZN',
-      '2. name': 'Amazon.com Inc',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9532'
+      symbol: 'AMZN',
+      shortname: 'Amazon.com Inc',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
   if (lowercaseKeywords.includes('meta') || lowercaseKeywords.includes('facebook') || lowercaseKeywords.includes('fb')) {
     mockResults.push({
-      '1. symbol': 'META',
-      '2. name': 'Meta Platforms Inc',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9423'
+      symbol: 'META',
+      shortname: 'Meta Platforms Inc',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
   if (lowercaseKeywords.includes('tesla') || lowercaseKeywords.includes('tsla')) {
     mockResults.push({
-      '1. symbol': 'TSLA',
-      '2. name': 'Tesla Inc',
-      '3. type': 'Equity',
-      '4. region': 'United States',
-      '5. marketOpen': '09:30',
-      '6. marketClose': '16:00',
-      '7. timezone': 'UTC-05',
-      '8. currency': 'USD',
-      '9. matchScore': '0.9314'
+      symbol: 'TSLA',
+      shortname: 'Tesla Inc',
+      quoteType: 'Equity',
+      exchange: 'NASDAQ',
     });
   }
   
@@ -362,37 +337,22 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
     mockResults = [
       ...mockResults,
       {
-        '1. symbol': 'JPM',
-        '2. name': 'JPMorgan Chase & Co',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8654'
+        symbol: 'JPM',
+        shortname: 'JPMorgan Chase & Co',
+        quoteType: 'Equity',
+        exchange: 'NYSE',
       },
       {
-        '1. symbol': 'WMT',
-        '2. name': 'Walmart Inc',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8543'
+        symbol: 'WMT',
+        shortname: 'Walmart Inc',
+        quoteType: 'Equity',
+        exchange: 'NYSE',
       },
       {
-        '1. symbol': 'DIS',
-        '2. name': 'Walt Disney Co',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8432'
+        symbol: 'DIS',
+        shortname: 'Walt Disney Co',
+        quoteType: 'Equity',
+        exchange: 'NYSE',
       }
     ];
   }
@@ -401,37 +361,22 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
     mockResults = [
       ...mockResults,
       {
-        '1. symbol': 'NVDA',
-        '2. name': 'NVIDIA Corporation',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8765'
+        symbol: 'NVDA',
+        shortname: 'NVIDIA Corporation',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       },
       {
-        '1. symbol': 'AMD',
-        '2. name': 'Advanced Micro Devices Inc',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8654'
+        symbol: 'AMD',
+        shortname: 'Advanced Micro Devices Inc',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       },
       {
-        '1. symbol': 'INTC',
-        '2. name': 'Intel Corporation',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.8543'
+        symbol: 'INTC',
+        shortname: 'Intel Corporation',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       }
     ];
   }
@@ -439,37 +384,22 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   if (lowercaseKeywords.includes('shanghai')) {
     mockResults = [
       {
-        '1. symbol': '600519.SHG',
-        '2. name': 'Kweichow Moutai Co Ltd',
-        '3. type': 'Equity',
-        '4. region': 'China',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+08',
-        '8. currency': 'CNY',
-        '9. matchScore': '0.8765'
+        symbol: '600519.SS',
+        shortname: 'Kweichow Moutai Co Ltd',
+        quoteType: 'Equity',
+        exchange: 'Shanghai',
       },
       {
-        '1. symbol': '601398.SHG',
-        '2. name': 'Industrial and Commercial Bank of China',
-        '3. type': 'Equity',
-        '4. region': 'China',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+08',
-        '8. currency': 'CNY',
-        '9. matchScore': '0.8654'
+        symbol: '601398.SS',
+        shortname: 'Industrial and Commercial Bank of China',
+        quoteType: 'Equity',
+        exchange: 'Shanghai',
       },
       {
-        '1. symbol': '601857.SHG',
-        '2. name': 'PetroChina Co Ltd',
-        '3. type': 'Equity',
-        '4. region': 'China',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+08',
-        '8. currency': 'CNY',
-        '9. matchScore': '0.8543'
+        symbol: '601857.SS',
+        shortname: 'PetroChina Co Ltd',
+        quoteType: 'Equity',
+        exchange: 'Shanghai',
       }
     ];
   }
@@ -477,37 +407,22 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   if (lowercaseKeywords.includes('tokyo')) {
     mockResults = [
       {
-        '1. symbol': '7203.TYO',
-        '2. name': 'Toyota Motor Corp',
-        '3. type': 'Equity',
-        '4. region': 'Japan',
-        '5. marketOpen': '09:00',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+09',
-        '8. currency': 'JPY',
-        '9. matchScore': '0.8765'
+        symbol: '7203.T',
+        shortname: 'Toyota Motor Corp',
+        quoteType: 'Equity',
+        exchange: 'Tokyo',
       },
       {
-        '1. symbol': '6758.TYO',
-        '2. name': 'Sony Group Corp',
-        '3. type': 'Equity',
-        '4. region': 'Japan',
-        '5. marketOpen': '09:00',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+09',
-        '8. currency': 'JPY',
-        '9. matchScore': '0.8654'
+        symbol: '6758.T',
+        shortname: 'Sony Group Corp',
+        quoteType: 'Equity',
+        exchange: 'Tokyo',
       },
       {
-        '1. symbol': '6861.TYO',
-        '2. name': 'Keyence Corp',
-        '3. type': 'Equity',
-        '4. region': 'Japan',
-        '5. marketOpen': '09:00',
-        '6. marketClose': '15:00',
-        '7. timezone': 'UTC+09',
-        '8. currency': 'JPY',
-        '9. matchScore': '0.8543'
+        symbol: '6861.T',
+        shortname: 'Keyence Corp',
+        quoteType: 'Equity',
+        exchange: 'Tokyo',
       }
     ];
   }
@@ -515,37 +430,22 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   if (lowercaseKeywords.includes('india')) {
     mockResults = [
       {
-        '1. symbol': 'RELIANCE.BSE',
-        '2. name': 'Reliance Industries Ltd',
-        '3. type': 'Equity',
-        '4. region': 'India',
-        '5. marketOpen': '09:15',
-        '6. marketClose': '15:30',
-        '7. timezone': 'UTC+05:30',
-        '8. currency': 'INR',
-        '9. matchScore': '0.8765'
+        symbol: 'RELIANCE.NS',
+        shortname: 'Reliance Industries Ltd',
+        quoteType: 'Equity',
+        exchange: 'NSE',
       },
       {
-        '1. symbol': 'TCS.BSE',
-        '2. name': 'Tata Consultancy Services Ltd',
-        '3. type': 'Equity',
-        '4. region': 'India',
-        '5. marketOpen': '09:15',
-        '6. marketClose': '15:30',
-        '7. timezone': 'UTC+05:30',
-        '8. currency': 'INR',
-        '9. matchScore': '0.8654'
+        symbol: 'TCS.NS',
+        shortname: 'Tata Consultancy Services Ltd',
+        quoteType: 'Equity',
+        exchange: 'NSE',
       },
       {
-        '1. symbol': 'HDFCBANK.BSE',
-        '2. name': 'HDFC Bank Ltd',
-        '3. type': 'Equity',
-        '4. region': 'India',
-        '5. marketOpen': '09:15',
-        '6. marketClose': '15:30',
-        '7. timezone': 'UTC+05:30',
-        '8. currency': 'INR',
-        '9. matchScore': '0.8543'
+        symbol: 'HDFCBANK.NS',
+        shortname: 'HDFC Bank Ltd',
+        quoteType: 'Equity',
+        exchange: 'NSE',
       }
     ];
   }
@@ -554,48 +454,28 @@ function generateMockSearchResults(keywords: string, corsHeaders: any) {
   if (mockResults.length === 0) {
     mockResults = [
       {
-        '1. symbol': 'AAPL',
-        '2. name': 'Apple Inc',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.7654'
+        symbol: 'AAPL',
+        shortname: 'Apple Inc',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       },
       {
-        '1. symbol': 'MSFT',
-        '2. name': 'Microsoft Corporation',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.7543'
+        symbol: 'MSFT',
+        shortname: 'Microsoft Corporation',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       },
       {
-        '1. symbol': 'GOOGL',
-        '2. name': 'Alphabet Inc',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.7432'
+        symbol: 'GOOGL',
+        shortname: 'Alphabet Inc',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       },
       {
-        '1. symbol': 'AMZN',
-        '2. name': 'Amazon.com Inc',
-        '3. type': 'Equity',
-        '4. region': 'United States',
-        '5. marketOpen': '09:30',
-        '6. marketClose': '16:00',
-        '7. timezone': 'UTC-05',
-        '8. currency': 'USD',
-        '9. matchScore': '0.7321'
+        symbol: 'AMZN',
+        shortname: 'Amazon.com Inc',
+        quoteType: 'Equity',
+        exchange: 'NASDAQ',
       }
     ];
   }
@@ -620,22 +500,21 @@ function generateMockQuoteData(symbol: string, corsHeaders: any) {
   const changePercent = (priceChange / basePrice) * 100;
   
   const mockQuote = {
-    'Global Quote': {
-      '01. symbol': symbol,
-      '02. open': (basePrice - (Math.random() * 5)).toFixed(2),
-      '03. high': (basePrice + (Math.random() * 10)).toFixed(2),
-      '04. low': (basePrice - (Math.random() * 10)).toFixed(2),
-      '05. price': basePrice.toFixed(2),
-      '06. volume': Math.floor(Math.random() * 10000000 + 100000).toString(),
-      '07. latest trading day': new Date().toISOString().split('T')[0],
-      '08. previous close': (basePrice - priceChange).toFixed(2),
-      '09. change': priceChange.toFixed(2),
-      '10. change percent': changePercent.toFixed(2) + '%',
-    }
+    symbol: symbol,
+    shortName: `Mock ${symbol} Inc`,
+    longName: `Mock ${symbol} Incorporated`,
+    regularMarketPrice: basePrice.toFixed(2),
+    regularMarketOpen: (basePrice - (Math.random() * 5)).toFixed(2),
+    regularMarketDayHigh: (basePrice + (Math.random() * 10)).toFixed(2),
+    regularMarketDayLow: (basePrice - (Math.random() * 10)).toFixed(2),
+    regularMarketVolume: Math.floor(Math.random() * 10000000 + 100000).toString(),
+    regularMarketChange: priceChange.toFixed(2),
+    regularMarketChangePercent: changePercent.toFixed(2),
+    marketCap: Math.floor(basePrice * 1000000 * (Math.random() * 500 + 100)).toString(),
   };
   
   console.log(`Generated mock quote data for ${symbol}`);
-  return new Response(JSON.stringify(mockQuote), {
+  return new Response(JSON.stringify({ quote: mockQuote }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
@@ -648,19 +527,8 @@ function generateMockHistoricalData(symbol: string, corsHeaders: any) {
   const symbolHash = symbol.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   let basePrice = 50 + (symbolHash % 950); // Price between 50 and 1000
   
-  const mockHistorical = {
-    'Meta Data': {
-      '1. Information': 'Daily Prices (open, high, low, close) and Volumes',
-      '2. Symbol': symbol,
-      '3. Last Refreshed': new Date().toISOString().split('T')[0],
-      '4. Output Size': 'Compact',
-      '5. Time Zone': 'US/Eastern',
-    },
-    'Time Series (Daily)': {}
-  };
-  
   // Generate 30 days of historical data
-  const timeSeriesData = {};
+  const history = [];
   const today = new Date();
   
   for (let i = 30; i >= 0; i--) {
@@ -675,19 +543,18 @@ function generateMockHistoricalData(symbol: string, corsHeaders: any) {
     
     if (basePrice < 10) basePrice = 10; // Prevent negative or too small prices
     
-    timeSeriesData[dateString] = {
-      '1. open': (basePrice - (Math.random() * 5)).toFixed(2),
-      '2. high': (basePrice + (Math.random() * 10)).toFixed(2),
-      '3. low': (basePrice - (Math.random() * 10)).toFixed(2),
-      '4. close': basePrice.toFixed(2),
-      '5. volume': Math.floor(Math.random() * 10000000 + 100000).toString(),
-    };
+    history.push({
+      date: dateString,
+      open: (basePrice - (Math.random() * 5)).toFixed(2),
+      high: (basePrice + (Math.random() * 10)).toFixed(2),
+      low: (basePrice - (Math.random() * 10)).toFixed(2),
+      close: basePrice.toFixed(2),
+      volume: Math.floor(Math.random() * 10000000 + 100000),
+    });
   }
   
-  mockHistorical['Time Series (Daily)'] = timeSeriesData;
-  
   console.log(`Generated mock historical data for ${symbol} with 30 days of data`);
-  return new Response(JSON.stringify(mockHistorical), {
+  return new Response(JSON.stringify({ history }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
@@ -698,63 +565,35 @@ function generateMockIndicesData(corsHeaders: any) {
   
   const currentDate = new Date().toISOString().split('T')[0];
   
-  // Generate more realistic dynamic market index data
+  // Generate more realistic market index data
   const mockIndices = [
     {
-      'Global Quote': {
-        '01. symbol': '^DJI',
-        '02. open': '38923.45',
-        '03. high': '39102.34',
-        '04. low': '38856.23',
-        '05. price': '39045.67',
-        '06. volume': '345678901',
-        '07. latest trading day': currentDate,
-        '08. previous close': '38867.89',
-        '09. change': '177.78',
-        '10. change percent': '0.4575%'
-      }
+      id: '^DJI',
+      name: 'Dow Jones',
+      value: 39045.67,
+      change: 177.78,
+      changePercent: 0.4575
     },
     {
-      'Global Quote': {
-        '01. symbol': '^GSPC',
-        '02. open': '5123.45',
-        '03. high': '5167.23',
-        '04. low': '5098.67',
-        '05. price': '5145.32',
-        '06. volume': '2345678901',
-        '07. latest trading day': currentDate,
-        '08. previous close': '5110.56',
-        '09. change': '34.76',
-        '10. change percent': '0.6802%'
-      }
+      id: '^GSPC',
+      name: 'S&P 500',
+      value: 5145.32,
+      change: 34.76,
+      changePercent: 0.6802
     },
     {
-      'Global Quote': {
-        '01. symbol': '^IXIC',
-        '02. open': '16234.56',
-        '03. high': '16345.67',
-        '04. low': '16123.45',
-        '05. price': '16298.76',
-        '06. volume': '3456789012',
-        '07. latest trading day': currentDate,
-        '08. previous close': '16198.45',
-        '09. change': '100.31',
-        '10. change percent': '0.6193%'
-      }
+      id: '^IXIC',
+      name: 'NASDAQ',
+      value: 16298.76,
+      change: 100.31,
+      changePercent: 0.6193
     },
     {
-      'Global Quote': {
-        '01. symbol': '^RUT',
-        '02. open': '2056.78',
-        '03. high': '2078.90',
-        '04. low': '2032.45',
-        '05. price': '2067.34',
-        '06. volume': '1234567890',
-        '07. latest trading day': currentDate,
-        '08. previous close': '2043.21',
-        '09. change': '24.13',
-        '10. change percent': '1.1810%'
-      }
+      id: '^RUT',
+      name: 'Russell 2000',
+      value: 2067.34,
+      change: 24.13,
+      changePercent: 1.1810
     }
   ];
   

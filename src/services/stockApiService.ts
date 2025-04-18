@@ -134,40 +134,14 @@ export const fetchMarketIndices = async (): Promise<MarketIndex[]> => {
     
     console.log('Raw indices data received:', JSON.stringify(data).substring(0, 300));
     
-    // Transform the raw indices data into our format
-    const indices = data.indices
-      .map((indexData: any) => {
-        if (!indexData || !indexData.quote) {
-          console.warn(`Missing or empty quote data for index`);
-          return null;
-        }
-        
-        const quote = indexData.quote;
-        
-        // Check all required fields exist before processing
-        if (!quote.regularMarketPrice || !quote.regularMarketChange) {
-          console.warn(`Missing price or change data for index:`, quote);
-          return null;
-        }
-        
-        return {
-          id: quote.symbol,
-          name: quote.shortName || quote.longName || quote.symbol,
-          value: parseFloat(quote.regularMarketPrice),
-          change: parseFloat(quote.regularMarketChange),
-          changePercent: parseFloat(quote.regularMarketChangePercent),
-        };
-      })
-      .filter(Boolean) as MarketIndex[];
-    
-    console.log('Processed indices data:', indices);
-    
-    if (indices.length === 0) {
-      console.warn('No valid indices data after processing');
-      throw new Error("No valid market indices data available");
+    // With the improved edge function, indices should be directly usable
+    if (Array.isArray(data.indices)) {
+      console.log('Processed indices data:', data.indices);
+      return data.indices;
     }
     
-    return indices;
+    console.warn('No valid indices data after processing');
+    throw new Error("No valid market indices data available");
   } catch (error) {
     console.error('Error fetching market indices:', error);
     

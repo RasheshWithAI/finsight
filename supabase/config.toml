@@ -1,5 +1,6 @@
 
 project_id = "your_supabase_project_id"
+
 [functions."stock-data"]
 verify_jwt = false
 
